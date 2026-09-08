@@ -598,6 +598,7 @@
             }
 
             .feedback {
+            display: none !important;
                 margin: 0.6rem 0;
                 padding: 0.75rem;
             }
@@ -1909,6 +1910,7 @@
 
         /* Number Explorer feedback: same compact toast behavior */
         .number-explorer-feedback {
+            display: none !important;
             display: none;
             position: fixed;
             left: 50%;
@@ -2219,6 +2221,15 @@
             color: var(--warning-color);
             font-size: 0.92rem;
             text-align: center;
+        }
+
+        .practice-status,
+        .hint-btn,
+        .hint-panel,
+        .explanation-panel,
+        .splash-hint,
+        .asset-status {
+            display: none !important;
         }
 
         .practice-status {
@@ -2656,7 +2667,6 @@ function initFloatingBg() {
             <img src="img/math_logo.png" alt="Math Skills Logo">
         </div>
         <h1 class="splash-text">Math Skills Practice</h1>
-        <p class="splash-hint">Choose a skill first, then practise together at the board.</p>
         <button class="start-btn" id="startRegularBtn" type="button">Start Practice</button>
         <button class="start-btn" id="startTimedBtn" type="button">Timer Challenge</button>
         <button class="start-btn" id="startChallengeBtn" type="button">Mixed Challenge</button>
@@ -2665,11 +2675,9 @@ function initFloatingBg() {
         <div class="container" id="mainContainer">
         <h1>Math Skills Practice</h1>
         <div class="menu-intro">
-            <p>Choose a strand, tap a skill, and explain your thinking together.</p>
             <div class="menu-actions">
                 <button class="continue-card" id="continueLastBtn" type="button" disabled>Continue last skill</button>
             </div>
-            <div class="asset-status" id="assetStatus" role="status" aria-live="polite"></div>
         </div>
 
         <section class="skill-section" aria-labelledby="number-title">
@@ -2723,21 +2731,13 @@ function initFloatingBg() {
                 <div class="label"><span class="seconds" id="hudTime">30</span>s</div>
             </div>
         </div>
-
-        <div class="practice-status" id="practiceStatus" aria-live="polite">
-            <span id="practiceSkillLabel"><strong>Practice</strong></span>
-            <span id="practiceQuestionLabel">Think carefully</span>
-        </div>
         <h2 id="gameTitle">Number Comparison</h2>
         <div class="comparison-question" id="comparisonQuestion"></div>
         <div class="shapes-container" id="shapesContainer"></div>
         <div class="math-equation-display" id="mathEquationDisplay"></div>
         <div class="comparison-container" id="comparisonContainer"></div>
         <div class="answers" id="answers"></div>
-        <button class="hint-btn" id="hintBtn" type="button">Show a hint</button>
-        <div class="hint-panel" id="hintPanel" role="status" aria-live="polite"></div>
         <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
-        <div class="explanation-panel" id="explanationPanel" role="status" aria-live="polite"></div>
         <button class="next-btn" id="nextBtn">Next Question ➔</button>
     </div>
 
@@ -2753,19 +2753,11 @@ function initFloatingBg() {
                 <div class="label"><span class="seconds" id="hudTimeExplorer">30</span>s</div>
             </div>
         </div>
-
-        <div class="practice-status" id="numberExplorerPracticeStatus" aria-live="polite">
-            <span id="numberExplorerSkillLabel"><strong>Number Explorer</strong></span>
-            <span id="numberExplorerQuestionLabel">Think carefully</span>
-        </div>
         <div class="number-explorer-question" id="numberExplorerQuestionText"></div>
         <div class="number-explorer-shapes-container" id="numberExplorerShapesContainer"></div>
         <div class="number-explorer-between-container" id="numberExplorerBetweenContainer"></div>
         <div class="number-explorer-answers" id="numberExplorerAnswers"></div>
-        <button class="hint-btn" id="numberExplorerHintBtn" type="button">Show a hint</button>
-        <div class="hint-panel" id="numberExplorerHintPanel" role="status" aria-live="polite"></div>
         <div class="number-explorer-feedback" id="numberExplorerFeedback" role="status" aria-live="polite"></div>
-        <div class="explanation-panel" id="numberExplorerExplanationPanel" role="status" aria-live="polite"></div>
         <button class="number-explorer-next-btn" id="numberExplorerNextBtn">Next Question ➔</button>
     </div>
 
@@ -2785,12 +2777,6 @@ function initFloatingBg() {
             <div class="results-title" id="resultsTitle">Session complete</div>
             <div class="results-subtitle" id="resultsSubtitle">Review what you learned</div>
             <div class="results-score"><span id="resultsScore">0</span><small>points</small></div>
-            <div class="results-stats">
-                <div class="results-stat"><strong id="resultsCorrect">0</strong><span>correct</span></div>
-                <div class="results-stat"><strong id="resultsAccuracy">0%</strong><span>accuracy</span></div>
-                <div class="results-stat"><strong id="resultsReviewed">0</strong><span>to review</span></div>
-            </div>
-            <div class="results-next-step" id="resultsNextStep">Keep explaining how you know.</div>
             <div class="results-actions">
                 <button class="start-btn secondary" id="resultsMenuBtn" type="button">Back to Menu</button>
                 <button class="start-btn" id="resultsRetryBtn" type="button">Play Again</button>
@@ -3686,109 +3672,6 @@ function initFloatingBg() {
             overlay.setAttribute('aria-hidden', 'true');
         }
 
-        function prettySkillName(mode) {
-            const names = {
-                counting: 'Counting', doubles: 'Doubles', halves: 'Halves', 'even-odd': 'Even & Odd', money: 'Money',
-                'shapes-2d': '2D Shapes', 'shapes-3d': '3D Shapes', 'shapes-sound': 'Shapes by Sound',
-                'colors-sound': 'Colours by Sound', compare: 'Larger or Smaller', 'number-explorer': 'Number Explorer',
-                addition: 'Addition', subtraction: 'Subtraction', multiplication: 'Multiplication', colours: 'Naming Colours'
-            };
-            return names[mode] || 'Math Practice';
-        }
-
-        function updatePracticeStatus() {
-            const skill = challengeModeEnabled ? 'Mixed Challenge' : prettySkillName(currentGameMode);
-            const question = isTimedMode()
-                ? `Question ${Math.min(timedQuestionIndex, TIMED_MAX_QUESTIONS)} of ${TIMED_MAX_QUESTIONS}`
-                : 'Practise at your pace';
-            ['practiceSkillLabel', 'numberExplorerSkillLabel'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = `<strong>${skill}</strong>`;
-            });
-            ['practiceQuestionLabel', 'numberExplorerQuestionLabel'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = question;
-            });
-        }
-
-        function learningHintFor(mode) {
-            const hints = {
-                counting: 'Touch or point to each object once, then count the numbers in order.',
-                doubles: 'A double is two equal groups: think of the number added to itself.',
-                halves: 'A half is one of two equal parts. Look for equal groups.',
-                'even-odd': 'Even numbers make complete pairs. Odd numbers have one left over.',
-                money: 'Add the value of every coin carefully. Start with the largest value.',
-                'shapes-2d': 'Look at the number of sides, corners, and curved edges.',
-                'shapes-3d': 'Think about faces, edges, vertices, and whether the shape can roll.',
-                'shapes-sound': 'Listen again, say the shape name, and match it to the picture.',
-                'colors-sound': 'Listen again, then say the colour name before choosing.',
-                compare: 'Count or compare the two amounts. Choose the larger or smaller one as asked.',
-                'number-explorer': 'Use the number line or count forward from the smaller number.',
-                addition: 'Start with the larger number and count on the amount being added.',
-                subtraction: 'Start with the first number and take away the second number.',
-                multiplication: 'Think of equal groups or an array. Multiplication is repeated addition.',
-                colours: 'Say the colour name aloud and look for the matching word.'
-            };
-            return hints[mode] || 'Take your time and explain how you know.';
-        }
-
-        function explanationFor(mode, isCorrect) {
-            const lead = isCorrect ? 'Correct. ' : 'Let’s use a strategy. ';
-            const endings = {
-                counting: 'Count each object once from 1, touching or pointing as you count.',
-                doubles: 'Build two equal groups. The total is the same number added twice.',
-                halves: 'Split the amount into two equal groups. One group is one half.',
-                'even-odd': 'Pair the objects. No leftover means even; one leftover means odd.',
-                money: 'Combine the value of all the coins, checking each coin once.',
-                'shapes-2d': 'Use sides and corners to identify the flat shape.',
-                'shapes-3d': 'Use faces, edges, vertices, and whether it rolls to identify the solid shape.',
-                'shapes-sound': 'Match the sound you heard to the shape name and its picture.',
-                'colors-sound': 'Say the colour name and match it to the spoken word.',
-                compare: 'Compare the quantities, then follow the words larger or smaller.',
-                'number-explorer': 'Place the numbers in order and count the spaces between them.',
-                addition: 'Count on from the first number or combine the two groups.',
-                subtraction: 'Start with the whole amount and count back what is taken away.',
-                multiplication: 'Make equal groups or rows. Count the total in the groups.',
-                colours: 'Look closely at the colour and say its name.'
-            };
-            return lead + (endings[mode] || 'Explain your thinking in a complete sentence.');
-        }
-
-        function resetLearningSupport() {
-            ['hintPanel', 'numberExplorerHintPanel', 'explanationPanel', 'numberExplorerExplanationPanel'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) { el.classList.remove('show'); el.textContent = ''; }
-            });
-            ['hintBtn', 'numberExplorerHintBtn'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = 'Show a hint';
-            });
-        }
-
-        function setQuestionHint(mode) {
-            const text = `<strong>Hint</strong>${learningHintFor(mode)}`;
-            ['hintPanel', 'numberExplorerHintPanel'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = text;
-            });
-        }
-
-        function showHintFor(mode) {
-            const isExplorer = mode === 'number-explorer';
-            const panel = document.getElementById(isExplorer ? 'numberExplorerHintPanel' : 'hintPanel');
-            const button = document.getElementById(isExplorer ? 'numberExplorerHintBtn' : 'hintBtn');
-            if (!panel || !button) return;
-            panel.classList.toggle('show');
-            button.textContent = panel.classList.contains('show') ? 'Hide hint' : 'Show a hint';
-        }
-
-        function showExplanationFor(mode, isCorrect, explorer = false) {
-            const panel = document.getElementById(explorer ? 'numberExplorerExplanationPanel' : 'explanationPanel');
-            if (!panel) return;
-            panel.innerHTML = `<strong>${isCorrect ? 'Explain your thinking' : 'Try this strategy'}</strong>${explanationFor(mode, isCorrect)}`;
-            panel.classList.add('show');
-        }
-
         function showResults() {
             const overlay = document.getElementById('resultsOverlay');
             if (!overlay) return;
@@ -3797,22 +3680,6 @@ function initFloatingBg() {
             const subtitle = document.getElementById('resultsSubtitle');
             const scoreEl = document.getElementById('resultsScore');
 
-            const correctEl = document.getElementById('resultsCorrect');
-            const accuracyEl = document.getElementById('resultsAccuracy');
-            const reviewedEl = document.getElementById('resultsReviewed');
-            const nextStepEl = document.getElementById('resultsNextStep');
-            const total = Math.max(sessionAnswered, TIMED_MAX_QUESTIONS);
-            const accuracy = total ? Math.round((sessionCorrect / total) * 100) : 0;
-            const uniqueMistakes = [...new Set(sessionMistakes)].map(prettySkillName);
-            if (title) title.textContent = 'Session complete';
-            if (subtitle) subtitle.textContent = `${timedSessionGameMode || 'Game'} • ${TIMED_MAX_QUESTIONS} Questions`;
-            if (scoreEl) scoreEl.textContent = String(Math.max(0, timedScore));
-            if (correctEl) correctEl.textContent = `${sessionCorrect}/${total}`;
-            if (accuracyEl) accuracyEl.textContent = `${accuracy}%`;
-            if (reviewedEl) reviewedEl.textContent = String(uniqueMistakes.length);
-            if (nextStepEl) nextStepEl.textContent = uniqueMistakes.length
-                ? `Next step: review ${uniqueMistakes.join(', ')} without a timer.`
-                : 'Great work. Ask a partner to explain one strategy you used.';
 
             overlay.style.display = 'flex';
             overlay.setAttribute('aria-hidden', 'false');
@@ -3889,7 +3756,6 @@ function initFloatingBg() {
 
             // Ensure bar fill starts full when HUD is (re)shown
             setHudTime(limit);
-            updatePracticeStatus();
         }
 
         function stopQuestionTimer() {
@@ -4020,7 +3886,6 @@ function initFloatingBg() {
             timedScore += TIMED_SCORE_WRONG;
             recordAnswer(false);
             syncHud();
-            showExplanationFor(currentGameMode, false, currentGameMode === 'number-explorer');
 
                 // Subtle shake on timeout for the active container
                 try {
@@ -4174,6 +4039,16 @@ function initFloatingBg() {
             }
         })();
 
+        function prettySkillName(mode) {
+            const names = {
+                counting: 'Counting', doubles: 'Doubles', halves: 'Halves', 'even-odd': 'Even & Odd', money: 'Money',
+                'shapes-2d': '2D Shapes', 'shapes-3d': '3D Shapes', 'shapes-sound': 'Shapes by Sound',
+                'colors-sound': 'Colours by Sound', compare: 'Larger or Smaller', 'number-explorer': 'Number Explorer',
+                addition: 'Addition', subtraction: 'Subtraction', multiplication: 'Multiplication', colours: 'Naming Colours'
+            };
+            return names[mode] || 'Math Practice';
+        }
+
         function updateContinueButton() {
             const button = document.getElementById('continueLastBtn');
             if (!button) return;
@@ -4190,9 +4065,6 @@ function initFloatingBg() {
             if (card) card.classList.add('asset-missing');
             const splashLogo = img.closest('.splash-logo');
             if (splashLogo) splashLogo.classList.add('logo-missing');
-            const status = document.getElementById('assetStatus');
-            if (status) status.textContent = 'Some visual assets are missing. The app is still usable, but check the img folder before teaching.';
-
             const questionVisual = img.closest('.shapes-container, .number-explorer-shapes-container');
             if (questionVisual) {
                 const fallback = document.createElement('span');
@@ -4314,18 +4186,6 @@ function initFloatingBg() {
         })();
         }
 
-        const hintBtn = document.getElementById('hintBtn');
-        if (hintBtn) {
-            enableRipple(hintBtn);
-            addTouchSupport(hintBtn, () => showHintFor(currentGameMode));
-        }
-
-        const numberExplorerHintBtn = document.getElementById('numberExplorerHintBtn');
-        if (numberExplorerHintBtn) {
-            enableRipple(numberExplorerHintBtn);
-            addTouchSupport(numberExplorerHintBtn, () => showHintFor('number-explorer'));
-        }
-
         const repeatSoundBtn = document.getElementById('repeatSoundBtn');
         if (repeatSoundBtn) {
             enableRipple(repeatSoundBtn);
@@ -4405,9 +4265,6 @@ function initFloatingBg() {
             comparisonContainer.innerHTML = '';
             feedback.textContent = '';
             feedback.className = 'feedback';
-            resetLearningSupport();
-            setQuestionHint(currentGameMode);
-            updatePracticeStatus();
             nextBtn.style.display = 'none';
             comparisonQuestion.innerHTML = '';
             mathEquationDisplay.innerHTML = '';
@@ -5136,7 +4993,6 @@ function initFloatingBg() {
             const answerWasCorrect = selectedAnswer === currentCorrectAnswer;
             recordAnswer(answerWasCorrect);
             updatePracticeStatus();
-            showExplanationFor(currentGameMode, answerWasCorrect);
             if (answerWasCorrect) {
                 if (isTimedMode()) {
                     timedScore += TIMED_SCORE_CORRECT;
@@ -5226,7 +5082,6 @@ function initFloatingBg() {
             feedback.className = 'number-explorer-feedback';
             feedback.style.display = 'none';
             resetLearningSupport();
-            setQuestionHint('number-explorer');
             updatePracticeStatus();
             nextBtn.style.display = 'none';
 
@@ -5347,7 +5202,6 @@ function initFloatingBg() {
             const answerWasCorrect = selected === numberExplorerCorrectAnswer;
             recordAnswer(answerWasCorrect);
             updatePracticeStatus();
-            showExplanationFor('number-explorer', answerWasCorrect, true);
             if (answerWasCorrect) {
                 if (isTimedMode()) {
                     timedScore += TIMED_SCORE_CORRECT;
