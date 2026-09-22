@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern Maker with Images 🎨</title>
+<style>
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+  }
+  body {
+    background: linear-gradient(135deg, #ffe9a8, #ffb3c1, #b3e5fc);
+    min-height: 100vh;
+    padding: 16px;
+    color: #444;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: #ff5a87;
+    text-shadow: 2px 2px 0 #fff;
+    margin-bottom: 8px;
+  }
+  .tabs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #ccc;
+    transition: transform .1s;
+    color: #555;
+  }
+  .tab.active { 
+    background: #ffd166; 
+    box-shadow: 0 4px 0 #d4a017; 
+    color: #6b4b00; 
+  }
+  .tab:active { transform: translateY(3px); box-shadow: 0 1px 0 #ccc; }
+  .card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+    margin-bottom: 16px;
+  }
+  .hidden { display: none; }
+
+  /* Pattern row */
+  .pattern-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 100px;
+    align-items: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+  .chip {
+    width: 80px; 
+    height: 80px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    box-shadow: inset 0 -6px 0 rgba(0,0,0,.12);
+    animation: pop .3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes pop { 
+    from { transform: scale(0); } 
+    to { transform: scale(1); } 
+  }
+  .chip.empty {
+    background: #fff;
+    border: 4px dashed #aaa;
+    box-shadow: none;
+    cursor: pointer;
+  }
+  .chip.empty::after { 
+    content: '+'; 
+    font-size: 2rem; 
+    color: #aaa; 
+  }
+  .chip.shake { 
+    animation: shake .4s; 
+  }
+  @keyframes shake { 
+    0%,100%{transform:translateX(0);} 
+    25%{transform:translateX(-8px);} 
+    75%{transform:translateX(8px);} 
+  }
+
+  /* Image handling */
+  .image-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 -6px 0 rgba(0,0,0,.12);
+    position: relative;
+    background: #f0f0f0;
+  }
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Palette */
+  .palette { 
+    display: flex; 
+    gap: 10px; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    margin-top: 12px; 
+  }
+  .palette button {
+    width: 64px; 
+    height: 64px;
+    border-radius: 16px;
+    border: 4px solid #fff;
+    cursor: pointer;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 0 rgba(0,0,0,.15);
+    transition: transform .1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+  .palette button:hover { 
+    transform: translateY(-3px); 
+  }
+  .palette button.sel { 
+    outline: 5px solid #ff5a87; 
+  }
+
+  .tools { 
+    display: flex; 
+    gap: 10px; 
+    justify-content: center; 
+    margin-top: 16px; 
+    flex-wrap: wrap; 
+  }
+  .btn {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 50px;
+    font-size: 1.05rem;
+    font-family: inherit;
+    cursor: pointer;
+    color: #fff;
+    box-shadow: 0 4px 0 rgba(0,0,0,.2);
+    transition: transform .1s;
+  }
+  .btn:active { 
+    transform: translateY(3px); 
+    box-shadow: 0 1px 0 rgba(0,0,0,.2); 
+  }
+  .btn.blue { background: #4dabf7; }
+  .btn.red { background: #ff6b6b; }
+  .btn.green { background: #69db7c; }
+  .btn.orange { background: #ffa94d; }
+
+  .options { 
+    display: flex; 
+    gap: 12px; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+    margin: 12px 0; 
+  }
+  .opt {
+    padding: 8px 16px; 
+    border-radius: 50px; 
+    border: 3px solid #ddd;
+    background: #fff; 
+    cursor: pointer; 
+    font-family: inherit; 
+    font-size: 1rem;
+  }
+  .opt.active { 
+    border-color: #ff5a87; 
+    background: #fff0f5; 
+  }
+
+  .question { 
+    font-size: 1.4rem; 
+    text-align: center; 
+    margin: 10px 0; 
+    color: #333; 
+  }
+  .choices { 
+    display: flex; 
+    gap: 14px; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+  }
+  .choice {
+    width: 80px; 
+    height: 80px; 
+    border-radius: 20px; 
+    border: 4px solid #fff;
+    font-size: 2.5rem; 
+    cursor: pointer; 
+    box-shadow: 0 5px 0 rgba(0,0,0,.15);
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .choice:hover { 
+    transform: translateY(-3px); 
+  }
+  .choice img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .feedback { 
+    text-align: center; 
+    font-size: 1.6rem; 
+    margin-top: 14px; 
+    min-height: 40px; 
+    color: #ff5a87; 
+    font-weight: bold; 
+  }
+
+  .score { 
+    text-align: center; 
+    font-size: 1.2rem; 
+    color: #2b8a3e; 
+    margin-top: 8px; 
+  }
+
+  .mode-toggle { 
+    display:flex; 
+    gap:10px; 
+    justify-content:center; 
+    margin-bottom:12px; 
+    flex-wrap:wrap;
+  }
+  .mode-toggle button { 
+    padding:8px 16px; 
+    border-radius:50px; 
+    border:3px solid #ddd; 
+    background:#fff; 
+    cursor:pointer; 
+    font-family:inherit; 
+  }
+  .mode-toggle button.active { 
+    border-color:#4dabf7; 
+    background:#e7f3ff; 
+  }
+
+  /* Upload area */
+  .upload-area {
+    border: 3px dashed #4dabf7;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin: 16px 0;
+    background: #f8fbff;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .upload-area:hover {
+    background: #e7f3ff;
+    transform: translateY(-3px);
+  }
+  .upload-area p {
+    margin: 10px 0;
+    color: #4dabf7;
+  }
+
+  /* Image preview */
+  #imagePreview {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: none;
+    margin: 16px auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .chip { width: 60px; height: 60px; font-size: 2rem; }
+    .choice { width: 70px; height: 70px; font-size: 2rem; }
+    .palette button { width: 50px; height: 50px; font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🌈 Pattern Maker with Images 🌈</h1>
+
+  <div class="tabs">
+    <button class="tab active" data-mode="create">🎨 Create Patterns</button>
+    <button class="tab" data-mode="quiz">🧠 Fill the Gap</button>
+  </div>
+
+  <!-- CREATE MODE -->
+  <div class="card" id="createCard">
+    <div class="mode-toggle">
+      <button class="opt active" data-pair="shape">Shapes & Symbols</button>
+      <button class="opt" data-pair="image">My Images</button>
+    </div>
+
+    <div class="upload-area" id="uploadArea">
+      <p>📁 Drag & drop your images here or click to upload</p>
+      <p>(JPG, PNG, GIF - max 5MB)</p>
+      <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+    </div>
+    <img id="imagePreview" alt="Preview of uploaded image">
+
+    <div class="pattern-row" id="buildRow"></div>
+
+    <div class="palette" id="palette"></div>
+
+    <div class="tools">
+      <button class="btn green" id="repeatBtn">🔁 Repeat Pattern</button>
+      <button class="btn blue" id="playBtn">▶️ Play It</button>
+      <button class="btn orange" id="newBtn">✨ New Pattern</button>
+      <button class="btn red" id="clearBtn">🗑️ Clear</button>
+    </div>
+  </div>
+
+  <!-- QUIZ MODE -->
+  <div class="card hidden" id="quizCard">
+    <div class="question" id="qText">What comes next?</div>
+    <div class="pattern-row" id="quizRow"></div>
+    <div class="question" style="margin-top:14px;">❓ <span id="qPrompt">Pick the right one!</span></div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="score" id="score">⭐ Stars: 0</div>
+    <div class="tools">
+      <button class="btn blue" id="newQuizBtn">➡️ Next Puzzle</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Shared data ---------- */
+const SHAPES = ['🍎','🍌','⭐','🌸','🔴','🟥','🐶','🎈','🍄','🌟'];
+const COLORS = ['#ff6b6b','#ffd166','#69db7c','#4dabf7','#da77f2','#ff922b'];
+
+let buildMode = 'shape';   // 'shape' or 'image'
+let selected = 0;          // selected palette item
+let build = [];            // current pattern pieces
+let stars = 0;
+let uploadedImages = [];
+
+const buildRow = document.getElementById('buildRow');
+const palette  = document.getElementById('palette');
+const uploadArea = document.getElementById('uploadArea');
+const imageUpload = document.getElementById('imageUpload');
+const imagePreview = document.getElementById('imagePreview');
+
+/* ---------- Rendering helpers ---------- */
+function renderChip(piece) {
+  const d = document.createElement('div');
+  d.className = 'chip';
+  
+  if (piece.type === 'image') {
+    // Create image container
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'image-container';
+    
+    const img = document.createElement('img');
+    img.src = piece.url;
+    img.alt = "Pattern piece";
+    
+    imgContainer.appendChild(img);
+    d.appendChild(imgContainer);
+  } else {
+    // Regular shape
+    d.textContent = piece;
+  }
+  
+  return d;
+}
+
+function renderPalette() {
+  palette.innerHTML = '';
+  
+  if (buildMode === 'image') {
+    // Render uploaded images
+    uploadedImages.forEach((img, i) => {
+      const b = document.createElement('button');
+      b.className = 'palette-img';
+      b.innerHTML = `<div class="image-container"><img src="${img}" alt="Image ${i+1}"></div>`;
+      if (i === selected) b.classList.add('sel');
+      b.onclick = () => { 
+        selected = i; 
+        renderPalette(); 
+        addToBuild({type: 'image', url: img}); 
+      };
+      palette.appendChild(b);
+    });
+    
+    // Add "add image" button
+    const addBtn = document.createElement('button');
+    addBtn.className = 'palette-img';
+    addBtn.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;">+</div>';
+    addBtn.onclick = () => imageUpload.click();
+    palette.appendChild(addBtn);
+  } else {
+    // Render shapes
+    const items = SHAPES;
+    items.forEach((item, i) => {
+      const b = document.createElement('button');
+      b.textContent = item;
+      if (i === selected) b.classList.add('sel');
+      b.onclick = () => { 
+        selected = i; 
+        renderPalette(); 
+        addToBuild(item); 
+      };
+      palette.appendChild(b);
+    });
+  }
+}
+
+function renderBuild() {
+  buildRow.innerHTML = '';
+  build.forEach(piece => buildRow.appendChild(renderChip(piece)));
+  
+  // Add a "+ " button to append
+  const plus = document.createElement('div');
+  plus.className = 'chip empty';
+  plus.onclick = () => {
+    if (buildMode === 'image') {
+      // If we have images, add one
+      if (uploadedImages.length > 0) {
+        addToBuild({type: 'image', url: uploadedImages[selected]});
+      }
+    } else {
+      addToBuild(SHAPES[selected]);
+    }
+  };
+  buildRow.appendChild(plus);
+}
+
+function addToBuild(piece) {
+  build.push(piece);
+  renderBuild();
+  beep(500, 0.08);
+}
+
+/* ---------- Create-mode actions ---------- */
+document.getElementById('repeatBtn').onclick = () => {
+  if (build.length === 0) return;
+  
+  // Get repeating pattern
+  const core = getCore(build);
+  
+  // Extend the pattern
+  while (build.length < core.length * 4) {
+    build.push(...core);
+  }
+  
+  renderBuild();
+  playSequence();
+};
+
+document.getElementById('playBtn').onclick = playSequence;
+
+function playSequence() {
+  buildRow.innerHTML = '';
+  if (build.length === 0) { 
+    renderBuild(); 
+    return; 
+  }
+  
+  build.forEach((piece, i) => {
+    const chip = renderChip(piece);
+    buildRow.appendChild(chip);
+    
+    // Play sound with different pitches
+    setTimeout(() => {
+      const freq = 400 + (i * 100);
+      beep(freq, 0.12);
+    }, i * 250);
+  });
+}
+
+document.getElementById('newBtn').onclick = () => {
+  const count = 4 + Math.floor(Math.random() * 3);
+  build = [];
+  
+  if (buildMode === 'image') {
+    // Use uploaded images
+    for (let i = 0; i < count; i++) {
+      if (uploadedImages.length > 0) {
+        build.push({type: 'image', url: uploadedImages[Math.floor(Math.random() * uploadedImages.length)]});
+      } else {
+        build.push(SHAPES[Math.floor(Math.random() * SHAPES.length)]);
+      }
+    }
+  } else {
+    // Use shapes
+    for (let i = 0; i < count; i++) {
+      build.push(SHAPES[Math.floor(Math.random() * SHAPES.length)]);
+    }
+  }
+  
+  renderBuild();
+};
+
+document.getElementById('clearBtn').onclick = () => {
+  build = [];
+  renderBuild();
+};
+
+/* ---------- Quiz mode ---------- */
+let quiz = {};
+
+function getCore(arr) {
+  // find smallest repeating unit
+  for (let n = 1; n <= arr.length / 2; n++) {
+    if (arr.length % n !== 0) continue;
+    const unit = arr.slice(0, n);
+    let ok = true;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] !== unit[i % n]) { ok = false; break; }
+    }
+    if (ok) return unit;
+  }
+  return arr;
+}
+
+function makeQuiz() {
+  const items = buildMode === 'image' ? uploadedImages : SHAPES;
+  
+  // If no images, fallback to shapes
+  if (buildMode === 'image' && items.length === 0) {
+    document.getElementById('qText').textContent = "Add some images first!";
+    document.getElementById('qPrompt').textContent = "";
+    return;
+  }
+  
+  const unitLen = 2 + Math.floor(Math.random() * 2); // 2 or 3
+  const unit = [];
+  
+  for (let i = 0; i < unitLen; i++) {
+    if (buildMode === 'image') {
+      unit.push(items[Math.floor(Math.random()*items.length)]);
+    } else {
+      unit.push(items[Math.floor(Math.random()*items.length)]);
+    }
+  }
+
+  const len = 6 + unitLen; // total length of shown pattern
+  const seq = [];
+  
+  for (let i = 0; i < len; i++) {
+    if (buildMode === 'image') {
+      seq.push(items[i % unit.length]);
+    } else {
+      seq.push(unit[i % unit.length]);
+    }
+  }
+
+  // The missing piece is the last one (the "next")
+  const answer = buildMode === 'image' 
+    ? items[unitLen % items.length] 
+    : unit[unitLen % unit.length];
+  
+  const shown = seq.slice(0, len);
+
+  quiz = { shown, answer };
+
+  // Render with a "?" at the end
+  quizRow.innerHTML = '';
+  shown.forEach(p => {
+    const chip = renderChip({type: buildMode === 'image' ? 'image' : 'shape', url: p});
+    quizRow.appendChild(chip);
+  });
+  
+  const q = document.createElement('div');
+  q.className = 'chip empty';
+  q.style.cursor = 'default';
+  q.innerHTML = '?';
+  q.style.color = '#ff5a87';
+  q.style.fontSize = '2.4rem';
+  q.onclick = null;
+  quizRow.appendChild(q);
+
+  // Build choices: correct + 3 wrong
+  let choices = [answer];
+  
+  while (choices.length < 4) {
+    let c;
+    if (buildMode === 'image') {
+      c = uploadedImages[Math.floor(Math.random()*uploadedImages.length)];
+    } else {
+      c = SHAPES[Math.floor(Math.random()*SHAPES.length)];
+    }
+    
+    if (!choices.includes(c)) choices.push(c);
+  }
+  
+  choices.shuffle();
+
+  choicesEl.innerHTML = '';
+  choices.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'choice';
+    
+    if (buildMode === 'image') {
+      b.innerHTML = `<img src="${c}" alt="Choice">`;
+    } else {
+      b.textContent = c;
+    }
+    
+    b.onclick = () => checkAnswer(c, b);
+    choicesEl.appendChild(b);
+  });
+  
+  feedbackEl.textContent = '';
+}
+
+Array.prototype.shuffle = function(){ 
+  for(let i=this.length-1;i>0;i--){ 
+    const j=Math.floor(Math.random()*(i+1)); 
+    [this[i],this[j]]=[this[j],this[i]]; 
+  } 
+  return this; 
+};
+
+function checkAnswer(chosen, btn) {
+  if (chosen === quiz.answer) {
+    feedbackEl.textContent = '🎉 Correct! Great job!';
+    btn.style.background = '#b2f2bb';
+    stars++;
+    scoreEl.textContent = '⭐ Stars: ' + stars;
+    beep(700,0.1); 
+    setTimeout(()=>beep(900,0.12),120);
+    confetti();
+    setTimeout(makeQuiz, 1500);
+  } else {
+    feedbackEl.textContent = '🤔 Try again!';
+    btn.classList.add('shake');
+    btn.style.background = '#ffc9c9';
+    beep(200,0.15);
+  }
+}
+
+/* ---------- Sound ---------- */
+let actx;
+function beep(freq, dur) {
+  try {
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = freq; 
+    o.type = 'square';
+    g.gain.value = 0.08;
+    o.connect(g); 
+    g.connect(actx.destination);
+    o.start(); 
+    g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+dur);
+    o.stop(actx.currentTime+dur);
+  } catch(e){}
+}
+
+/* ---------- Confetti ---------- */
+function confetti() {
+  const colors = ['#ff6b6b','#ffd166','#69db7c','#4dabf7','#da77f2'];
+  for (let i=0;i<40;i++){
+    const c = document.createElement('div');
+    c.style.cssText = `position:fixed;width:10px;height:10px;background:${colors[i%5]};`+
+      `left:${Math.random()*100}vw;top:-10px;z-index:999;border-radius:2px;`+
+      `transition:transform .8s ease-out, opacity .8s;`;
+    document.body.appendChild(c);
+    requestAnimationFrame(()=>{
+      c.style.transform = `translate(${ (Math.random()-.5)*300 }px, 100vh) rotate(${Math.random()*720}deg)`;
+      c.style.opacity='0';
+    });
+    setTimeout(()=>c.remove(), 900);
+  }
+}
+
+/* ---------- Image Upload Handling ---------- */
+uploadArea.onclick = () => imageUpload.click();
+
+imageUpload.onchange = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  // Check file type
+  if (!file.type.match('image.*')) {
+    alert('Please select an image file (JPG, PNG, GIF)');
+    return;
+  }
+  
+  // Check file size (5MB limit)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File size exceeds 5MB limit');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    uploadedImages.push(e.target.result);
+    imagePreview.src = e.target.result;
+    imagePreview.style.display = 'block';
+    renderPalette();
+    renderBuild();
+    
+    // Show success message
+    uploadArea.innerHTML = '<p>✅ Image added successfully!</p><p>Click "Create Pattern" to start using it</p>';
+    setTimeout(() => {
+      uploadArea.innerHTML = '<p>📁 Drag & drop your images here or click to upload</p><p>(JPG, PNG, GIF - max 5MB)</p>';
+    }, 3000);
+  };
+  
+  reader.readAsDataURL(file);
+};
+
+/* ---------- Drag and Drop ---------- */
+uploadArea.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  this.style.borderColor = '#ff5a87';
+  this.style.backgroundColor = '#ffe0f0';
+});
+
+uploadArea.addEventListener('dragleave', function(e) {
+  e.preventDefault();
+  this.style.borderColor = '#4dabf7';
+  this.style.backgroundColor = '#f8fbff';
+});
+
+uploadArea.addEventListener('drop', function(e) {
+  e.preventDefault();
+  this.style.borderColor = '#4dabf7';
+  this.style.backgroundColor = '#f8fbff';
+  
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.match('image.*')) {
+    imageUpload.files = e.dataTransfer.files;
+    imageUpload.onchange({target: {files: e.dataTransfer.files}});
+  } else {
+    alert('Please drop an image file');
+  }
+});
+
+/* ---------- Tabs & toggles ---------- */
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    createCard.classList.toggle('hidden', t.dataset.mode !== 'create');
+    quizCard.classList.toggle('hidden', t.dataset.mode !== 'quiz');
+    
+    // Reset to shape mode when switching back
+    if (t.dataset.mode === 'create') {
+      buildMode = 'shape';
+      document.querySelectorAll('.mode-toggle .opt').forEach(x => x.classList.remove('active'));
+      document.querySelector('[data-pair="shape"]').classList.add('active');
+      renderPalette();
+      renderBuild();
+    }
+  };
+});
+
+document.querySelectorAll('.mode-toggle .opt').forEach(o => {
+  o.onclick = () => {
+    document.querySelectorAll('.mode-toggle .opt').forEach(x=>x.classList.remove('active'));
+    o.classList.add('active');
+    buildMode = o.dataset.pair;
+    selected = 0;
+    renderPalette();
+    renderBuild();
+    makeQuiz();
+  };
+});
+
+/* ---------- Init ---------- */
+const quizRow = document.getElementById('quizRow');
+const choicesEl = document.getElementById('choices');
+const feedbackEl = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+
+renderPalette();
+renderBuild();
+makeQuiz();
+
+// Add sample images for demo
+setTimeout(() => {
+  const sampleImages = [
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40" fill="%23FF6B6B"/><text x="50" y="55" font-family="Arial" font-size="30" text-anchor="middle" fill="white">🍎</text></svg>',
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="10" y="10" width="80" height="80" rx="10" fill="%23FFD166"/><text x="50" y="55" font-family="Arial" font-size="30" text-anchor="middle" fill="white">🍌</text></svg>',
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><polygon points="50,10 61,35 90,35 67,54 78,80 50,65 22,80 33,54 10,35 39,35" fill="%2369DB7C"/><text x="50" y="55" font-family="Arial" font-size="30" text-anchor="middle" fill="white">⭐</text></svg>'
+  ];
+  
+  uploadedImages = sampleImages;
+  renderPalette();
+}, 1000);
+</script>
+</body>
+</html>
