@@ -2923,6 +2923,17 @@ html.calm-mode .pattern-choice:active {
 .ordinal-item img{width:clamp(48px,12vw,88px);height:clamp(48px,12vw,88px);object-fit:contain;border-radius:18px;background:#fff;box-shadow:0 7px 0 rgba(51,82,134,.14);padding:.3rem}
 .ordinal-item .ordinal-position{font-size:.85rem;font-weight:900;color:var(--text-muted);white-space:nowrap}
 .ordinal-question-focus{display:inline-block;padding:.08em .3em;border-radius:12px;background:linear-gradient(120deg,#fff0b8,#ffd889);color:#18243b;font-size:1.14em;font-weight:1000;box-shadow:0 4px 0 rgba(217,150,31,.18)}
+.suffix-card{display:flex;justify-content:center;align-items:center;gap:6px;margin:10px 0 6px;font-family:'Baloo 2',Georgia,serif;color:var(--ink)}
+.suffix-num{font-size:clamp(64px,13vw,120px);line-height:1;font-weight:700;letter-spacing:-.04em}
+.suffix-blank{min-width:1.35em;padding:0 .18em;text-align:center;font-size:clamp(40px,8vw,72px);line-height:1.25;font-weight:700;color:var(--coral);border:3px dashed var(--coral);border-radius:18px;align-self:flex-start;margin-top:.2em}
+.suffix-blank.ok{border:0;background:linear-gradient(155deg,var(--ok-a),var(--ok-b));color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:0 6px 0 rgba(31,106,94,.25),inset 0 -4px 0 rgba(0,0,0,.13)}
+.suffix-blank.bad{border:0;background:linear-gradient(155deg,var(--bad-a),var(--bad-b));color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:0 6px 0 rgba(145,57,50,.25),inset 0 -4px 0 rgba(0,0,0,.13)}
+.answer-btn.suffix-opt{font-size:clamp(24px,4vw,38px)!important}
+.ordinal-pick{cursor:pointer;border-radius:22px;padding:.3rem;transition:transform .15s,box-shadow .15s,background .15s;-webkit-tap-highlight-color:transparent;outline:none}
+.ordinal-pick:hover,.ordinal-pick:focus-visible{transform:translateY(-4px);background:rgba(255,216,137,.35)}
+.ordinal-pick:active{transform:scale(.96)}
+.ordinal-pick.correct{background:rgba(46,204,113,.28);box-shadow:0 0 0 3px #2ecc71}
+.ordinal-pick.incorrect{background:rgba(231,76,60,.25);box-shadow:0 0 0 3px #e74c3c}
 html[data-theme="dark"] .ordinal-lineup{background:linear-gradient(180deg,#1e2536,#1a2133);border-color:#33415d}
 html[data-theme="dark"] .ordinal-item img{background:#eef1f8}
 html[data-theme="dark"] .ordinal-question-focus{background:linear-gradient(120deg,#6b4f1c,#9b6e25);color:#fff7dc}
@@ -3258,204 +3269,6 @@ html:root .splash-btn:hover,html:root .splash-btn:active{background:#e2624b;tran
 html:root .splash-btn:focus-visible{outline:3px solid rgba(239,118,95,.5);outline-offset:3px}
 html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font-size:1.1rem;filter:none}
 </style>
-<style id="new-btn-in-status">
-/* "New" button sits in the exact centre of the practice-status pill (same spot as the timer bar in Timed mode) */
-html:root .practice-status{position:relative;min-height:48px}
-html:root .practice-status .new-question-btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:.3rem 1rem;border-radius:12px;font-size:.92rem;line-height:1.2;box-shadow:0 4px 0 rgba(24,36,59,.22)}
-html:root .practice-status .new-question-btn:hover,html:root .practice-status .new-question-btn:active{transform:translate(-50%,-52%);background:#30394f;box-shadow:0 5px 0 rgba(24,36,59,.22)}
-html:root .repeat-sound-btn,html:root .repeat-sound-btn:hover,html:root .repeat-sound-btn:active{transform:translateX(-50%)}
-@media (max-width:560px){
-  html:root .practice-status .new-question-btn,html:root .practice-status .new-question-btn:hover,html:root .practice-status .new-question-btn:active{position:static;transform:none;order:3;flex:0 0 auto;margin:0 auto}
-}
-</style>
-<style id="fullscreen-btn">
-.fullscreen-btn{position:fixed;top:var(--container-padding);right:calc(var(--container-padding) + 54px);width:44px;height:44px;border-radius:14px;border:1px solid rgba(226,217,204,.9);background:rgba(255,255,255,.8);color:#18243b;box-shadow:0 5px 14px rgba(38,48,70,.08);cursor:pointer;z-index:1000;justify-content:center;align-items:center;touch-action:manipulation;transition:transform .16s,box-shadow .16s}
-.fullscreen-btn:hover,.fullscreen-btn:active{transform:translateY(-3px) scale(1.06);box-shadow:0 8px 20px rgba(38,48,70,.16)}
-.fullscreen-btn:focus-visible{outline:3px solid rgba(239,118,95,.5);outline-offset:3px}
-.fullscreen-btn .icon{display:inline-flex;align-items:center}
-.fullscreen-btn .fs-compress{display:none}
-.fullscreen-btn.is-full .fs-expand{display:none}
-.fullscreen-btn.is-full .fs-compress{display:block}
-</style>
-
-<style id="units-menu">
-.card.coming-soon{cursor:not-allowed;filter:grayscale(.75) saturate(.6);position:relative}
-.card.coming-soon .s2-ico{opacity:.55}
-.card.coming-soon h2{opacity:.65}
-html:root .card.coming-soon:hover{transform:none;box-shadow:0 10px 25px rgba(35,45,65,.07)}
-html:root .card.coming-soon:active{transform:none}
-.card.coming-soon:hover .s2-ico{transform:none !important}
-.soon-badge{position:absolute;top:.6rem;right:.6rem;z-index:2;padding:.2rem .55rem;border-radius:999px;background:#18243b;color:#fff;font-size:.68rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase;line-height:1.2}
-html[data-theme="dark"] .soon-badge{background:#e2e8f0;color:#0f172a}
-</style>
-
-<style id="one-more-less-skin">
-/* 1 More and 1 Less: number line of boxes + on-screen keypad */
-.oml-board{width:min(760px,100%);margin:0 auto;padding:.25rem 0 1rem;display:flex;flex-direction:column;align-items:center}
-.oml-prompt{margin:.35rem auto .4rem;color:var(--ink,#18243b);font-family:'Baloo 2',Georgia,serif;font-size:clamp(1.35rem,4.6vw,2.1rem);font-weight:800;text-align:center}
-.oml-helper{margin:0 0 1rem;color:var(--text-muted);font-weight:800;text-align:center}
-.oml-row{display:flex;align-items:flex-start;justify-content:center;gap:clamp(.6rem,3vw,1.4rem);width:100%;margin-bottom:1.1rem}
-.oml-cell{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex:1;min-width:0;max-width:150px}
-.oml-box{width:100%;aspect-ratio:1/1;max-height:140px;display:grid;place-items:center;border-radius:22px;border:3px dashed #b9c4d8;background:#fff;color:var(--ink,#18243b);font-family:'Baloo 2',Georgia,serif;font-size:clamp(1.6rem,6.5vw,2.8rem);font-weight:800;cursor:pointer;touch-action:manipulation;transition:transform .15s,box-shadow .15s,border-color .15s,background .15s;box-shadow:0 6px 0 rgba(51,82,134,.1)}
-.oml-box:hover{transform:translateY(-3px)}
-.oml-box.filled{border-style:solid;border-color:#6a95d6}
-.oml-box.active{border-style:solid;border-color:#ef765f;background:#fff0e9;box-shadow:0 0 0 5px rgba(239,118,95,.22),0 6px 0 rgba(51,82,134,.1)}
-.oml-box.active:empty::after,.oml-box.active.empty-cursor::after{content:'';display:block;width:3px;height:1.1em;background:#ef765f;animation:omlBlink 1s steps(1) infinite}
-@keyframes omlBlink{50%{opacity:0}}
-.oml-box.center{cursor:default;border-style:solid;border-color:transparent;background:linear-gradient(155deg,#efb84f,#d9961f);color:#fff;box-shadow:0 8px 0 rgba(159,104,18,.28),inset 0 -5px 0 rgba(0,0,0,.12)}
-.oml-box.center:hover{transform:none}
-.oml-box.correct{border-style:solid;border-color:#3fa896;background:#e8f6f2;color:#1f7a69}
-.oml-box.incorrect{border-style:solid;border-color:#ef4444;background:#ffe9e9;color:#b42323}
-.oml-box:disabled{cursor:default}
-.oml-tag{font-size:.8rem;font-weight:900;color:var(--text-muted);white-space:nowrap;min-height:1.1em}
-.oml-fix{font-size:.85rem;font-weight:900;color:#1f7a69;min-height:1.1em}
-html[data-theme="dark"] .oml-box{background:#232b3f;color:#eef1f8;border-color:#44516e}
-html[data-theme="dark"] .oml-box.filled{border-color:#60a5fa}
-html[data-theme="dark"] .oml-box.active{background:#3a2a2f;border-color:#fb7185}
-html[data-theme="dark"] .oml-box.center{background:linear-gradient(155deg,#efb84f,#d9961f);color:#fff}
-html[data-theme="dark"] .oml-box.correct{background:#173a33;color:#8ee6d1;border-color:#34d399}
-html[data-theme="dark"] .oml-box.incorrect{background:#4a2027;color:#ffb4bd;border-color:#fb7185}
-html[data-theme="dark"] .oml-fix{color:#8ee6d1}
-@media (max-width:480px){.oml-box{border-radius:16px}.oml-key{min-height:54px}}
-</style>
-
-<style id="tens-ones-skin">
-/* Tens and Ones: number-bond tree (number on top, tens + ones branches, one missing) */
-.tao-board{width:min(760px,100%);margin:0 auto;padding:.25rem 0 1rem;display:flex;flex-direction:column;align-items:center}
-.tao-tree{position:relative;width:min(440px,100%);aspect-ratio:440/400;margin:.6rem auto 1.4rem}
-.tao-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.tao-lines line{stroke:#b9c4d8;stroke-width:6;stroke-linecap:round}
-.tao-node-wrap{position:absolute;width:22.7%;transform:translate(-50%,-50%)}
-.tao-node{width:100%;aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;border:0;padding:0;font-family:'Baloo 2',Georgia,serif;font-weight:800;font-size:clamp(1.5rem,7.2vw,2.8rem);line-height:1;color:#fff;box-shadow:0 7px 0 rgba(35,45,65,.16),inset 0 -5px 0 rgba(0,0,0,.12)}
-.tao-node.top{background:linear-gradient(155deg,#efb84f,#d9961f)}
-.tao-node.tens{background:linear-gradient(155deg,#6a95d6,#4670ac)}
-.tao-node.ones{background:linear-gradient(155deg,#ef8a72,#d9553f)}
-.tao-node.blank{background:#fff;color:var(--ink,#18243b);border:3px dashed #b9c4d8;box-shadow:0 6px 0 rgba(51,82,134,.1);cursor:pointer;touch-action:manipulation;transition:transform .15s}
-.tao-node.blank:hover{transform:translateY(-3px)}
-.tao-node.blank.active{border:3px solid #ef765f;background:#fff0e9;box-shadow:0 0 0 5px rgba(239,118,95,.22),0 6px 0 rgba(51,82,134,.1)}
-.tao-node.blank.active:empty::after{content:'';display:block;width:3px;height:1em;background:#ef765f;animation:omlBlink 1s steps(1) infinite}
-.tao-node.blank.filled{border-style:solid;border-color:#6a95d6}
-.tao-node.blank.correct{border:3px solid #3fa896;background:#e8f6f2;color:#1f7a69}
-.tao-node.blank.incorrect{border:3px solid #ef4444;background:#ffe9e9;color:#b42323}
-.tao-under{position:absolute;top:100%;left:50%;transform:translateX(-50%);width:max-content;max-width:190px;display:flex;flex-direction:column;align-items:center;gap:.25rem;margin-top:.45rem}
-.tao-label{font-size:.9rem;font-weight:900;color:var(--text-muted)}
-.tao-fix{font-size:.9rem;font-weight:900;color:#1f7a69;min-height:1.1em}
-.tao-blocks{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:3px;max-width:150px;min-height:14px}
-.tao-rod{width:11px;height:48px;border-radius:3px;background:repeating-linear-gradient(180deg,#6a95d6 0 4px,#3f6aa8 4px 5px);box-shadow:0 2px 0 rgba(51,82,134,.3)}
-.tao-cube{width:14px;height:14px;border-radius:3px;background:#ef765f;box-shadow:0 2px 0 rgba(159,60,40,.3)}
-html[data-theme="dark"] .tao-node.blank{background:#232b3f;color:#eef1f8;border-color:#44516e}
-html[data-theme="dark"] .tao-node.blank.active{background:#3a2a2f;border-color:#fb7185}
-html[data-theme="dark"] .tao-node.blank.correct{background:#173a33;color:#8ee6d1}
-html[data-theme="dark"] .tao-node.blank.incorrect{background:#4a2027;color:#ffb4bd}
-html[data-theme="dark"] .tao-lines line{stroke:#44516e}
-html[data-theme="dark"] .tao-fix{color:#8ee6d1}
-</style>
-
-<style id="number-pairs-skin">
-/* Number Pairs: reuses the tens-and-ones tree; two matching branch colours + counters */
-.tao-node.partA{background:linear-gradient(155deg,#4fb8a6,#2f8f7e)}
-.tao-node.partB{background:linear-gradient(155deg,#a58be0,#7458c4)}
-.npr-dot{width:15px;height:15px;border-radius:50%;box-shadow:0 2px 0 rgba(35,45,65,.25)}
-.npr-dot.a{background:#3fa896}
-.npr-dot.b{background:#8571c4}
-</style>
-
-<style id="tens-ones-towers-skin">
-/* Tens and Ones: towers of ten cubes + loose cubes, write the number */
-.tt-scene{--c:clamp(11px,2.6vw,18px);display:flex;justify-content:center;align-items:flex-end;gap:clamp(1.2rem,5vw,3rem);width:min(560px,100%);margin:.6rem auto 1.2rem;padding:1.1rem .8rem .8rem;border-radius:24px;background:linear-gradient(180deg,#f4f7fc,#e9eef8);border:1px solid #dbe3f1;box-shadow:0 8px 20px rgba(35,45,65,.06)}
-.tt-group{display:flex;flex-direction:column;align-items:center;gap:.55rem;min-width:0}
-.tt-towers{display:flex;align-items:flex-end;justify-content:center;gap:clamp(5px,1.2vw,10px)}
-.tt-tower{display:flex;flex-direction:column;gap:2px}
-.tt-cube{width:var(--c);height:var(--c);border-radius:3px;background:linear-gradient(155deg,#6a95d6,#4670ac);box-shadow:0 2px 0 rgba(51,82,134,.3)}
-.tt-ones{display:grid;grid-template-columns:repeat(3,var(--c));gap:calc(var(--c) * .5);align-content:end;min-height:var(--c)}
-.tt-ones .tt-cube{background:linear-gradient(155deg,#ef8a72,#d9553f);box-shadow:0 2px 0 rgba(159,60,40,.3)}
-.tt-cap{font-size:.85rem;font-weight:900;color:var(--text-muted)}
-.tt-answer-row{display:flex;flex-direction:column;align-items:center;gap:.3rem;margin-bottom:.3rem}
-.tt-answer{min-width:clamp(120px,30vw,170px);height:clamp(70px,14vw,96px);padding:0 1rem;border-radius:22px;border:3px dashed #b9c4d8;background:#fff;color:var(--ink,#18243b);font-family:'Baloo 2',Georgia,serif;font-size:clamp(2rem,8vw,3.2rem);font-weight:800;display:grid;place-items:center;cursor:pointer;touch-action:manipulation;box-shadow:0 6px 0 rgba(51,82,134,.1)}
-.tt-answer.active{border-style:solid;border-color:#ef765f;background:#fff0e9;box-shadow:0 0 0 5px rgba(239,118,95,.22),0 6px 0 rgba(51,82,134,.1)}
-.tt-answer.active:empty::after{content:'';display:block;width:3px;height:1em;background:#ef765f;animation:omlBlink 1s steps(1) infinite}
-.tt-answer.filled{border-style:solid;border-color:#6a95d6}
-.tt-answer.correct{border-style:solid;border-color:#3fa896;background:#e8f6f2;color:#1f7a69}
-.tt-answer.incorrect{border-style:solid;border-color:#ef4444;background:#ffe9e9;color:#b42323}
-.tt-fix{font-size:.95rem;font-weight:900;color:#1f7a69;min-height:1.2em}
-html[data-theme="dark"] .tt-scene{background:linear-gradient(180deg,#1e2536,#1a2133);border-color:#33415d}
-html[data-theme="dark"] .tt-answer{background:#232b3f;color:#eef1f8;border-color:#44516e}
-html[data-theme="dark"] .tt-answer.active{background:#3a2a2f;border-color:#fb7185}
-html[data-theme="dark"] .tt-answer.correct{background:#173a33;color:#8ee6d1}
-html[data-theme="dark"] .tt-answer.incorrect{background:#4a2027;color:#ffb4bd}
-html[data-theme="dark"] .tt-fix{color:#8ee6d1}
-</style>
-
-<style id="symmetry-skin">
-/* Symmetry: "Is this symmetrical?" with a shape or picture, Yes / No */
-.symmetry-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:.7rem;margin:.2rem 0 .4rem}
-.symmetry-art{position:relative;width:min(260px,72vw);aspect-ratio:1/1;padding:12px;background:#fff;border:1px solid #dbe3f1;border-radius:26px;box-shadow:0 10px 24px rgba(35,45,65,.1)}
-.symmetry-svg,.symmetry-lines{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
-.symmetry-img{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px);object-fit:contain;border-radius:12px}
-.symmetry-lines{pointer-events:none}
-.sym-line{stroke:#ef765f;stroke-width:4;stroke-dasharray:10 8;stroke-linecap:round;opacity:0;transition:opacity .45s}
-.sym-line.show{opacity:1}
-.symmetry-caption{min-height:1.4em;font-weight:900;color:var(--text-muted);text-align:center}
-</style>
-
-<style id="time-skin">
-/* Time (o'clock): clock picture + "What time is it?" */
-.time-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:.7rem;margin:.2rem 0 .4rem}
-.time-clock{position:relative;width:min(270px,74vw);aspect-ratio:1/1;padding:12px;background:#fff;border:1px solid #dbe3f1;border-radius:26px;box-shadow:0 10px 24px rgba(35,45,65,.1)}
-.time-clock > svg,.time-clock > img{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
-.time-clock > img{object-fit:contain;border-radius:50%}
-.time-caption{min-height:1.4em;max-width:30rem;font-weight:900;color:var(--text-muted);text-align:center}
-</style>
-
-<style id="days-months-skin">
-/* Days of the week + Months of the year */
-.dm-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:.9rem;margin:.2rem 0 .4rem}
-.dm-card{width:min(640px,100%);padding:1.1rem 1.2rem;background:#fff;border:1px solid #dbe3f1;border-radius:24px;box-shadow:0 10px 24px rgba(35,45,65,.08);color:var(--ink,#18243b);font-family:'Baloo 2',Georgia,serif;font-size:clamp(1.4rem,5vw,2.2rem);font-weight:800;line-height:1.35;text-align:center}
-.dm-blank{display:inline-block;min-width:7ch;padding:0 .3rem;border-bottom:4px dashed #b9c4d8;color:transparent}
-.dm-blank.filled{border-bottom-style:solid;border-bottom-color:#3fa896;color:#1f7a69}
-.dm-caption{min-height:1.4em;max-width:32rem;font-weight:900;color:var(--text-muted);text-align:center}
-.dm-cal{border-collapse:separate;border-spacing:4px;margin:0 auto;background:#fff;padding:.7rem .8rem .8rem;border-radius:22px;border:1px solid #dbe3f1;box-shadow:0 10px 24px rgba(35,45,65,.08)}
-.dm-cal caption{caption-side:top;padding:.2rem 0 .5rem;font-family:'Baloo 2',Georgia,serif;font-weight:800;font-size:1.35rem;color:var(--ink,#18243b)}
-.dm-cal th{padding:.3rem .1rem;font-size:.78rem;font-weight:900;color:var(--text-muted);border-radius:8px}
-.dm-cal th.ask{background:#fff0e9;color:#c2472f}
-.dm-cal td{width:clamp(34px,9vw,50px);height:clamp(34px,9vw,50px);text-align:center;border-radius:10px;background:#f4f7fc;border:1px solid #dbe3f1;color:var(--ink,#18243b);font-family:'Baloo 2',Georgia,serif;font-weight:800;font-size:1.05rem}
-.dm-cal td.empty{background:transparent;border:0}
-.dm-cal td.hl{background:#efb84f;border-color:#d9961f;color:#fff}
-html[data-theme="dark"] .dm-card,html[data-theme="dark"] .dm-cal{background:#232b3f;border-color:#44516e;color:#eef1f8}
-html[data-theme="dark"] .dm-cal caption,html[data-theme="dark"] .dm-cal td{color:#eef1f8}
-html[data-theme="dark"] .dm-cal td{background:#2b344b;border-color:#44516e}
-html[data-theme="dark"] .dm-cal td.empty{background:transparent}
-html[data-theme="dark"] .dm-cal td.hl{background:#d9961f;color:#fff}
-html[data-theme="dark"] .dm-cal th.ask{background:#3a2a2f;color:#ffb4a5}
-html[data-theme="dark"] .dm-blank.filled{color:#8ee6d1}
-</style>
-
-<style id="measure-skin">
-/* Measurement games: Length, Weight, Capacity (tap the object) */
-.ms-board{width:min(720px,100%);margin:0 auto;padding:.25rem 0 1rem;display:flex;flex-direction:column;align-items:center}
-.ms-stage{width:100%;margin:.4rem 0 .6rem;padding:1rem .8rem .6rem;border-radius:24px;background:linear-gradient(180deg,#f4f7fc,#e9eef8);border:1px solid #dbe3f1}
-.ms-stage.vert{display:flex;align-items:flex-end;justify-content:center;gap:clamp(.8rem,4vw,2rem);border-bottom:6px solid #9bb0d0}
-.ms-stage.horiz{display:flex;flex-direction:column;align-items:stretch;gap:.7rem}
-.ms-stage.cards{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(.8rem,4vw,1.6rem)}
-.ms-choice{background:transparent;border:3px solid transparent;border-radius:18px;padding:.35rem .5rem;cursor:pointer;touch-action:manipulation;transition:transform .15s,border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.3rem;color:var(--ink,#18243b);font:inherit}
-.ms-choice:hover{transform:translateY(-3px)}
-.ms-choice:disabled{cursor:default}
-.ms-choice:disabled:hover{transform:none}
-.ms-choice svg{display:block;max-width:100%;overflow:visible}
-.ms-stage.vert{padding-bottom:0}
-.ms-stage.vert .ms-choice{padding-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
-.ms-stage.horiz .ms-choice{align-items:flex-start;justify-content:center;width:100%}
-.ms-stage.cards .ms-choice{min-width:clamp(120px,30vw,170px);background:#fff;border-color:#dbe3f1;box-shadow:0 6px 0 rgba(51,82,134,.1);padding:.8rem 1rem;justify-content:center}
-.ms-emoji{font-size:clamp(3.4rem,13vw,5.4rem);line-height:1}
-.ms-name{font-weight:900;color:var(--text-muted)}
-.ms-choice.correct{border-color:#3fa896;background:rgba(63,168,150,.14)}
-.ms-choice.incorrect{border-color:#ef4444;background:rgba(239,68,68,.12)}
-.ms-caption{width:100%;min-height:1.4em;max-width:32rem;margin:0 auto;font-weight:900;color:var(--text-muted);text-align:center}
-html[data-theme="dark"] .ms-stage{background:linear-gradient(180deg,#1e2536,#1a2133);border-color:#33415d}
-html[data-theme="dark"] .ms-stage.cards .ms-choice{background:#232b3f;border-color:#44516e}
-html[data-theme="dark"] .ms-choice.correct{background:rgba(52,211,153,.16)}
-html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
-</style>
 </head>
 <body>
     <!-- Floating background (only shown on splash + main menu) -->
@@ -3467,11 +3280,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
     <!-- Settings button -->
     <button class="settings-btn" id="settingsBtn" aria-label="Open settings" title="Settings">
         <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/></svg></span>
-    </button>
-
-    <!-- Full screen button -->
-    <button class="fullscreen-btn" id="fullscreenBtn" type="button" aria-label="Enter full screen" title="Full screen" style="display:none">
-        <span class="icon" aria-hidden="true"><svg class="fs-expand" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="fs-compress" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></span>
     </button>
 
     <!-- Settings overlay/panel -->
@@ -3551,116 +3359,63 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
         <div class="container" id="mainContainer">
         <h1>Math Skills Practice</h1>
         <div class="menu-intro">
-            <p>Choose a unit, tap a skill, and explain your thinking together.</p>
+            <p>Choose a strand, tap a skill, and explain your thinking together.</p>
             <div class="menu-actions">
                 <button class="continue-card" id="continueLastBtn" type="button" disabled>Continue last skill</button>
             </div>
             <div class="asset-status" id="assetStatus" role="status" aria-live="polite"></div>
         </div>
 
-                <section class="skill-section" aria-labelledby="unit-1-title">
-            <h2 class="skill-section-title" id="unit-1-title">Unit 1</h2>
+        <section class="skill-section" aria-labelledby="number-title">
+            <h2 class="skill-section-title" id="number-title">Number</h2>
             <div class="grid skill-grid">
-                <button class="card" data-section="counting" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15" cy="32" r="9.5" fill="#ef765f"/><text x="15" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">1</text><circle cx="32" cy="32" r="9.5" fill="#efb84f"/><text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">2</text><circle cx="49" cy="32" r="9.5" fill="#3fa896"/><text x="49" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">3</text></svg></span><h2>Counting Objects</h2></button>
-                <button class="card" data-section="number-name" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="12" width="46" height="40" rx="10" fill="#e8f6f2"/><path d="M18 25h28M18 34h20M18 43h12" stroke="#3fa896" stroke-width="5"/><circle cx="47" cy="43" r="5" fill="#ef765f" stroke="none"/></svg></span><h2>Number Names</h2></button>
-                <button class="card" data-section="compare" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14l26 18-26 18" stroke="#18243b" stroke-width="13"/><path d="M20 14l26 18-26 18" stroke="#ef765f" stroke-width="7"/></svg></span><h2>Smaller or Larger</h2></button>
-                <button class="card" data-section="make-number" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="20" height="20" rx="6" fill="#ef765f"/><rect x="35" y="9" width="20" height="20" rx="6" fill="#efb84f"/><rect x="9" y="35" width="20" height="20" rx="6" fill="#6a95d6"/><path d="M39 45h12M45 39v12" stroke="#3fa896" stroke-width="6"/></svg></span><h2>Make Numbers</h2></button>
-                <button class="card" data-section="pattern-missing" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="22" r="7" fill="#4f8be0"/><rect x="24" y="15" width="14" height="14" rx="3.5" fill="#f08a2c"/><circle cx="52" cy="22" r="7" fill="#4f8be0"/><rect x="8" y="40" width="48" height="16" rx="8" fill="#fff"/><text x="32" y="53" text-anchor="middle" font-size="16" font-weight="800" fill="#18243b" stroke="none" font-family="Baloo 2,Nunito,sans-serif">?</text><circle cx="45" cy="45" r="0" /></svg></span><h2>Find the Missing Item</h2></button>
-                <button class="card" data-section="pattern-build" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14" cy="20" r="7.5" fill="#4f8be0"/><rect x="26" y="12.5" width="15" height="15" rx="3.5" fill="#f08a2c"/><circle cx="52" cy="20" r="7.5" fill="#4f8be0" stroke-dasharray="3 4"/><rect x="7" y="38" width="16" height="16" rx="4" fill="#efc531"/><rect x="24" y="38" width="16" height="16" rx="4" fill="#8571c4"/><rect x="41" y="38" width="16" height="16" rx="4" fill="#fff" stroke-dasharray="3 4"/></svg></span><h2>Build the Pattern</h2></button>
+                <button class="card" data-section="counting" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15" cy="32" r="9.5" fill="#ef765f"/><text x="15" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">1</text><circle cx="32" cy="32" r="9.5" fill="#efb84f"/><text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">2</text><circle cx="49" cy="32" r="9.5" fill="#3fa896"/><text x="49" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">3</text></svg></span><h2>Counting</h2></button>
                 <button class="card" data-section="counting-2s" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 28Q23.0 8 32 28" stroke-width="2.8"/><path d="M27.5 22.5l4.5 5.5 .8-7" stroke-width="2.8"/><path d="M32 28Q41.0 8 50 28" stroke-width="2.8"/><path d="M45.5 22.5l4.5 5.5 .8-7" stroke-width="2.8"/><circle cx="14" cy="44" r="10" fill="#4f8be0"/><text x="14" y="48.7" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">2</text><circle cx="32" cy="44" r="10" fill="#f08a2c"/><text x="32" y="48.7" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">4</text><circle cx="50" cy="44" r="10" fill="#8571c4"/><text x="50" y="48.7" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">6</text></svg></span><h2>Counting in 2s</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-2-title">
-            <h2 class="skill-section-title" id="unit-2-title">Unit 2</h2>
-            <div class="grid skill-grid">
-                <button class="card" data-section="number-explorer" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M40 40l14 14" stroke="#18243b" stroke-width="10"/><path d="M40 40l14 14" stroke="#ef765f" stroke-width="4"/><circle cx="27" cy="27" r="16" fill="#fff"/><circle cx="27" cy="27" r="16" fill="#6a95d6" fill-opacity=".28"/><text x="27" y="33" text-anchor="middle" font-size="17" font-weight="800" fill="#18243b" stroke="none" font-family="Baloo 2,Nunito,sans-serif">#</text></svg></span><h2>Number Explorer</h2></button>
-                <button class="card" data-section="ordinal-numbers" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="28" r="8" fill="#ef765f"/><circle cx="32" cy="23" r="8" fill="#efb84f"/><circle cx="48" cy="28" r="8" fill="#6a95d6"/><path d="M8 49h48" stroke="#3fa896" stroke-width="5"/><path d="M12 49v-7M28 49v-12M44 49v-7" stroke="#3fa896" stroke-width="3"/></svg></span><h2>Ordinal Numbers</h2></button>
                 <button class="card" data-section="counting-5s" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 28Q23.0 8 32 28" stroke-width="2.8"/><path d="M27.5 22.5l4.5 5.5 .8-7" stroke-width="2.8"/><path d="M32 28Q41.0 8 50 28" stroke-width="2.8"/><path d="M45.5 22.5l4.5 5.5 .8-7" stroke-width="2.8"/><circle cx="14" cy="44" r="10" fill="#f08a2c"/><text x="14" y="48.7" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">5</text><circle cx="32" cy="44" r="10" fill="#efc531"/><text x="32" y="47.8" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">10</text><circle cx="50" cy="44" r="10" fill="#4f8be0"/><text x="50" y="47.8" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">15</text></svg></span><h2>Counting in 5s</h2></button>
                 <button class="card" data-section="counting-10s" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 28Q23.0 8 32 28" stroke-width="2.8"/><path d="M27.5 22.5l4.5 5.5 .8-7" stroke-width="2.8"/><path d="M32 28Q41.0 8 50 28" stroke-width="2.8"/><path d="M45.5 22.5l4.5 5.5 .8-7" stroke-width="2.8"/><circle cx="14" cy="44" r="10" fill="#8571c4"/><text x="14" y="47.8" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">10</text><circle cx="32" cy="44" r="10" fill="#e58ab5"/><text x="32" y="47.8" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">20</text><circle cx="50" cy="44" r="10" fill="#f08a2c"/><text x="50" y="47.8" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff" stroke="none" font-family="Baloo 2,Nunito,sans-serif">30</text></svg></span><h2>Counting in 10s</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-3-title">
-            <h2 class="skill-section-title" id="unit-3-title">Unit 3</h2>
-            <div class="grid skill-grid">
-                <button class="card" data-section="one-more-less" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14" cy="32" r="8" fill="#ef765f"/><circle cx="32" cy="32" r="8" fill="#efb84f"/><circle cx="50" cy="32" r="8" fill="#3fa896"/><path d="M46 14h8M50 10v8" stroke="#3fa896" stroke-width="3"/><path d="M10 14h8" stroke="#ef765f" stroke-width="3"/></svg></span><h2>1 More and 1 Less</h2></button>
-                <button class="card" data-section="tens-ones" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="10" width="14" height="44" rx="4" fill="#6a95d6"/><path d="M10 21h14M10 32h14M10 43h14" stroke-width="2"/><rect x="36" y="38" width="14" height="14" rx="3" fill="#efb84f"/><rect x="36" y="20" width="14" height="14" rx="3" fill="#efb84f"/></svg></span><h2>Tens and Ones</h2></button>
-                <button class="card" data-section="number-pairs" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="14" r="8" fill="#efb84f"/><circle cx="16" cy="46" r="8" fill="#ef765f"/><circle cx="48" cy="46" r="8" fill="#3fa896"/><path d="M27 21l-8 17M37 21l8 17"/></svg></span><h2>Number Pairs</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-4-title">
-            <h2 class="skill-section-title" id="unit-4-title">Unit 4</h2>
-            <div class="grid skill-grid">
-                <button class="card" data-section="addition" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="25" y="10" width="14" height="44" rx="6" fill="#3fa896"/><rect x="10" y="25" width="44" height="14" rx="6" fill="#3fa896"/></svg></span><h2>Addition</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-5-title">
-            <h2 class="skill-section-title" id="unit-5-title">Unit 5</h2>
-            <div class="grid skill-grid">
-                <button class="card" data-section="subtraction" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="24" width="46" height="16" rx="8" fill="#ef765f"/></svg></span><h2>Subtraction</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-6-title">
-            <h2 class="skill-section-title" id="unit-6-title">Unit 6</h2>
-            <div class="grid skill-grid">
                 <button class="card" data-section="doubles" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="21" cy="32" r="12" fill="#ef765f"/><circle cx="43" cy="32" r="12" fill="#efb84f"/><path d="M32 22.5a12 12 0 0 1 0 19" stroke="none"/></svg></span><h2>Doubles</h2></button>
                 <button class="card" data-section="halves" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="21" fill="#fff"/><path d="M32 11a21 21 0 0 0 0 42z" fill="#3fa896"/><path d="M32 11v42"/></svg></span><h2>Halves</h2></button>
                 <button class="card" data-section="even-odd" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="19" cy="20" r="5.5" fill="#6a95d6"/><circle cx="35" cy="20" r="5.5" fill="#6a95d6"/><circle cx="14" cy="44" r="5.5" fill="#ef765f"/><circle cx="29" cy="44" r="5.5" fill="#ef765f"/><circle cx="44" cy="44" r="5.5" fill="#ef765f"/></svg></span><h2>Even &amp; Odd</h2></button>
+                <button class="card" data-section="compare" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14l26 18-26 18" stroke="#18243b" stroke-width="13"/><path d="M20 14l26 18-26 18" stroke="#ef765f" stroke-width="7"/></svg></span><h2>Larger or Smaller</h2></button>
+                <button class="card" data-section="number-explorer" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M40 40l14 14" stroke="#18243b" stroke-width="10"/><path d="M40 40l14 14" stroke="#ef765f" stroke-width="4"/><circle cx="27" cy="27" r="16" fill="#fff"/><circle cx="27" cy="27" r="16" fill="#6a95d6" fill-opacity=".28"/><text x="27" y="33" text-anchor="middle" font-size="17" font-weight="800" fill="#18243b" stroke="none" font-family="Baloo 2,Nunito,sans-serif">#</text></svg></span><h2>Number Explorer</h2></button>
+                <button class="card" data-section="make-number" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="20" height="20" rx="6" fill="#ef765f"/><rect x="35" y="9" width="20" height="20" rx="6" fill="#efb84f"/><rect x="9" y="35" width="20" height="20" rx="6" fill="#6a95d6"/><path d="M39 45h12M45 39v12" stroke="#3fa896" stroke-width="6"/></svg></span><h2>Make a Number</h2></button>
+                <button class="card" data-section="number-name" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="12" width="46" height="40" rx="10" fill="#e8f6f2"/><path d="M18 25h28M18 34h20M18 43h12" stroke="#3fa896" stroke-width="5"/><circle cx="47" cy="43" r="5" fill="#ef765f" stroke="none"/></svg></span><h2>Number Name</h2></button>
+                <button class="card" data-section="ordinal-numbers" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="28" r="8" fill="#ef765f"/><circle cx="32" cy="23" r="8" fill="#efb84f"/><circle cx="48" cy="28" r="8" fill="#6a95d6"/><path d="M8 49h48" stroke="#3fa896" stroke-width="5"/><path d="M12 49v-7M28 49v-12M44 49v-7" stroke="#3fa896" stroke-width="3"/></svg></span><h2>Ordinal Numbers</h2></button>
+                <button class="card" data-section="pattern-missing" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="22" r="7" fill="#4f8be0"/><rect x="24" y="15" width="14" height="14" rx="3.5" fill="#f08a2c"/><circle cx="52" cy="22" r="7" fill="#4f8be0"/><rect x="8" y="40" width="48" height="16" rx="8" fill="#fff"/><text x="32" y="53" text-anchor="middle" font-size="16" font-weight="800" fill="#18243b" stroke="none" font-family="Baloo 2,Nunito,sans-serif">?</text><circle cx="45" cy="45" r="0" /></svg></span><h2>Find the Missing Item</h2></button>
+                <button class="card" data-section="pattern-build" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14" cy="20" r="7.5" fill="#4f8be0"/><rect x="26" y="12.5" width="15" height="15" rx="3.5" fill="#f08a2c"/><circle cx="52" cy="20" r="7.5" fill="#4f8be0" stroke-dasharray="3 4"/><rect x="7" y="38" width="16" height="16" rx="4" fill="#efc531"/><rect x="24" y="38" width="16" height="16" rx="4" fill="#8571c4"/><rect x="41" y="38" width="16" height="16" rx="4" fill="#fff" stroke-dasharray="3 4"/></svg></span><h2>Build the Pattern</h2></button>
             </div>
         </section>
 
-        <section class="skill-section" aria-labelledby="unit-7-title">
-            <h2 class="skill-section-title" id="unit-7-title">Unit 7</h2>
+        <section class="skill-section" aria-labelledby="operations-title">
+            <h2 class="skill-section-title" id="operations-title">Operations</h2>
             <div class="grid skill-grid">
-                <button class="card" data-section="ten-more-less" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="21" fill="#f0ecfa"/><text x="32" y="39" text-anchor="middle" font-size="19" font-weight="800" fill="#18243b" stroke="none" font-family="Baloo 2,Nunito,sans-serif">±10</text></svg></span><h2>10 More and 10 Less</h2></button>
+                <button class="card" data-section="addition" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="25" y="10" width="14" height="44" rx="6" fill="#3fa896"/><rect x="10" y="25" width="44" height="14" rx="6" fill="#3fa896"/></svg></span><h2>Addition</h2></button>
+                <button class="card" data-section="subtraction" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="24" width="46" height="16" rx="8" fill="#ef765f"/></svg></span><h2>Subtraction</h2></button>
+                <button class="card" data-section="multiplication" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="rotate(45 32 32)"><rect x="25" y="9" width="14" height="46" rx="6" fill="#efb84f"/><rect x="9" y="25" width="46" height="14" rx="6" fill="#efb84f"/></g></svg></span><h2>Multiplication</h2></button>
+            </div>
+        </section>
+
+        <section class="skill-section" aria-labelledby="shape-title">
+            <h2 class="skill-section-title" id="shape-title">Shape, Space &amp; Measure</h2>
+            <div class="grid skill-grid">
+                <button class="card" data-section="shapes-2d" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8l13 22H7z" fill="#ef765f"/><circle cx="45" cy="21" r="11" fill="#efb84f"/><rect x="14" y="36" width="24" height="20" rx="4" fill="#6a95d6"/><path d="M41 38l9 17H32z" fill="#3fa896" opacity="0"/></svg></span><h2>2D Shapes</h2></button>
+                <button class="card" data-section="shapes-3d" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 8l20 11v22L32 52 12 41V19z" fill="#6a95d6"/><path d="M12 19l20 11 20-11M32 30v22" fill="none"/><path d="M32 8l20 11-20 11-20-11z" fill="#efb84f"/></svg></span><h2>3D Shapes</h2></button>
                 <button class="card" data-section="money" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="#efb84f"/><circle cx="32" cy="32" r="14" fill="none"/><path d="M32 24l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z" fill="#fff" stroke-width="2.2"/></svg></span><h2>Money</h2></button>
             </div>
         </section>
 
-        <section class="skill-section" aria-labelledby="unit-8-title">
-            <h2 class="skill-section-title" id="unit-8-title">Unit 8</h2>
+        <section class="skill-section" aria-labelledby="listening-title">
+            <h2 class="skill-section-title" id="listening-title">Listening &amp; Colours</h2>
             <div class="grid skill-grid">
-                <button class="card" data-section="shapes-2d" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8l13 22H7z" fill="#ef765f"/><circle cx="45" cy="21" r="11" fill="#efb84f"/><rect x="14" y="36" width="24" height="20" rx="4" fill="#6a95d6"/><path d="M41 38l9 17H32z" fill="#3fa896" opacity="0"/></svg></span><h2>2D Shapes</h2></button>
-                <button class="card" data-section="shapes-3d" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 8l20 11v22L32 52 12 41V19z" fill="#6a95d6"/><path d="M12 19l20 11 20-11M32 30v22" fill="none"/><path d="M32 8l20 11-20 11-20-11z" fill="#efb84f"/></svg></span><h2>3D Shapes</h2></button>
                 <button class="card" data-section="shapes-sound" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 26h9l11-9v30l-11-9H9z" fill="#efb84f"/><path d="M36 26a9 9 0 0 1 0 12M41 20a17 17 0 0 1 0 24" opacity="0"/><path d="M47 16l10 17H37z" fill="#ef765f"/></svg></span><h2>Match Shapes by Sound</h2></button>
-                <button class="card" data-section="symmetry" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 8v48" stroke-dasharray="4 4"/><path d="M28 18L10 32l18 14z" fill="#ef765f"/><path d="M36 18l18 14-18 14z" fill="#6a95d6"/></svg></span><h2>Symmetry</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-9-title">
-            <h2 class="skill-section-title" id="unit-9-title">Unit 9</h2>
-            <div class="grid skill-grid">
-                <button class="card" data-section="length" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="22" width="52" height="20" rx="4" fill="#efb84f"/><path d="M16 22v8M26 22v12M36 22v8M46 22v12"/></svg></span><h2>Length</h2></button>
-                <button class="card" data-section="weight" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 12v36M16 20h32M22 52h20"/><path d="M16 20l-8 15h16z" fill="#6a95d6"/><path d="M48 20l-8 15h16z" fill="#ef765f"/></svg></span><h2>Weight</h2></button>
-                <button class="card" data-section="capacity" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 10h36l-5 44H19z" fill="#fff"/><path d="M17 30h30l-3 24H20z" fill="#6a95d6"/></svg></span><h2>Capacity</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-10-title">
-            <h2 class="skill-section-title" id="unit-10-title">Unit 10</h2>
-            <div class="grid skill-grid">
-                <button class="card" data-section="time" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="#fff"/><path d="M32 18v14l9 6"/></svg></span><h2>Time</h2></button>
-                <button class="card" data-section="days" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="12" width="46" height="42" rx="8" fill="#e8f6f2"/><path d="M9 26h46M22 8v8M42 8v8"/><circle cx="24" cy="38" r="3" fill="#3fa896" stroke="none"/><circle cx="40" cy="38" r="3" fill="#ef765f" stroke="none"/></svg></span><h2>Days of the Week</h2></button>
-                <button class="card" data-section="months" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="12" width="46" height="42" rx="8" fill="#fff6e0"/><path d="M9 26h46M22 8v8M42 8v8"/><path d="M20 36h8M36 36h8M20 45h8M36 45h8" stroke-width="3"/></svg></span><h2>Months of the Year</h2></button>
-            </div>
-        </section>
-
-        <section class="skill-section" aria-labelledby="unit-11-title">
-            <h2 class="skill-section-title" id="unit-11-title">Unit 11</h2>
-            <div class="grid skill-grid">
-                <button class="card" data-section="multiplication" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="rotate(45 32 32)"><rect x="25" y="9" width="14" height="46" rx="6" fill="#efb84f"/><rect x="9" y="25" width="46" height="14" rx="6" fill="#efb84f"/></g></svg></span><h2>Multiplication</h2></button>
                 <button class="card" data-section="colors-sound" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 26h9l11-9v30l-11-9H9z" fill="#efb84f"/><circle cx="46" cy="32" r="10" fill="#ef765f"/><circle cx="46" cy="32" r="10" fill="#6a95d6" fill-opacity=".0"/></svg></span><h2>Match Colours by Sound</h2></button>
                 <button class="card" data-section="colours" type="button"><span class="s2-ico"><svg viewBox="0 0 64 64" fill="none" stroke="#18243b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 8C17 8 8 19 8 30c0 12 9 22 22 22 5 0 6-4 3-7s-1-8 5-8h7c6 0 11-3 11-9C56 17 46 8 32 8z" fill="#fff"/><circle cx="21" cy="28" r="4.5" fill="#ef765f"/><circle cx="32" cy="19" r="4.5" fill="#efb84f"/><circle cx="44" cy="25" r="4.5" fill="#3fa896"/><circle cx="23" cy="40" r="4.5" fill="#6a95d6"/></svg></span><h2>Name Colours</h2></button>
             </div>
         </section>
-
     </div>
 
     <div class="game-container" id="gameContainer">
+        <button class="new-question-btn" id="newQuestionBtn" type="button" aria-label="New question">↻ New</button>
         <button class="repeat-sound-btn" id="repeatSoundBtn" type="button" aria-label="Repeat sound" title="Repeat sound">🔊</button>
 
         <div class="practice-status" id="practiceStatus" aria-live="polite">
@@ -3672,7 +3427,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                     <div class="label"><span class="seconds" id="hudTime">30</span>s</div>
                 </div>
             </div>
-            <button class="new-question-btn" id="newQuestionBtn" type="button" aria-label="New question">↻ New</button>
             <span id="practiceQuestionLabel">Think carefully</span>
         </div>
         <h2 id="gameTitle">Number Comparison</h2>
@@ -3687,6 +3441,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
 
     <!-- Number Explorer Game Container - Updated to match other games -->
     <div class="number-explorer-container" id="numberExplorerContainer">
+        <button class="new-question-btn" id="numberExplorerNewQuestionBtn" type="button" aria-label="New question">↻ New</button>
         <button class="repeat-sound-btn" id="repeatSoundBtnExplorer" type="button" aria-label="Repeat sound" title="Repeat sound">🔊</button>
 
         <div class="practice-status" id="numberExplorerPracticeStatus" aria-live="polite">
@@ -3698,7 +3453,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                     <div class="label"><span class="seconds" id="hudTimeExplorer">30</span>s</div>
                 </div>
             </div>
-            <button class="new-question-btn" id="numberExplorerNewQuestionBtn" type="button" aria-label="New question">↻ New</button>
             <span id="numberExplorerQuestionLabel">Think carefully</span>
         </div>
         <div class="number-explorer-question" id="numberExplorerQuestionText"></div>
@@ -4118,17 +3872,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             'ordinal-numbers',
             'pattern-missing',
             'pattern-build',
-            'one-more-less',
-            'ten-more-less',
-            'tens-ones',
-            'number-pairs',
-            'symmetry',
-            'time',
-            'days',
-            'months',
-            'length',
-            'weight',
-            'capacity',
             'addition',
             'subtraction',
             'multiplication',
@@ -4435,15 +4178,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
         let makeNumberSelected = new Set();
         let makeNumberSolution = [];
         let makeNumberLocked = false;
-        let omlCenter = 0;
-        let omlValues = {};
-        let omlActive = null;
-        let omlLocked = false;
-        let nprTop = 0, nprA = 0, nprB = 0, nprMissing = 'a', nprEntry = '', nprActive = false, nprLocked = false;
-        let taoTop = 0, taoTens = 0, taoOnes = 0, taoMissing = 'ones', taoEntry = '', taoActive = false, taoLocked = false;
-        const OML_OFFSETS = [-1, 0, 1];
-        let omlStep = 1;
-        function isOmlMode(mode) { return mode === 'one-more-less' || mode === 'ten-more-less'; }
 
         // Sound repeat control (for sound-based games)
         let lastSoundReplay = null; // function
@@ -4682,7 +4416,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             const names = {
                 counting: 'Counting', 'counting-2s': 'Counting in 2s', 'counting-5s': 'Counting in 5s', 'counting-10s': 'Counting in 10s', doubles: 'Doubles', halves: 'Halves', 'even-odd': 'Even & Odd', money: 'Money',
                 'shapes-2d': '2D Shapes', 'shapes-3d': '3D Shapes', 'shapes-sound': 'Shapes by Sound',
-                'colors-sound': 'Colours by Sound', compare: 'Larger or Smaller', 'one-more-less': '1 More and 1 Less', 'ten-more-less': '10 More and 10 Less', 'tens-ones': 'Tens and Ones', 'number-pairs': 'Number Pairs', 'symmetry': 'Symmetry', 'time': 'Time', 'days': 'Days of the Week', 'months': 'Months of the Year', 'length': 'Length', 'weight': 'Weight', 'capacity': 'Capacity', 'number-explorer': 'Number Explorer', 'number-name': 'Number Name', 'ordinal-numbers': 'Ordinal Numbers', 'pattern-missing': 'Find the Missing Item', 'pattern-build': 'Build the Pattern',
+                'colors-sound': 'Colours by Sound', compare: 'Larger or Smaller', 'number-explorer': 'Number Explorer', 'number-name': 'Number Name', 'ordinal-numbers': 'Ordinal Numbers', 'pattern-missing': 'Find the Missing Item', 'pattern-build': 'Build the Pattern',
                 addition: 'Addition', subtraction: 'Subtraction', multiplication: 'Multiplication', colours: 'Naming Colours'
             };
             return names[mode] || 'Math Practice';
@@ -4715,7 +4449,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 'shapes-sound': 'Listen again, say the shape name, and match it to the picture.',
                 'colors-sound': 'Listen again, then say the colour name before choosing.',
                 compare: 'Count or compare the two amounts. Choose the larger or smaller one as asked.',
-                'one-more-less': '1 less is the number just before. 1 more is the number just after.', 'ten-more-less': '10 less: the tens digit goes down by 1. 10 more: the tens digit goes up by 1.', 'tens-ones': 'Count the towers of ten first, then the single cubes. 3 towers and 4 cubes make 34.', 'number-pairs': 'Two parts make the whole. Count on from the part you can see to reach the whole number.', 'symmetry': 'Imagine folding it along a line. If both halves match exactly, it is symmetrical.', 'time': "The short hand shows the hour. At o'clock, the long hand points to 12.", 'days': 'The days in order: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday. There are 7 days.', 'months': 'The months in order: January, February, March, April, May, June, July, August, September, October, November, December. There are 12 months.', 'length': 'Line the objects up from the same starting line. Then compare how far each one reaches.', 'weight': 'Ask yourself: which one would be harder to lift?', 'capacity': 'Capacity is how much a container can hold. A bigger container holds more.', 'number-explorer': 'Use the number line or count forward from the smaller number.', 'number-name': 'Read the word carefully, then match it to the numeral.', 'ordinal-numbers': 'Ordinal numbers tell the position in a line: 1st, 2nd, 3rd, and 4th.', 'pattern-missing': 'Look for the part that repeats, then choose what comes next.', 'pattern-build': 'Look for the part that repeats, then build what comes next.',
+                'number-explorer': 'Use the number line or count forward from the smaller number.', 'number-name': 'Read the word carefully, then match it to the numeral.', 'ordinal-numbers': 'Ordinal numbers tell the position in a line: 1st, 2nd, 3rd, and 4th.', 'pattern-missing': 'Look for the part that repeats, then choose what comes next.', 'pattern-build': 'Look for the part that repeats, then build what comes next.',
                 addition: 'Start with the larger number and count on the amount being added.',
                 subtraction: 'Start with the first number and take away the second number.',
                 multiplication: 'Think of equal groups or an array. Multiplication is repeated addition.',
@@ -4974,26 +4708,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 return;
             }
 
-            if (isMeasureMode(currentGameMode)) {
-                msLock();
-                return;
-            }
-
-            if (isOmlMode(currentGameMode)) {
-                omlLock();
-                return;
-            }
-
-            if (currentGameMode === 'tens-ones') {
-                taoLock();
-                return;
-            }
-
-            if (currentGameMode === 'number-pairs') {
-                nprLock();
-                return;
-            }
-
             if (currentGameMode === 'make-number') {
                 makeNumberLocked = true;
                 document.querySelectorAll('.make-number-tile, .make-number-submit').forEach(el => { el.disabled = true; });
@@ -5028,30 +4742,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 return;
             }
 
-            if (currentGameMode === 'symmetry') symmetryReveal();
-            if (currentGameMode === 'time') timeReveal();
-            if (currentGameMode === 'days' || currentGameMode === 'months') dmReveal();
-
-            if (isMeasureMode(currentGameMode)) {
-                msReveal();
-                return;
-            }
-
-            if (isOmlMode(currentGameMode)) {
-                omlReveal(false);
-                return;
-            }
-
-            if (currentGameMode === 'tens-ones') {
-                taoReveal();
-                return;
-            }
-
-            if (currentGameMode === 'number-pairs') {
-                nprReveal();
-                return;
-            }
-
             if (currentGameMode === 'make-number') {
                 document.querySelectorAll('.make-number-tile').forEach(btn => {
                     if (makeNumberSolution.includes(Number(btn.dataset.value))) btn.classList.add('solution');
@@ -5080,7 +4770,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
 
                 if (currentGameMode === 'number-name' || currentGameMode === 'ordinal-numbers' || isPatternMode(currentGameMode)) {
                     btnValue = btn.dataset.value;
-                } else if (currentGameMode === 'even-odd' || currentGameMode === 'symmetry' || currentGameMode === 'time' || currentGameMode === 'days' || currentGameMode === 'months' || currentGameMode === 'shapes-2d' || currentGameMode === 'shapes-3d' || currentGameMode === 'colours') {
+                } else if (currentGameMode === 'even-odd' || currentGameMode === 'shapes-2d' || currentGameMode === 'shapes-3d' || currentGameMode === 'colours') {
                     btnValue = btn.textContent.toLowerCase();
                 } else if (currentGameMode === 'money') {
                     btnValue = parseInt(btn.textContent.replace('c', ''));
@@ -5317,7 +5007,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             enableRipple(card);
             addTouchSupport(card, () => {
                 const section = card.dataset.section;
-                if (['counting', 'counting-2s', 'counting-5s', 'counting-10s', 'doubles', 'halves', 'even-odd', 'money', 'shapes-2d', 'shapes-3d', 'shapes-sound', 'colors-sound', 'compare', 'number-explorer', 'make-number', 'number-name', 'ordinal-numbers', 'pattern-missing', 'pattern-build', 'one-more-less', 'ten-more-less', 'tens-ones', 'number-pairs', 'symmetry', 'time', 'days', 'months', 'length', 'weight', 'capacity', 'addition', 'subtraction', 'multiplication', 'colours'].includes(section)) {
+                if (['counting', 'counting-2s', 'counting-5s', 'counting-10s', 'doubles', 'halves', 'even-odd', 'money', 'shapes-2d', 'shapes-3d', 'shapes-sound', 'colors-sound', 'compare', 'number-explorer', 'make-number', 'number-name', 'ordinal-numbers', 'pattern-missing', 'pattern-build', 'addition', 'subtraction', 'multiplication', 'colours'].includes(section)) {
                     startGame(section);
                 }
             });
@@ -5510,28 +5200,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
 
             startQuestionTimer();
 
-            comparisonQuestion.className = 'comparison-question';
-
-            if (isMeasureMode(currentGameMode)) {
-                msGenerate();
-                return;
-            }
-
-            if (isOmlMode(currentGameMode)) {
-                generateOneMoreLessQuestion();
-                return;
-            }
-
-            if (currentGameMode === 'tens-ones') {
-                generateTensOnesQuestion();
-                return;
-            }
-
-            if (currentGameMode === 'number-pairs') {
-                generateNumberPairsQuestion();
-                return;
-            }
-
             if (isPatternMode(currentGameMode)) {
                 generatePatternQuestion(currentGameMode === 'pattern-build' ? 3 : 1);
                 return;
@@ -5675,50 +5343,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 addTouchSupport(oddButton, handleAnswer);
 
                 answersContainer.append(evenButton, oddButton);
-
-            } else if (currentGameMode === 'days' || currentGameMode === 'months') {
-                dmRender(currentGameMode === 'days' ? dmBuildDays() : dmBuildMonths());
-
-            } else if (currentGameMode === 'time') {
-                comparisonQuestion.textContent = 'What time is it?';
-                const hour = pickTimeHour();
-                currentCorrectAnswer = timeLabel(hour);
-                shapesContainer.appendChild(buildTimeClock(hour));
-
-                const optionCount = difficultyPick(3, 4);
-                const hours = [hour];
-                while (hours.length < optionCount) {
-                    const h = Math.floor(Math.random() * 12) + 1;
-                    if (!hours.includes(h)) hours.push(h);
-                }
-                hours.sort(() => Math.random() - 0.5).forEach(h => {
-                    const button = document.createElement('button');
-                    button.className = 'answer-btn';
-                    button.textContent = timeLabel(h);
-                    button.tabIndex = 0;
-                    addTouchSupport(button, handleAnswer);
-                    answersContainer.appendChild(button);
-                });
-
-            } else if (currentGameMode === 'symmetry') {
-                comparisonQuestion.textContent = 'Is this symmetrical?';
-                const item = pickSymmetryItem();
-                currentCorrectAnswer = item.symmetrical ? 'yes' : 'no';
-                shapesContainer.appendChild(buildSymmetryArt(item));
-
-                const yesButton = document.createElement('button');
-                yesButton.className = 'answer-btn';
-                yesButton.textContent = 'Yes';
-                yesButton.tabIndex = 0;
-                addTouchSupport(yesButton, handleAnswer);
-
-                const noButton = document.createElement('button');
-                noButton.className = 'answer-btn';
-                noButton.textContent = 'No';
-                noButton.tabIndex = 0;
-                addTouchSupport(noButton, handleAnswer);
-
-                answersContainer.append(yesButton, noButton);
 
             } else if (currentGameMode === 'money') {
                 comparisonQuestion.textContent = 'How much money is this in total?';
@@ -6530,6 +6154,9 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 document.querySelectorAll('.answer-btn').forEach(btn => {
                     btn.disabled = true;
                 });
+                document.querySelectorAll('.ordinal-pick').forEach(el => {
+                    el.style.pointerEvents = 'none';
+                });
             }
 
             // Determine the selected answer based on game mode
@@ -6542,10 +6169,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                     break;
 
                 case 'even-odd':
-                case 'symmetry':
-                case 'time':
-                case 'days':
-                case 'months':
                 case 'shapes-2d':
                 case 'shapes-3d':
                 case 'colours':
@@ -6603,10 +6226,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                             break;
 
                         case 'even-odd':
-                case 'symmetry':
-                case 'time':
-                case 'days':
-                case 'months':
                         case 'shapes-2d':
                         case 'shapes-3d':
                         case 'colours':
@@ -6627,14 +6246,23 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                         btn.classList.add('incorrect');
                     }
                 });
+                const suffixBlank = document.querySelector('.suffix-blank');
+                if (suffixBlank && currentGameMode === 'ordinal-numbers') {
+                    suffixBlank.textContent = currentCorrectAnswer;
+                    suffixBlank.classList.add(selectedAnswer === currentCorrectAnswer ? 'ok' : 'bad');
+                }
+                document.querySelectorAll('.ordinal-pick').forEach(el => {
+                    if (el.dataset.value === currentCorrectAnswer) {
+                        el.classList.add('correct');
+                    } else if (el.dataset.value === selectedAnswer) {
+                        el.classList.add('incorrect');
+                    }
+                });
             }
 
             // Handle feedback
             const answerWasCorrect = selectedAnswer === currentCorrectAnswer;
             recordAnswer(answerWasCorrect);
-            if (currentGameMode === 'symmetry') symmetryReveal();
-            if (currentGameMode === 'time') timeReveal();
-            if (currentGameMode === 'days' || currentGameMode === 'months') dmReveal();
             updatePracticeStatus();
             showExplanationFor(currentGameMode, answerWasCorrect);
             if (answerWasCorrect) {
@@ -7059,6 +6687,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
         // Ordinal Numbers Game Functions
         const ordinalSuffixes = { 1: 'st', 2: 'nd', 3: 'rd' };
         const ordinalLineupSize = 5;
+        const ordinalSuffixPool = [1,2,3,4,5,11,12,13,14,20,21,22,23,24,31,32,33,42,43,51,52,53,61,72,83,91,101,111,112,113];
 
         function ordinalLabel(position) {
             const lastTwo = position % 100;
@@ -7070,7 +6699,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             return filename.replace(/\.png$/i, '').replace(/[-_]/g, ' ');
         }
 
-        function renderOrdinalLineup(items) {
+        function renderOrdinalLineup(items, clickable, showLabels = true) {
             const shapesContainer = document.getElementById('shapesContainer');
             shapesContainer.innerHTML = '';
             shapesContainer.style.display = 'flex';
@@ -7080,6 +6709,17 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 item.className = 'ordinal-item';
                 const img = document.createElement('img');
                 const name = ordinalObjectName(filename);
+                if (clickable) {
+                    item.classList.add('ordinal-pick');
+                    item.dataset.value = name;
+                    item.setAttribute('role', 'button');
+                    item.tabIndex = 0;
+                    item.setAttribute('aria-label', name);
+                    addTouchSupport(item, handleAnswer);
+                    item.addEventListener('keydown', ev => {
+                        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); handleAnswer({ currentTarget: item, target: item }); }
+                    });
+                }
                 img.src = `img/objects/${filename}`;
                 img.alt = name;
                 img.loading = 'lazy';
@@ -7087,7 +6727,8 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 const position = document.createElement('span');
                 position.className = 'ordinal-position';
                 position.textContent = ordinalLabel(index + 1);
-                item.append(img, position);
+                if (showLabels) item.append(img, position);
+                else item.append(img);
                 shapesContainer.appendChild(item);
             });
         }
@@ -7106,6 +6747,7 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             const questionType = Math.floor(Math.random() * 4);
             const answerOptions = [];
             let questionText = '';
+            let suffixNumber = null;
 
             // 0: identify an object's position; 1: identify the object at a position;
             // 2: choose the correct suffix; 3: write an ordinal label.
@@ -7118,10 +6760,11 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 const targetName = ordinalObjectName(lineup[position - 1]);
                 currentCorrectAnswer = targetName;
                 questionText = `Who is in the <span class="ordinal-question-focus">${ordinalLabel(position)}</span> position?`;
-                lineup.forEach(filename => answerOptions.push(ordinalObjectName(filename)));
+                // Answer by clicking the picture itself (no name buttons)
             } else if (questionType === 2) {
-                currentCorrectAnswer = ordinalSuffixes[position] || 'th';
-                questionText = `Which suffix completes <span class="ordinal-question-focus">${position}__</span>?`;
+                suffixNumber = ordinalSuffixPool[Math.floor(Math.random() * ordinalSuffixPool.length)];
+                currentCorrectAnswer = ordinalLabel(suffixNumber).slice(String(suffixNumber).length);
+                questionText = `Which <span class="ordinal-question-focus">ending</span> completes the ordinal number?`;
                 answerOptions.push('st', 'nd', 'rd', 'th');
             } else {
                 currentCorrectAnswer = ordinalLabel(position);
@@ -7129,18 +6772,18 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
                 for (let i = 1; i <= ordinalLineupSize; i++) answerOptions.push(ordinalLabel(i));
             }
 
-            if (questionType !== 2) renderOrdinalLineup(lineup);
+            if (questionType !== 2) renderOrdinalLineup(lineup, questionType === 1, false);
             else {
-                shapesContainer.innerHTML = '';
                 shapesContainer.className = 'shapes-container';
-                shapesContainer.style.display = 'none';
+                shapesContainer.style.display = 'flex';
+                shapesContainer.innerHTML = `<div class="suffix-card"><span class="suffix-num">${suffixNumber}</span><span class="suffix-blank">?</span></div>`;
             }
             comparisonContainer.innerHTML = '';
             comparisonContainer.style.display = 'none';
             mathEquationDisplay.innerHTML = '';
             mathEquationDisplay.style.display = 'none';
             answersContainer.innerHTML = '';
-            answersContainer.style.display = 'flex';
+            answersContainer.style.display = questionType === 1 ? 'none' : 'flex';
             feedback.textContent = '';
             feedback.className = 'feedback';
             nextBtn.style.display = 'none';
@@ -7150,11 +6793,12 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             resetLearningSupport();
             updatePracticeStatus();
 
-            answerOptions.sort(() => Math.random() - 0.5);
+            if (questionType !== 2) answerOptions.sort(() => Math.random() - 0.5);
             answerOptions.forEach(answer => {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'answer-btn';
+                if (questionType === 2) button.classList.add('suffix-opt');
                 button.dataset.value = answer;
                 button.textContent = answer;
                 button.tabIndex = 0;
@@ -7344,1208 +6988,6 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             if (isTimedMode()) {
                 nextBtn.style.display = 'none';
                 setTimeout(() => { if (isTimedMode() && currentGameMode === 'make-number') challengeModeEnabled ? startGame('challenge') : generateNewQuestion(); }, 950);
-            } else {
-                nextBtn.style.display = 'block';
-                nextBtn.style.animation = 'tada 0.5s';
-                setTimeout(() => { nextBtn.style.animation = ''; }, 500);
-                addTouchSupport(nextBtn, generateNewQuestion);
-            }
-        }
-
-
-        // 1 More and 1 Less Game Functions
-        function omlLock() {
-            omlLocked = true;
-            omlActive = null;
-            document.querySelectorAll('.oml-box:not(.center), .oml-key').forEach(el => { el.disabled = true; });
-            const pad = document.getElementById('omlKeyboard');
-            if (pad) pad.style.display = 'none';
-        }
-
-        function omlReveal() {
-            [-1, 1].forEach(off => {
-                const box = document.querySelector(`.oml-box[data-off="${off}"]`);
-                const fix = document.getElementById('omlFix' + off);
-                if (!box) return;
-                const want = omlCenter + off * omlStep;
-                const got = omlValues[off];
-                const ok = got !== undefined && got !== '' && parseInt(got, 10) === want;
-                box.classList.remove('active');
-                if (ok) {
-                    box.classList.add('correct');
-                } else {
-                    box.classList.add('incorrect');
-                    if (fix) fix.textContent = '✓ ' + want;
-                    if (got === undefined || got === '') box.textContent = '?';
-                }
-            });
-        }
-
-        function omlRefresh() {
-            [-1, 1].forEach(off => {
-                const box = document.querySelector(`.oml-box[data-off="${off}"]`);
-                if (!box) return;
-                const v = omlValues[off] || '';
-                box.textContent = v;
-                box.classList.toggle('filled', v !== '');
-                box.classList.toggle('active', omlActive === off);
-            });
-            const instruction = document.getElementById('omlInstruction');
-            if (instruction) {
-                const bothFilled = (omlValues[-1] || '') !== '' && (omlValues[1] || '') !== '';
-                instruction.textContent = bothFilled
-                    ? 'Press ✓ to check your answers.'
-                    : omlActive === null
-                        ? 'Tap a blank box to type the number.'
-                        : 'Type the number, then press ✓.';
-            }
-        }
-
-        function omlSelect(off) {
-            if (omlLocked) return;
-            omlActive = off;
-            const pad = document.getElementById('omlKeyboard');
-            if (pad) pad.style.display = 'flex';
-            omlRefresh();
-        }
-
-        function omlPress(key) {
-            if (omlLocked) return;
-            if (key === '✓') {
-                const bothFilled = (omlValues[-1] || '') !== '' && (omlValues[1] || '') !== '';
-                if (bothFilled) { submitOneMoreLess(); return; }
-                if (omlActive === null || (omlValues[omlActive] || '') === '') return;
-                const other = omlActive === -1 ? 1 : -1;
-                omlActive = (omlValues[other] || '') === '' ? other : null;
-                omlRefresh();
-                return;
-            }
-            if (omlActive === null) return;
-            const cur = omlValues[omlActive] || '';
-            if (key === '⌫') omlValues[omlActive] = cur.slice(0, -1);
-            else if (/^\d$/.test(key) && cur.length < 3) omlValues[omlActive] = (cur === '0' ? '' : cur) + key;
-            omlRefresh();
-        }
-
-        function omlOnKeydown(e) {
-            if (!isOmlMode(currentGameMode) || omlLocked) return;
-            const main = document.getElementById('mainContainer');
-            if (main && main.style.display !== 'none') return;
-            if (/^[0-9]$/.test(e.key)) { omlPress(e.key); e.preventDefault(); }
-            else if (e.key === 'Backspace') { omlPress('⌫'); e.preventDefault(); }
-            else if (e.key === 'Enter') { omlPress('✓'); e.preventDefault(); }
-        }
-        if (!window.__omlKeyBound) { document.addEventListener('keydown', omlOnKeydown); window.__omlKeyBound = true; }
-
-        function generateOneMoreLessQuestion() {
-            const shapesContainer = document.getElementById('shapesContainer');
-            const answersContainer = document.getElementById('answers');
-            const comparisonQuestion = document.getElementById('comparisonQuestion');
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            const mathEquationDisplay = document.getElementById('mathEquationDisplay');
-            const comparisonContainer = document.getElementById('comparisonContainer');
-
-            // 1 more/less: Easy 2..20, Hard 2..99.  10 more/less: Easy 11..60, Hard 11..90 (answers stay between 1 and 100).
-            omlStep = currentGameMode === 'ten-more-less' ? 10 : 1;
-            if (omlStep === 10) {
-                const maxN = difficultyPick(60, 90);
-                omlCenter = Math.floor(Math.random() * (maxN - 10)) + 11;
-            } else {
-                const maxN = difficultyPick(20, 99);
-                omlCenter = Math.floor(Math.random() * (maxN - 1)) + 2;
-            }
-            omlValues = {};
-            omlActive = null;
-            omlLocked = false;
-            currentCorrectAnswer = omlCenter;
-
-            shapesContainer.innerHTML = '';
-            shapesContainer.style.display = 'none';
-            comparisonContainer.innerHTML = '';
-            comparisonContainer.style.display = 'none';
-            mathEquationDisplay.innerHTML = '';
-            mathEquationDisplay.style.display = 'none';
-            answersContainer.innerHTML = '';
-            answersContainer.style.display = 'none';
-            feedback.textContent = '';
-            feedback.className = 'feedback';
-            nextBtn.style.display = 'none';
-            setSoundReplay(null);
-            resetLearningSupport();
-            updatePracticeStatus();
-
-            const tags = { '-1': `${omlStep} less`, '1': `${omlStep} more` };
-            let cells = '';
-            OML_OFFSETS.forEach(off => {
-                if (off === 0) {
-                    cells += `<div class="oml-cell"><div class="oml-box center" aria-label="Number ${omlCenter}">${omlCenter}</div><div class="oml-tag">&nbsp;</div><div class="oml-fix">&nbsp;</div></div>`;
-                } else {
-                    cells += `<div class="oml-cell"><button type="button" class="oml-box" data-off="${off}" aria-label="${tags[off]}"></button><div class="oml-tag">${tags[off]}</div><div class="oml-fix" id="omlFix${off}">&nbsp;</div></div>`;
-                }
-            });
-
-            comparisonQuestion.className = 'comparison-question oml-board';
-            comparisonQuestion.innerHTML = `
-                <div class="oml-prompt">What is ${omlStep} less and ${omlStep} more than <span class="ordinal-question-focus">${omlCenter}</span>?</div>
-                <div class="oml-row" id="omlRow">${cells}</div>
-                <p class="oml-helper" id="omlInstruction">Tap a blank box to type the number.</p>
-                <div class="counting2s-keyboard" id="omlKeyboard" role="group" aria-label="Numeric keyboard" style="display:none"></div>
-            `;
-
-            const keyboard = document.getElementById('omlKeyboard');
-            ['1','2','3','4','5','6','7','8','9','0','⌫','✓'].forEach(key => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'counting2s-key oml-key';
-                button.textContent = key;
-                button.dataset.key = key;
-                button.setAttribute('aria-label', key === '⌫' ? 'Backspace' : key === '✓' ? 'Check answer' : `Number ${key}`);
-                enableRipple(button);
-                addTouchSupport(button, () => omlPress(key));
-                keyboard.appendChild(button);
-            });
-
-            document.querySelectorAll('.oml-box[data-off]').forEach(box => {
-                addTouchSupport(box, () => omlSelect(parseInt(box.dataset.off, 10)));
-            });
-
-            startQuestionTimer();
-        }
-
-        function submitOneMoreLess() {
-            if (omlLocked) return;
-            if ((omlValues[-1] || '') === '' || (omlValues[1] || '') === '') return;
-            stopQuestionTimer();
-            const answerWasCorrect = parseInt(omlValues[-1], 10) === omlCenter - omlStep && parseInt(omlValues[1], 10) === omlCenter + omlStep;
-            omlLock();
-            omlReveal();
-
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            recordAnswer(answerWasCorrect);
-            updatePracticeStatus();
-            if (answerWasCorrect) {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_CORRECT; syncHud(); }
-                feedback.innerHTML = '✓';
-                feedback.className = 'feedback show correct';
-                correctSound.currentTime = 0; correctSound.play().catch(() => {});
-                createConfetti();
-            } else {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_WRONG; syncHud(); }
-                feedback.innerHTML = '✕';
-                feedback.className = 'feedback show incorrect';
-                wrongSound.currentTime = 0; wrongSound.play().catch(() => {});
-            }
-            setTimeout(() => feedback && feedback.classList.remove('show'), 700);
-            if (isTimedMode()) {
-                nextBtn.style.display = 'none';
-                setTimeout(() => { if (isTimedMode() && isOmlMode(currentGameMode)) challengeModeEnabled ? startGame('challenge') : generateNewQuestion(); }, 1100);
-            } else {
-                nextBtn.style.display = 'block';
-                nextBtn.style.animation = 'tada 0.5s';
-                setTimeout(() => { nextBtn.style.animation = ''; }, 500);
-                addTouchSupport(nextBtn, generateNewQuestion);
-            }
-        }
-
-        // Tens and Ones Game Functions (towers of ten + single cubes, write the number)
-        function taoLock() {
-            taoLocked = true;
-            taoActive = false;
-            document.querySelectorAll('.tt-answer, .tao-key').forEach(el => { el.disabled = true; });
-            const pad = document.getElementById('taoKeyboard');
-            if (pad) pad.style.display = 'none';
-        }
-
-        function taoReveal() {
-            const box = document.getElementById('taoAnswer');
-            if (!box) return;
-            const ok = taoEntry !== '' && parseInt(taoEntry, 10) === taoTop;
-            box.classList.remove('active');
-            box.classList.add(ok ? 'correct' : 'incorrect');
-            if (!ok) {
-                if (taoEntry === '') box.textContent = '?';
-                const fix = document.getElementById('taoFix');
-                if (fix) fix.textContent = '✓ ' + taoTop;
-            }
-            const eq = document.getElementById('taoEq');
-            if (eq) eq.textContent = `${taoTens / 10} tens + ${taoOnes} ones = ${taoTens} + ${taoOnes} = ${taoTop}`;
-        }
-
-        function taoRefresh() {
-            const box = document.getElementById('taoAnswer');
-            if (!box) return;
-            box.textContent = taoEntry;
-            box.classList.toggle('filled', taoEntry !== '');
-            box.classList.toggle('active', taoActive);
-            const eq = document.getElementById('taoEq');
-            if (eq && !taoLocked) eq.textContent = taoActive ? 'Type the number, then press ✓.' : 'Tap the box to write the number.';
-        }
-
-        function taoSelect() {
-            if (taoLocked) return;
-            taoActive = true;
-            const pad = document.getElementById('taoKeyboard');
-            if (pad) pad.style.display = 'flex';
-            taoRefresh();
-        }
-
-        function taoPress(key) {
-            if (taoLocked || !taoActive) return;
-            if (key === '✓') { submitTensOnes(); return; }
-            if (key === '⌫') taoEntry = taoEntry.slice(0, -1);
-            else if (/^\d$/.test(key) && taoEntry.length < 3) taoEntry = (taoEntry === '0' ? '' : taoEntry) + key;
-            taoRefresh();
-        }
-
-        function taoOnKeydown(e) {
-            if (currentGameMode !== 'tens-ones' || taoLocked) return;
-            const main = document.getElementById('mainContainer');
-            if (main && main.style.display !== 'none') return;
-            if (/^[0-9]$/.test(e.key)) { if (!taoActive) taoSelect(); taoPress(e.key); e.preventDefault(); }
-            else if (e.key === 'Backspace') { taoPress('⌫'); e.preventDefault(); }
-            else if (e.key === 'Enter') { taoPress('✓'); e.preventDefault(); }
-        }
-        if (!window.__taoKeyBound) { document.addEventListener('keydown', taoOnKeydown); window.__taoKeyBound = true; }
-
-        function generateTensOnesQuestion() {
-            const shapesContainer = document.getElementById('shapesContainer');
-            const answersContainer = document.getElementById('answers');
-            const comparisonQuestion = document.getElementById('comparisonQuestion');
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            const mathEquationDisplay = document.getElementById('mathEquationDisplay');
-            const comparisonContainer = document.getElementById('comparisonContainer');
-
-            // Easy: 1–5 towers and 1–9 cubes (11–59) | Hard: 1–9 towers and 0–9 cubes (10–99)
-            const maxTens = difficultyPick(5, 9);
-            const towers = Math.floor(Math.random() * maxTens) + 1;
-            const cubes = difficultyPick(Math.floor(Math.random() * 9) + 1, Math.floor(Math.random() * 10));
-            taoTens = towers * 10;
-            taoOnes = cubes;
-            taoTop = taoTens + taoOnes;
-            taoEntry = '';
-            taoActive = false;
-            taoLocked = false;
-            currentCorrectAnswer = taoTop;
-
-            shapesContainer.innerHTML = '';
-            shapesContainer.style.display = 'none';
-            comparisonContainer.innerHTML = '';
-            comparisonContainer.style.display = 'none';
-            mathEquationDisplay.innerHTML = '';
-            mathEquationDisplay.style.display = 'none';
-            answersContainer.innerHTML = '';
-            answersContainer.style.display = 'none';
-            feedback.textContent = '';
-            feedback.className = 'feedback';
-            nextBtn.style.display = 'none';
-            setSoundReplay(null);
-            resetLearningSupport();
-            updatePracticeStatus();
-
-            const tower = '<div class="tt-tower">' + '<span class="tt-cube"></span>'.repeat(10) + '</div>';
-            comparisonQuestion.className = 'comparison-question tao-board';
-            comparisonQuestion.innerHTML = `
-                <div class="oml-prompt">Write the number.</div>
-                <div class="tt-scene" role="img" aria-label="${towers} towers of ten cubes and ${cubes} single cubes">
-                    <div class="tt-group"><div class="tt-towers">${tower.repeat(towers)}</div><div class="tt-cap">tens</div></div>
-                    <div class="tt-group"><div class="tt-ones">${'<span class="tt-cube"></span>'.repeat(cubes)}</div><div class="tt-cap">ones</div></div>
-                </div>
-                <div class="tt-answer-row">
-                    <button type="button" class="tt-answer" id="taoAnswer" aria-label="Your answer"></button>
-                    <div class="tt-fix" id="taoFix"></div>
-                </div>
-                <p class="oml-helper" id="taoEq">Tap the box to write the number.</p>
-                <div class="counting2s-keyboard" id="taoKeyboard" role="group" aria-label="Numeric keyboard" style="display:none"></div>
-            `;
-
-            const keyboard = document.getElementById('taoKeyboard');
-            ['1','2','3','4','5','6','7','8','9','0','⌫','✓'].forEach(key => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'counting2s-key tao-key';
-                button.textContent = key;
-                button.dataset.key = key;
-                button.setAttribute('aria-label', key === '⌫' ? 'Backspace' : key === '✓' ? 'Check answer' : `Number ${key}`);
-                enableRipple(button);
-                addTouchSupport(button, () => taoPress(key));
-                keyboard.appendChild(button);
-            });
-
-            addTouchSupport(document.getElementById('taoAnswer'), taoSelect);
-            startQuestionTimer();
-        }
-
-        function submitTensOnes() {
-            if (taoLocked || taoEntry === '') return;
-            stopQuestionTimer();
-            const answerWasCorrect = parseInt(taoEntry, 10) === taoTop;
-            taoLock();
-            taoReveal();
-
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            recordAnswer(answerWasCorrect);
-            updatePracticeStatus();
-            if (answerWasCorrect) {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_CORRECT; syncHud(); }
-                feedback.innerHTML = '✓';
-                feedback.className = 'feedback show correct';
-                correctSound.currentTime = 0; correctSound.play().catch(() => {});
-                createConfetti();
-            } else {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_WRONG; syncHud(); }
-                feedback.innerHTML = '✕';
-                feedback.className = 'feedback show incorrect';
-                wrongSound.currentTime = 0; wrongSound.play().catch(() => {});
-            }
-            setTimeout(() => feedback && feedback.classList.remove('show'), 700);
-            if (isTimedMode()) {
-                nextBtn.style.display = 'none';
-                setTimeout(() => { if (isTimedMode() && currentGameMode === 'tens-ones') challengeModeEnabled ? startGame('challenge') : generateNewQuestion(); }, 1200);
-            } else {
-                nextBtn.style.display = 'block';
-                nextBtn.style.animation = 'tada 0.5s';
-                setTimeout(() => { nextBtn.style.animation = ''; }, 500);
-                addTouchSupport(nextBtn, generateNewQuestion);
-            }
-        }
-
-        // Number Pairs Game Functions (whole number is always 5 to 10)
-        const NPR_MIN_TOTAL = 5, NPR_MAX_TOTAL = 10;
-
-        function nprDots(kind, n) {
-            let html = '';
-            for (let i = 0; i < n; i++) html += `<span class="npr-dot ${kind}"></span>`;
-            return html;
-        }
-
-        function nprValueOf(which) { return which === 'a' ? nprA : nprB; }
-
-        function nprLock() {
-            nprLocked = true;
-            nprActive = false;
-            document.querySelectorAll('.tao-node.blank, .npr-key').forEach(el => { el.disabled = true; });
-            const pad = document.getElementById('nprKeyboard');
-            if (pad) pad.style.display = 'none';
-        }
-
-        function nprReveal() {
-            const node = document.querySelector('.tao-node.blank');
-            if (!node) return;
-            const want = nprValueOf(nprMissing);
-            const ok = nprEntry !== '' && parseInt(nprEntry, 10) === want;
-            node.classList.remove('active');
-            node.classList.add(ok ? 'correct' : 'incorrect');
-            if (!ok) {
-                if (nprEntry === '') node.textContent = '?';
-                const fix = document.getElementById('nprFix');
-                if (fix) fix.textContent = '✓ ' + want;
-            }
-            const dots = document.getElementById('nprDots');
-            if (dots) dots.innerHTML = nprDots(nprMissing, want);
-            const eq = document.getElementById('nprEq');
-            if (eq) eq.textContent = `${nprTop} = ${nprA} + ${nprB}`;
-        }
-
-        function nprRefresh() {
-            const node = document.querySelector('.tao-node.blank');
-            if (!node) return;
-            node.textContent = nprEntry;
-            node.classList.toggle('filled', nprEntry !== '');
-            node.classList.toggle('active', nprActive);
-            const eq = document.getElementById('nprEq');
-            if (eq && !nprLocked) eq.textContent = nprActive ? 'Type the number, then press ✓.' : 'Tap the blank circle to type the number.';
-        }
-
-        function nprSelect() {
-            if (nprLocked) return;
-            nprActive = true;
-            const pad = document.getElementById('nprKeyboard');
-            if (pad) pad.style.display = 'flex';
-            nprRefresh();
-        }
-
-        function nprPress(key) {
-            if (nprLocked || !nprActive) return;
-            if (key === '✓') { submitNumberPairs(); return; }
-            if (key === '⌫') nprEntry = nprEntry.slice(0, -1);
-            else if (/^\d$/.test(key) && nprEntry.length < 2) nprEntry = (nprEntry === '0' ? '' : nprEntry) + key;
-            nprRefresh();
-        }
-
-        function nprOnKeydown(e) {
-            if (currentGameMode !== 'number-pairs' || nprLocked) return;
-            const main = document.getElementById('mainContainer');
-            if (main && main.style.display !== 'none') return;
-            if (/^[0-9]$/.test(e.key)) { if (!nprActive) nprSelect(); nprPress(e.key); e.preventDefault(); }
-            else if (e.key === 'Backspace') { nprPress('⌫'); e.preventDefault(); }
-            else if (e.key === 'Enter') { nprPress('✓'); e.preventDefault(); }
-        }
-        if (!window.__nprKeyBound) { document.addEventListener('keydown', nprOnKeydown); window.__nprKeyBound = true; }
-
-        function generateNumberPairsQuestion() {
-            const shapesContainer = document.getElementById('shapesContainer');
-            const answersContainer = document.getElementById('answers');
-            const comparisonQuestion = document.getElementById('comparisonQuestion');
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            const mathEquationDisplay = document.getElementById('mathEquationDisplay');
-            const comparisonContainer = document.getElementById('comparisonContainer');
-
-            // Whole number: 5 to 10. Both parts are at least 1.
-            nprTop = Math.floor(Math.random() * (NPR_MAX_TOTAL - NPR_MIN_TOTAL + 1)) + NPR_MIN_TOTAL;
-            nprA = Math.floor(Math.random() * (nprTop - 1)) + 1;
-            nprB = nprTop - nprA;
-            nprMissing = Math.random() < 0.5 ? 'a' : 'b';
-            nprEntry = '';
-            nprActive = false;
-            nprLocked = false;
-            currentCorrectAnswer = nprValueOf(nprMissing);
-
-            shapesContainer.innerHTML = '';
-            shapesContainer.style.display = 'none';
-            comparisonContainer.innerHTML = '';
-            comparisonContainer.style.display = 'none';
-            mathEquationDisplay.innerHTML = '';
-            mathEquationDisplay.style.display = 'none';
-            answersContainer.innerHTML = '';
-            answersContainer.style.display = 'none';
-            feedback.textContent = '';
-            feedback.className = 'feedback';
-            nextBtn.style.display = 'none';
-            setSoundReplay(null);
-            resetLearningSupport();
-            updatePracticeStatus();
-
-            const blankNode = `<button type="button" class="tao-node blank" aria-label="Missing number"></button>`;
-            const branch = (which, left) => {
-                const value = nprValueOf(which);
-                const isMissing = which === nprMissing;
-                return `<div class="tao-node-wrap" style="left:${left}%;top:62.5%">${isMissing ? blankNode : `<div class="tao-node part${which.toUpperCase()}">${value}</div>`}
-                    <div class="tao-under">${isMissing ? '<div class="tao-fix" id="nprFix"></div><div class="tao-blocks" id="nprDots"></div>' : `<div class="tao-blocks">${nprDots(which, value)}</div>`}</div></div>`;
-            };
-
-            comparisonQuestion.className = 'comparison-question tao-board';
-            comparisonQuestion.innerHTML = `
-                <div class="oml-prompt">Find the missing number.</div>
-                <div class="tao-tree" role="group" aria-label="${nprTop} split into two parts">
-                    <svg class="tao-lines" viewBox="0 0 440 400" aria-hidden="true">
-                        <line x1="220" y1="60" x2="110" y2="250"/>
-                        <line x1="220" y1="60" x2="330" y2="250"/>
-                    </svg>
-                    <div class="tao-node-wrap" style="left:50%;top:15%"><div class="tao-node top">${nprTop}</div></div>
-                    ${branch('a', 25)}
-                    ${branch('b', 75)}
-                </div>
-                <p class="oml-helper" id="nprEq">Tap the blank circle to type the number.</p>
-                <div class="counting2s-keyboard" id="nprKeyboard" role="group" aria-label="Numeric keyboard" style="display:none"></div>
-            `;
-
-            const keyboard = document.getElementById('nprKeyboard');
-            ['1','2','3','4','5','6','7','8','9','0','⌫','✓'].forEach(key => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'counting2s-key npr-key';
-                button.textContent = key;
-                button.dataset.key = key;
-                button.setAttribute('aria-label', key === '⌫' ? 'Backspace' : key === '✓' ? 'Check answer' : `Number ${key}`);
-                enableRipple(button);
-                addTouchSupport(button, () => nprPress(key));
-                keyboard.appendChild(button);
-            });
-
-            addTouchSupport(document.querySelector('.tao-node.blank'), nprSelect);
-            startQuestionTimer();
-        }
-
-        function submitNumberPairs() {
-            if (nprLocked || nprEntry === '') return;
-            stopQuestionTimer();
-            const answerWasCorrect = parseInt(nprEntry, 10) === nprValueOf(nprMissing);
-            nprLock();
-            nprReveal();
-
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            recordAnswer(answerWasCorrect);
-            updatePracticeStatus();
-            if (answerWasCorrect) {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_CORRECT; syncHud(); }
-                feedback.innerHTML = '✓';
-                feedback.className = 'feedback show correct';
-                correctSound.currentTime = 0; correctSound.play().catch(() => {});
-                createConfetti();
-            } else {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_WRONG; syncHud(); }
-                feedback.innerHTML = '✕';
-                feedback.className = 'feedback show incorrect';
-                wrongSound.currentTime = 0; wrongSound.play().catch(() => {});
-            }
-            setTimeout(() => feedback && feedback.classList.remove('show'), 700);
-            if (isTimedMode()) {
-                nextBtn.style.display = 'none';
-                setTimeout(() => { if (isTimedMode() && currentGameMode === 'number-pairs') challengeModeEnabled ? startGame('challenge') : generateNewQuestion(); }, 1200);
-            } else {
-                nextBtn.style.display = 'block';
-                nextBtn.style.animation = 'tada 0.5s';
-                setTimeout(() => { nextBtn.style.animation = ''; }, 500);
-                addTouchSupport(nextBtn, generateNewQuestion);
-            }
-        }
-
-        // Symmetry Game Functions
-        // ------------------------------------------------------------------
-        // ADD YOUR OWN PICTURES HERE (up to 10 are used). Put the image files in
-        // an "img/symmetry/" folder next to index.html, then list them like this:
-        //   { src: 'img/symmetry/butterfly.png', symmetrical: true,  line: 'vertical' },
-        //   { src: 'img/symmetry/torn-leaf.png', symmetrical: false },
-        // line (optional, only for symmetrical pictures): 'vertical' | 'horizontal' | 'both' | 'none'
-        // ------------------------------------------------------------------
-        const SYMMETRY_PICTURES = [
-        ];
-
-        function symStarPoints(cx, cy, outer, inner) {
-            const pts = [];
-            for (let i = 0; i < 10; i++) {
-                const r = i % 2 === 0 ? outer : inner;
-                const a = (-90 + i * 36) * Math.PI / 180;
-                pts.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
-            }
-            return pts.join(' ');
-        }
-
-        function symHexPoints(cx, cy, r) {
-            const pts = [];
-            for (let i = 0; i < 6; i++) {
-                const a = i * 60 * Math.PI / 180;
-                pts.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
-            }
-            return pts.join(' ');
-        }
-
-        const SYMMETRY_SHAPES = [
-            // Symmetrical
-            { id: 'circle', symmetrical: true, lines: ['v', 'h'], fill: '#6a95d6', svg: '<circle cx="100" cy="100" r="72"/>' },
-            { id: 'square', symmetrical: true, lines: ['v', 'h', 'd1', 'd2'], fill: '#ef765f', svg: '<rect x="32" y="32" width="136" height="136" rx="4"/>' },
-            { id: 'rectangle', symmetrical: true, lines: ['v', 'h'], fill: '#3fa896', svg: '<rect x="20" y="52" width="160" height="96" rx="4"/>' },
-            { id: 'isosceles', symmetrical: true, lines: ['v'], fill: '#efb84f', svg: '<polygon points="100,30 172,160 28,160"/>' },
-            { id: 'heart', symmetrical: true, lines: ['v'], fill: '#ef6f8e', svg: '<path d="M100 172 C30 122 20 72 55 52 C80 38 100 57 100 72 C100 57 120 38 145 52 C180 72 170 122 100 172 Z"/>' },
-            { id: 'star', symmetrical: true, lines: ['v'], fill: '#efb84f', svg: '<polygon points="' + symStarPoints(100, 106, 80, 33) + '"/>' },
-            { id: 'diamond', symmetrical: true, lines: ['v', 'h'], fill: '#8571c4', svg: '<polygon points="100,22 164,100 100,178 36,100"/>' },
-            { id: 'kite', symmetrical: true, lines: ['v'], fill: '#3fa896', svg: '<polygon points="100,24 152,82 100,178 48,82"/>' },
-            { id: 'hexagon', symmetrical: true, lines: ['v', 'h'], fill: '#6a95d6', svg: '<polygon points="' + symHexPoints(100, 100, 74) + '"/>' },
-            { id: 'cross', symmetrical: true, lines: ['v', 'h', 'd1', 'd2'], fill: '#ef765f', svg: '<polygon points="78,24 122,24 122,78 176,78 176,122 122,122 122,176 78,176 78,122 24,122 24,78 78,78"/>' },
-            { id: 'arrow', symmetrical: true, lines: ['v'], fill: '#3fa896', svg: '<polygon points="100,22 154,88 122,88 122,176 78,176 78,88 46,88"/>' },
-            { id: 'oval', symmetrical: true, lines: ['v', 'h'], fill: '#8571c4', svg: '<ellipse cx="100" cy="100" rx="80" ry="50"/>' },
-            { id: 'semicircle', symmetrical: true, lines: ['v'], fill: '#efb84f', svg: '<path d="M26 132 A74 74 0 0 1 174 132 Z"/>' },
-            { id: 'butterfly', symmetrical: true, lines: ['v'], fill: '#a58be0',
-              svg: '<ellipse cx="64" cy="76" rx="46" ry="38"/><ellipse cx="136" cy="76" rx="46" ry="38"/><ellipse cx="72" cy="132" rx="32" ry="28"/><ellipse cx="128" cy="132" rx="32" ry="28"/><rect x="93" y="48" width="14" height="112" rx="7" fill="#18243b"/>' },
-            { id: 'house', symmetrical: true, lines: ['v'], fill: '#efb84f',
-              svg: '<rect x="40" y="92" width="120" height="80"/><polygon points="24,94 100,30 176,94" fill="#ef765f"/><rect x="84" y="126" width="32" height="46" fill="#6a95d6"/>' },
-            // Not symmetrical
-            { id: 'parallelogram', symmetrical: false, lines: [], fill: '#6a95d6', svg: '<polygon points="62,52 172,52 138,148 28,148"/>' },
-            { id: 'right-scalene', symmetrical: false, lines: [], fill: '#ef765f', svg: '<polygon points="40,36 40,164 136,164"/>' },
-            { id: 'l-shape', symmetrical: false, lines: [], fill: '#3fa896', svg: '<polygon points="48,28 92,28 92,118 164,118 164,164 48,164"/>' },
-            { id: 'irregular-pentagon', symmetrical: false, lines: [], fill: '#efb84f', svg: '<polygon points="38,104 88,34 160,58 172,132 80,168"/>' },
-            { id: 'lightning', symmetrical: false, lines: [], fill: '#efb84f', svg: '<polygon points="112,20 54,106 96,106 80,180 150,84 108,84"/>' },
-            { id: 'scalene', symmetrical: false, lines: [], fill: '#8571c4', svg: '<polygon points="25,162 175,132 70,36"/>' },
-            { id: 'half-heart', symmetrical: false, lines: [], fill: '#ef6f8e', svg: '<path d="M100 172 C30 122 20 72 55 52 C80 38 100 57 100 72 Z"/>' },
-            { id: 'trapezium', symmetrical: false, lines: [], fill: '#6a95d6', svg: '<polygon points="38,50 122,50 162,150 38,150"/>' },
-            { id: 'letter-f', symmetrical: false, lines: [], fill: '#ef765f', svg: '<polygon points="50,28 154,28 154,62 86,62 86,92 132,92 132,124 86,124 86,172 50,172"/>' },
-            { id: 'blob', symmetrical: false, lines: [], fill: '#3fa896', svg: '<path d="M38 112 C26 60 92 28 132 48 C178 70 172 122 142 152 C110 182 58 172 38 112 Z"/>' },
-            { id: 'odd-house', symmetrical: false, lines: [], fill: '#efb84f',
-              svg: '<rect x="40" y="92" width="120" height="80"/><polygon points="24,94 100,30 176,94" fill="#ef765f"/><rect x="52" y="126" width="30" height="46" fill="#6a95d6"/><rect x="112" y="108" width="34" height="30" fill="#a8d8f0"/><rect x="128" y="40" width="18" height="34" fill="#8571c4"/>' },
-            { id: 'half-butterfly', symmetrical: false, lines: [], fill: '#a58be0',
-              svg: '<ellipse cx="64" cy="76" rx="46" ry="38"/><ellipse cx="72" cy="132" rx="32" ry="28"/><rect x="93" y="48" width="14" height="112" rx="7" fill="#18243b"/>' },
-        ];
-
-        const SYMMETRY_LINE_COORDS = {
-            v: [100, 6, 100, 194],
-            h: [6, 100, 194, 100],
-            d1: [8, 8, 192, 192],
-            d2: [192, 8, 8, 192]
-        };
-        const symmetryBroken = new Set();
-        let lastSymmetryId = null;
-
-        function pickSymmetryItem() {
-            const pictures = SYMMETRY_PICTURES.slice(0, 10).map((p, i) => Object.assign({ id: 'pic-' + i }, p)).filter(p => !symmetryBroken.has(p.src));
-            const pool = SYMMETRY_SHAPES.concat(pictures);
-            const wantSymmetrical = Math.random() < 0.5;
-            let subset = pool.filter(i => i.symmetrical === wantSymmetrical);
-            if (!subset.length) subset = pool;
-            const fresh = subset.filter(i => i.id !== lastSymmetryId);
-            const choice = (fresh.length ? fresh : subset)[Math.floor(Math.random() * (fresh.length ? fresh.length : subset.length))];
-            lastSymmetryId = choice.id;
-            return choice;
-        }
-
-        function buildSymmetryArt(item) {
-            const wrap = document.createElement('div');
-            wrap.className = 'symmetry-wrap';
-
-            const art = document.createElement('div');
-            art.className = 'symmetry-art';
-
-            let lines = item.lines || [];
-            if (item.src) {
-                const img = document.createElement('img');
-                img.className = 'symmetry-img';
-                img.alt = item.name || 'Picture to check for symmetry';
-                img.src = item.src;
-                img.addEventListener('error', () => {
-                    symmetryBroken.add(item.src);
-                    if (currentGameMode === 'symmetry') generateNewQuestion();
-                });
-                art.appendChild(img);
-                const mode = item.line || 'vertical';
-                lines = !item.symmetrical || mode === 'none' ? []
-                    : mode === 'horizontal' ? ['h']
-                    : mode === 'both' ? ['v', 'h']
-                    : ['v'];
-            } else {
-                art.insertAdjacentHTML('beforeend',
-                    `<svg class="symmetry-svg" viewBox="0 0 200 200" role="img" aria-label="Shape"><g fill="${item.fill}" stroke="#18243b" stroke-width="4" stroke-linejoin="round">${item.svg}</g></svg>`);
-            }
-
-            const overlay = lines.map(k => {
-                const [x1, y1, x2, y2] = SYMMETRY_LINE_COORDS[k];
-                return `<line class="sym-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
-            }).join('');
-            art.insertAdjacentHTML('beforeend', `<svg class="symmetry-lines" viewBox="0 0 200 200" aria-hidden="true">${overlay}</svg>`);
-
-            const caption = document.createElement('div');
-            caption.className = 'symmetry-caption';
-            caption.id = 'symCaption';
-            caption.dataset.sym = item.symmetrical ? '1' : '0';
-            caption.dataset.lines = String(lines.length);
-
-            wrap.append(art, caption);
-            return wrap;
-        }
-
-        function symmetryReveal() {
-            document.querySelectorAll('.symmetry-lines .sym-line').forEach(l => l.classList.add('show'));
-            const caption = document.getElementById('symCaption');
-            if (!caption) return;
-            const sym = caption.dataset.sym === '1';
-            const n = parseInt(caption.dataset.lines, 10);
-            caption.textContent = sym
-                ? (n > 1 ? 'Yes! The dashed lines are lines of symmetry.' : n === 1 ? 'Yes! The dashed line is a line of symmetry.' : 'Yes! Both halves match.')
-                : 'No. The two halves do not match.';
-        }
-
-        // Time Game Functions (o'clock only, Stage 1)
-        // ------------------------------------------------------------------
-        // YOUR CLOCK IMAGES: put 12 pictures in an "img/clocks/" folder next to
-        // index.html, named 1.png, 2.png ... 12.png (1 = 1 o'clock ... 12 = 12 o'clock).
-        // If you use another format, change TIME_IMAGE_EXT below (for example 'jpg').
-        // Any hour whose picture is missing is drawn by the app instead.
-        // ------------------------------------------------------------------
-        const TIME_IMAGE_FOLDER = 'img/clocks/';
-        const TIME_IMAGE_EXT = 'png';
-        let lastTimeHour = 0;
-
-        function timeLabel(h) { return h + " o'clock"; }
-
-        function pickTimeHour() {
-            let h;
-            do { h = Math.floor(Math.random() * 12) + 1; } while (h === lastTimeHour);
-            lastTimeHour = h;
-            return h;
-        }
-
-        function timeClockSvg(hour) {
-            let marks = '';
-            for (let n = 1; n <= 12; n++) {
-                const a = n * 30 * Math.PI / 180;
-                marks += `<text x="${(100 + 74 * Math.sin(a)).toFixed(1)}" y="${(100 - 74 * Math.cos(a) + 7).toFixed(1)}" text-anchor="middle" font-size="22" font-weight="800" fill="#18243b" font-family="'Baloo 2',Nunito,Arial,sans-serif">${n}</text>`;
-            }
-            let ticks = '';
-            for (let t = 0; t < 60; t++) {
-                const a = t * 6 * Math.PI / 180;
-                const r1 = t % 5 === 0 ? 92 : 94, r2 = 98;
-                ticks += `<line x1="${(100 + r1 * Math.sin(a)).toFixed(1)}" y1="${(100 - r1 * Math.cos(a)).toFixed(1)}" x2="${(100 + r2 * Math.sin(a)).toFixed(1)}" y2="${(100 - r2 * Math.cos(a)).toFixed(1)}" stroke="#8a97b0" stroke-width="${t % 5 === 0 ? 2.5 : 1.2}"/>`;
-            }
-            const ha = hour * 30 * Math.PI / 180;
-            const hx = (100 + 38 * Math.sin(ha)).toFixed(1), hy = (100 - 38 * Math.cos(ha)).toFixed(1);
-            return `<svg viewBox="0 0 200 200" role="img" aria-label="Analogue clock">
-                <circle cx="100" cy="100" r="98" fill="#fff" stroke="#18243b" stroke-width="5"/>
-                ${ticks}${marks}
-                <line x1="100" y1="100" x2="100" y2="38" stroke="#ef765f" stroke-width="5" stroke-linecap="round"/>
-                <line x1="100" y1="100" x2="${hx}" y2="${hy}" stroke="#18243b" stroke-width="9" stroke-linecap="round"/>
-                <circle cx="100" cy="100" r="8" fill="#18243b"/>
-            </svg>`;
-        }
-
-        function buildTimeClock(hour) {
-            const wrap = document.createElement('div');
-            wrap.className = 'time-wrap';
-            const clock = document.createElement('div');
-            clock.className = 'time-clock';
-
-            const img = document.createElement('img');
-            img.alt = 'Clock';
-            img.src = `${TIME_IMAGE_FOLDER}${hour}.${TIME_IMAGE_EXT}`;
-            img.addEventListener('error', () => {
-                img.remove();
-                clock.insertAdjacentHTML('beforeend', timeClockSvg(hour));
-            });
-            clock.appendChild(img);
-
-            const caption = document.createElement('div');
-            caption.className = 'time-caption';
-            caption.id = 'timeCaption';
-            caption.dataset.hour = String(hour);
-
-            wrap.append(clock, caption);
-            return wrap;
-        }
-
-        function timeReveal() {
-            const caption = document.getElementById('timeCaption');
-            if (!caption) return;
-            const h = parseInt(caption.dataset.hour, 10);
-            caption.textContent = `${timeLabel(h)} is ${h}:00. The short hand points to ${h} and the long hand points to 12.`;
-        }
-
-        // Days of the Week + Months of the Year Game Functions
-        const DM_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const DM_DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const DM_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        let dmCorrectLabel = '';
-        let dmCaptionText = '';
-        let dmCalendarDow = null;
-
-        function dmRand(n) { return Math.floor(Math.random() * n); }
-        function dmShuffle(arr) { return arr.slice().sort(() => Math.random() - 0.5); }
-        function dmOrdinal(n) {
-            const v = n % 100;
-            if (v >= 11 && v <= 13) return n + 'th';
-            return n + (['th', 'st', 'nd', 'rd'][n % 10] || 'th');
-        }
-        function dmOptions(correct, pool, count) {
-            const others = dmShuffle(pool.filter(x => x !== correct)).slice(0, Math.max(0, count - 1));
-            return dmShuffle([correct].concat(others));
-        }
-        const dmBlankHtml = '<span class="dm-blank" id="dmBlank">_______</span>';
-
-        function dmWeighted(items) {
-            const bag = [];
-            items.forEach(([name, w]) => { for (let i = 0; i < w; i++) bag.push(name); });
-            return bag[dmRand(bag.length)];
-        }
-
-        function dmTrueFalse(statement, isTrue, explain, kind) {
-            return { kind, prompt: 'True or false?', sentence: statement, options: ['True', 'False'], correct: isTrue ? 'True' : 'False', caption: explain };
-        }
-
-        function dmBuildDays() {
-            const count = difficultyPick(3, 4);
-            const kind = dmWeighted([['after', 2], ['before', 2], ['between', 2], ['count', 1], ['tf', 3]]);
-            if (kind === 'after') {
-                const i = dmRand(7);
-                const ans = DM_DAYS[(i + 1) % 7];
-                return { kind, prompt: 'Choose the correct day.', sentence: `The day after ${DM_DAYS[i]} is ${dmBlankHtml}`, blank: true,
-                         options: dmOptions(ans, DM_DAYS, count), correct: ans, caption: `The day after ${DM_DAYS[i]} is ${ans}.`, meta: { i, ans } };
-            }
-            if (kind === 'before') {
-                const i = dmRand(7);
-                const ans = DM_DAYS[(i + 6) % 7];
-                return { kind, prompt: 'Choose the correct day.', sentence: `The day before ${DM_DAYS[i]} is ${dmBlankHtml}`, blank: true,
-                         options: dmOptions(ans, DM_DAYS, count), correct: ans, caption: `The day before ${DM_DAYS[i]} is ${ans}.`, meta: { i, ans } };
-            }
-            if (kind === 'between') {
-                const i = dmRand(7);
-                const a = DM_DAYS[i], b = DM_DAYS[(i + 2) % 7], ans = DM_DAYS[(i + 1) % 7];
-                return { kind, prompt: 'Choose the correct day.', sentence: `The day between ${a} and ${b} is ${dmBlankHtml}`, blank: true,
-                         options: dmOptions(ans, DM_DAYS, count), correct: ans, caption: `${ans} comes between ${a} and ${b}.`, meta: { i, ans } };
-            }
-            if (kind === 'count') {
-                return { kind, prompt: 'Choose the correct answer.', sentence: 'How many days are in a week?',
-                         options: dmOptions('7', ['5', '6', '7', '8', '10'], count), correct: '7', caption: 'There are 7 days in a week.' };
-            }
-            // true / false (Sunday is left out of "comes after" statements, so they are never ambiguous)
-            const tfKind = dmWeighted([['next', 2], ['wrong-order', 2], ['count-true', 1], ['count-false', 2]]);
-            if (tfKind === 'next') {
-                const i = 1 + dmRand(5); // Monday..Friday
-                return Object.assign(dmTrueFalse(`${DM_DAYS[i + 1]} comes after ${DM_DAYS[i]}.`, true, `Yes! ${DM_DAYS[i + 1]} comes right after ${DM_DAYS[i]}.`, 'tf-next'), { meta: { truth: true } });
-            }
-            if (tfKind === 'wrong-order') {
-                const b = 2 + dmRand(5); // Tuesday..Saturday
-                const a = 1 + dmRand(b - 1); // an earlier day (Monday..)
-                return Object.assign(dmTrueFalse(`${DM_DAYS[a]} comes after ${DM_DAYS[b]}.`, false, `No. ${DM_DAYS[a]} comes before ${DM_DAYS[b]}.`, 'tf-order'), { meta: { truth: false } });
-            }
-            if (tfKind === 'count-true') {
-                return Object.assign(dmTrueFalse('There are 7 days in the week.', true, 'Yes! There are 7 days in a week.', 'tf-count'), { meta: { truth: true } });
-            }
-            const n = [5, 6, 8, 10, 30][dmRand(5)];
-            return Object.assign(dmTrueFalse(`There are ${n} days in the week.`, false, `No. There are 7 days in a week, not ${n}.`, 'tf-count'), { meta: { truth: false } });
-        }
-
-        function dmBuildMonths() {
-            const count = difficultyPick(3, 4);
-            const kind = dmWeighted([['cal-days', 1], ['cal-weekday', 2], ['between', 2], ['nth', 2], ['after', 2], ['before', 2], ['tf', 3]]);
-            if (kind === 'cal-days' || kind === 'cal-weekday') {
-                const year = 2025 + dmRand(3);   // 2025–2027 (no leap years, so February always has 28 days)
-                const month = dmRand(12);
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const firstDow = new Date(year, month, 1).getDay();
-                const calendar = { year, month, daysInMonth, firstDow };
-                if (kind === 'cal-days') {
-                    const ans = String(daysInMonth);
-                    return { kind, prompt: 'How many days are in this month?', calendar,
-                             options: dmOptions(ans, ['28', '29', '30', '31'], count), correct: ans, caption: `${DM_MONTHS[month]} has ${ans} days.`, meta: { daysInMonth } };
-                }
-                const dow = dmRand(7);
-                let total = 0;
-                for (let d = 1; d <= daysInMonth; d++) if ((firstDow + d - 1) % 7 === dow) total++;
-                const ans = String(total);
-                calendar.askDow = dow;
-                return { kind, prompt: `How many ${DM_DAYS[dow]}s are in this month?`, calendar,
-                         options: dmOptions(ans, ['3', '4', '5', '6'], Math.min(count, 4)), correct: ans,
-                         caption: `There ${total === 1 ? 'is' : 'are'} ${total} ${DM_DAYS[dow]}s in ${DM_MONTHS[month]}.`, meta: { total, dow } };
-            }
-            if (kind === 'between') {
-                const i = dmRand(10); // January..October
-                const a = DM_MONTHS[i], b = DM_MONTHS[i + 2], ans = DM_MONTHS[i + 1];
-                return { kind, prompt: 'Choose the correct month.', sentence: `The month between ${a} and ${b} is ${dmBlankHtml}`, blank: true,
-                         options: dmOptions(ans, DM_MONTHS, count), correct: ans, caption: `${ans} comes between ${a} and ${b}.`, meta: { i, ans } };
-            }
-            if (kind === 'nth') {
-                const n = 1 + dmRand(12);
-                const ans = DM_MONTHS[n - 1];
-                return { kind, prompt: 'Choose the correct month.', sentence: `The ${dmOrdinal(n)} month of the year is ${dmBlankHtml}`, blank: true,
-                         options: dmOptions(ans, DM_MONTHS, count), correct: ans, caption: `${ans} is the ${dmOrdinal(n)} month of the year.`, meta: { n, ans } };
-            }
-            if (kind === 'after') {
-                const i = dmRand(11); // January..November
-                const ans = DM_MONTHS[i + 1];
-                return { kind, prompt: 'Choose the correct month.', sentence: `What month comes after ${DM_MONTHS[i]}?`,
-                         options: dmOptions(ans, DM_MONTHS, count), correct: ans, caption: `${ans} comes after ${DM_MONTHS[i]}.`, meta: { i, ans } };
-            }
-            if (kind === 'before') {
-                const i = 1 + dmRand(11); // February..December
-                const ans = DM_MONTHS[i - 1];
-                return { kind, prompt: 'Choose the correct month.', sentence: `What month comes before ${DM_MONTHS[i]}?`,
-                         options: dmOptions(ans, DM_MONTHS, count), correct: ans, caption: `${ans} comes before ${DM_MONTHS[i]}.`, meta: { i, ans } };
-            }
-            // true / false
-            const tfKind = dmWeighted([['next', 2], ['wrong-order', 2], ['count-true', 1], ['count-false', 2], ['nth-true', 1], ['nth-false', 1]]);
-            if (tfKind === 'next') {
-                const i = dmRand(11);
-                return Object.assign(dmTrueFalse(`${DM_MONTHS[i + 1]} comes after ${DM_MONTHS[i]}.`, true, `Yes! ${DM_MONTHS[i + 1]} comes right after ${DM_MONTHS[i]}.`, 'tf-next'), { meta: { truth: true } });
-            }
-            if (tfKind === 'wrong-order') {
-                let a, b;
-                do { b = 1 + dmRand(11); a = dmRand(b); } while (a === 0 && b === 11); // skip January/December (the year wraps round)
-                return Object.assign(dmTrueFalse(`${DM_MONTHS[a]} comes after ${DM_MONTHS[b]}.`, false, `No. ${DM_MONTHS[a]} comes before ${DM_MONTHS[b]}.`, 'tf-order'), { meta: { truth: false } });
-            }
-            if (tfKind === 'count-true') {
-                return Object.assign(dmTrueFalse('There are 12 months in a year.', true, 'Yes! There are 12 months in a year.', 'tf-count'), { meta: { truth: true } });
-            }
-            if (tfKind === 'count-false') {
-                const n = [10, 11, 13, 14][dmRand(4)];
-                return Object.assign(dmTrueFalse(`There are ${n} months in a year.`, false, `No. There are 12 months in a year, not ${n}.`, 'tf-count'), { meta: { truth: false } });
-            }
-            const n = 1 + dmRand(12);
-            if (tfKind === 'nth-true') {
-                return Object.assign(dmTrueFalse(`${DM_MONTHS[n - 1]} is the ${dmOrdinal(n)} month of the year.`, true, `Yes! ${DM_MONTHS[n - 1]} is the ${dmOrdinal(n)} month.`, 'tf-nth'), { meta: { truth: true } });
-            }
-            let wrong;
-            do { wrong = 1 + dmRand(12); } while (wrong === n);
-            return Object.assign(dmTrueFalse(`${DM_MONTHS[n - 1]} is the ${dmOrdinal(wrong)} month of the year.`, false, `No. ${DM_MONTHS[n - 1]} is the ${dmOrdinal(n)} month of the year.`, 'tf-nth'), { meta: { truth: false } });
-        }
-
-        function dmCalendarHtml(c) {
-            let html = `<table class="dm-cal" aria-label="Calendar for ${DM_MONTHS[c.month]} ${c.year}"><caption>${DM_MONTHS[c.month]} ${c.year}</caption><thead><tr>`;
-            DM_DAYS_SHORT.forEach((d, i) => { html += `<th class="${c.askDow === i ? 'ask' : ''}">${d}</th>`; });
-            html += '</tr></thead><tbody><tr>';
-            for (let i = 0; i < c.firstDow; i++) html += '<td class="empty"></td>';
-            for (let d = 1; d <= c.daysInMonth; d++) {
-                const dow = (c.firstDow + d - 1) % 7;
-                if (dow === 0 && d !== 1) html += '</tr><tr>';
-                html += `<td data-dow="${dow}">${d}</td>`;
-            }
-            const trailing = (7 - ((c.firstDow + c.daysInMonth) % 7)) % 7;
-            for (let i = 0; i < trailing; i++) html += '<td class="empty"></td>';
-            return html + '</tr></tbody></table>';
-        }
-
-        function dmRender(q) {
-            const comparisonQuestion = document.getElementById('comparisonQuestion');
-            const shapesContainer = document.getElementById('shapesContainer');
-            const answersContainer = document.getElementById('answers');
-            comparisonQuestion.textContent = q.prompt;
-            dmCorrectLabel = q.correct;
-            dmCaptionText = q.caption;
-            dmCalendarDow = q.calendar && q.calendar.askDow !== undefined ? q.calendar.askDow : null;
-            currentCorrectAnswer = q.correct.toLowerCase();
-
-            const wrap = document.createElement('div');
-            wrap.className = 'dm-wrap';
-            if (q.calendar) wrap.insertAdjacentHTML('beforeend', dmCalendarHtml(q.calendar));
-            if (q.sentence) wrap.insertAdjacentHTML('beforeend', `<div class="dm-card">${q.sentence}</div>`);
-            wrap.insertAdjacentHTML('beforeend', '<div class="dm-caption" id="dmCaption"></div>');
-            shapesContainer.appendChild(wrap);
-
-            q.options.forEach(label => {
-                const button = document.createElement('button');
-                button.className = 'answer-btn';
-                button.textContent = label;
-                button.tabIndex = 0;
-                addTouchSupport(button, handleAnswer);
-                answersContainer.appendChild(button);
-            });
-        }
-
-        function dmReveal() {
-            const blank = document.getElementById('dmBlank');
-            if (blank) { blank.textContent = dmCorrectLabel; blank.classList.add('filled'); }
-            const caption = document.getElementById('dmCaption');
-            if (caption) caption.textContent = dmCaptionText;
-            if (dmCalendarDow !== null) {
-                document.querySelectorAll(`.dm-cal td[data-dow="${dmCalendarDow}"]`).forEach(td => td.classList.add('hl'));
-            }
-        }
-
-        // Measurement Games: Length, Weight, Capacity
-        const MS_MODES = ['length', 'weight', 'capacity'];
-        function isMeasureMode(mode) { return MS_MODES.includes(mode); }
-        let msQuestion = null;
-        let msLocked = false;
-        let msPicked = -1;
-        const MS_COLORS = ['#ef765f', '#6a95d6', '#3fa896', '#efb84f', '#8571c4', '#ef6f8e'];
-
-        function msRand(n) { return Math.floor(Math.random() * n); }
-        function msShuffle(a) { return a.slice().sort(() => Math.random() - 0.5); }
-        function msPickDistinct(values, count, minGap) {
-            // pick `count` values from the list that are all at least `minGap` apart
-            for (let tries = 0; tries < 200; tries++) {
-                const chosen = [];
-                msShuffle(values).forEach(v => { if (chosen.length < count && chosen.every(c => Math.abs(c - v) >= minGap)) chosen.push(v); });
-                if (chosen.length === count) return chosen;
-            }
-            return msShuffle(values).slice(0, count);
-        }
-
-        // ---- Length ----
-        function msVerticalSvg(family, h, color) {
-            const W = 70;
-            let body = '';
-            if (family === 'tree') {
-                body = `<rect x="29" y="${(h * 0.7).toFixed(1)}" width="12" height="${(h * 0.3).toFixed(1)}" fill="#9b6a3c"/><ellipse cx="35" cy="${(h * 0.37).toFixed(1)}" rx="27" ry="${(h * 0.37).toFixed(1)}" fill="${color}"/>`;
-            } else if (family === 'candle') {
-                body = `<rect x="22" y="16" width="26" height="${h - 16}" rx="4" fill="${color}"/><path d="M35 0 C43 6 43 13 35 16 C27 13 27 6 35 0Z" fill="#f59e0b"/>`;
-            } else if (family === 'flower') {
-                body = `<rect x="32" y="30" width="6" height="${h - 30}" fill="#3fa05a"/>` +
-                       [0, 60, 120, 180, 240, 300].map(a => `<circle cx="${(35 + 12 * Math.cos(a * Math.PI / 180)).toFixed(1)}" cy="${(21 + 12 * Math.sin(a * Math.PI / 180)).toFixed(1)}" r="8" fill="${color}"/>`).join('') +
-                       '<circle cx="35" cy="21" r="7" fill="#fcd34d"/>';
-            } else if (family === 'building') {
-                let windows = '';
-                for (let y = 12; y < h - 30; y += 20) windows += `<rect x="20" y="${y}" width="10" height="10" fill="#fff8d6"/><rect x="40" y="${y}" width="10" height="10" fill="#fff8d6"/>`;
-                body = `<rect x="12" y="0" width="46" height="${h}" rx="3" fill="${color}"/>${windows}<rect x="30" y="${h - 22}" width="10" height="22" fill="#18243b"/>`;
-            } else { // pencil, standing up
-                body = `<polygon points="22,18 48,18 35,0" fill="#f3d9a4"/><polygon points="31,6 39,6 35,0" fill="#18243b"/><rect x="22" y="18" width="26" height="${h - 18}" fill="${color}"/><rect x="22" y="${h - 14}" width="26" height="14" fill="#f4a3b5"/>`;
-            }
-            return `<svg viewBox="0 0 ${W} ${h}" width="${W}" height="${h}" aria-hidden="true"><g stroke="#18243b" stroke-width="2.5" stroke-linejoin="round">${body}</g></svg>`;
-        }
-
-        function msHorizontalSvg(family, L, color) {
-            const H = 30;
-            let body = '';
-            if (family === 'pencil') {
-                body = `<rect x="14" y="5" width="${L - 42}" height="20" fill="${color}"/><rect x="0" y="5" width="14" height="20" rx="4" fill="#f4a3b5"/><polygon points="${L - 28},5 ${L},15 ${L - 28},25" fill="#f3d9a4"/><polygon points="${L - 9},12 ${L},15 ${L - 9},18" fill="#18243b"/>`;
-            } else if (family === 'ribbon') {
-                body = `<polygon points="0,5 ${L},5 ${L - 14},15 ${L},25 0,25" fill="${color}"/>`;
-            } else if (family === 'crayon') {
-                body = `<rect x="0" y="5" width="${L - 22}" height="20" rx="3" fill="${color}"/><rect x="14" y="5" width="${Math.max(10, L - 52)}" height="20" fill="#fff" fill-opacity=".35"/><polygon points="${L - 22},5 ${L},15 ${L - 22},25" fill="${color}"/>`;
-            } else { // stick
-                body = `<rect x="0" y="8" width="${L}" height="14" rx="7" fill="#b9814a"/><circle cx="${(L * 0.35).toFixed(1)}" cy="15" r="2.5" fill="#8b5e34"/><circle cx="${(L * 0.7).toFixed(1)}" cy="15" r="2.5" fill="#8b5e34"/>`;
-            }
-            return `<svg viewBox="0 0 ${L} ${H}" style="width:${(L / 4.6).toFixed(2)}%;height:auto" aria-hidden="true"><g stroke="#18243b" stroke-width="2.5" stroke-linejoin="round">${body}</g></svg>`;
-        }
-
-        function msBuildLength() {
-            const count = difficultyPick(2, 3);
-            const vertical = Math.random() < 0.5;
-            const pickMax = Math.random() < 0.5;
-            const colors = msShuffle(MS_COLORS);
-            let values, items, prompt, word;
-            if (vertical) {
-                values = msPickDistinct([70, 95, 120, 145, 170], count, 25);
-                const family = ['tree', 'candle', 'flower', 'building', 'pencil'][msRand(5)];
-                items = values.map((h, i) => ({ html: msVerticalSvg(family, h, colors[i]), label: 'Object' }));
-                prompt = pickMax ? 'Which is taller?' : 'Which is shorter?';
-                word = pickMax ? ['taller', 'the tallest'] : ['shorter', 'the shortest'];
-            } else {
-                values = msPickDistinct([130, 190, 250, 320, 400], count, 50);
-                const family = ['pencil', 'ribbon', 'crayon', 'stick'][msRand(4)];
-                items = values.map((L, i) => ({ html: msHorizontalSvg(family, L, colors[i]), label: 'Object' }));
-                prompt = pickMax ? 'Which is longer?' : 'Which is shorter?';
-                word = pickMax ? ['longer', 'the longest'] : ['shorter', 'the shortest'];
-            }
-            const target = pickMax ? Math.max(...values) : Math.min(...values);
-            return { game: 'length', layout: vertical ? 'vert' : 'horiz', prompt, items, values,
-                     correctIndex: values.indexOf(target), pickMax,
-                     caption: `The highlighted one is ${count === 2 ? word[0] : word[1]}.` };
-        }
-
-        // ---- Weight ----
-        const MS_WEIGHTS = [
-            { e: '🐜', n: 'ant', g: 0.003 }, { e: '🦋', n: 'butterfly', g: 0.5 }, { e: '🍒', n: 'cherry', g: 8 },
-            { e: '🥚', n: 'egg', g: 60 }, { e: '🍎', n: 'apple', g: 180 }, { e: '📚', n: 'pile of books', g: 2000 },
-            { e: '🐕', n: 'dog', g: 25000 }, { e: '🚗', n: 'car', g: 1500000 }, { e: '🐘', n: 'elephant', g: 5000000 },
-            { e: '🐋', n: 'whale', g: 100000000 }
-        ];
-        function msBuildWeight() {
-            const count = difficultyPick(2, 3);
-            const heavier = Math.random() < 0.5;
-            let chosen;
-            for (let tries = 0; tries < 300; tries++) {
-                chosen = [];
-                msShuffle(MS_WEIGHTS).forEach(it => {
-                    if (chosen.length < count && chosen.every(c => Math.max(c.g, it.g) / Math.min(c.g, it.g) >= 5)) chosen.push(it);
-                });
-                if (chosen.length === count) break;
-            }
-            const grams = chosen.map(c => c.g);
-            const target = heavier ? Math.max(...grams) : Math.min(...grams);
-            const idx = grams.indexOf(target);
-            const winner = chosen[idx];
-            const others = chosen.filter((c, i) => i !== idx);
-            const caption = count === 2
-                ? `The ${winner.n} is ${heavier ? 'heavier' : 'lighter'} than the ${others[0].n}.`
-                : `The ${winner.n} is the ${heavier ? 'heaviest' : 'lightest'}.`;
-            return { game: 'weight', layout: 'cards', prompt: heavier ? 'Which is heavier?' : 'Which is lighter?',
-                     items: chosen.map(c => ({ html: `<span class="ms-emoji" role="img" aria-label="${c.n}">${c.e}</span><span class="ms-name">${c.n}</span>`, label: c.n })),
-                     values: grams, correctIndex: idx, pickMax: heavier, caption };
-        }
-
-        // ---- Capacity ----
-        function msContainerSvg(family, scale, color) {
-            let body = '';
-            if (family === 'mug') {
-                body = `<rect x="16" y="26" width="54" height="64" rx="7" fill="${color}"/><path d="M70 40 C94 40 94 76 70 76" fill="none" stroke-width="8"/>`;
-            } else if (family === 'glass') {
-                body = `<polygon points="20,14 80,14 72,92 28,92" fill="#e8f3fb"/><polygon points="23,40 77,40 72,92 28,92" fill="${color}" fill-opacity=".55"/>`;
-            } else if (family === 'jug') {
-                body = `<rect x="22" y="22" width="48" height="68" rx="7" fill="${color}"/><polygon points="22,22 10,15 22,32" fill="${color}"/><path d="M70 34 C94 34 94 76 70 76" fill="none" stroke-width="8"/>`;
-            } else if (family === 'bucket') {
-                body = `<path d="M18 30 C18 2 82 2 82 30" fill="none" stroke-width="5"/><polygon points="12,30 88,30 78,92 22,92" fill="${color}"/><ellipse cx="50" cy="30" rx="38" ry="6" fill="#18243b" fill-opacity=".25"/>`;
-            } else if (family === 'bottle') {
-                body = `<rect x="38" y="6" width="24" height="10" rx="2" fill="#18243b"/><rect x="42" y="16" width="16" height="28" fill="${color}"/><rect x="26" y="40" width="48" height="52" rx="14" fill="${color}"/>`;
-            } else { // bowl
-                body = `<path d="M8 36 Q50 120 92 36 Z" fill="${color}"/><rect x="6" y="32" width="88" height="8" rx="4" fill="${color}"/>`;
-            }
-            const size = Math.round(130 * scale);
-            return `<svg viewBox="0 0 100 92" width="${size}" height="${Math.round(size * 0.92)}" aria-hidden="true"><g stroke="#18243b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${body}</g></svg>`;
-        }
-
-        function msBuildCapacity() {
-            const count = difficultyPick(2, 3);
-            const most = Math.random() < 0.5;
-            const scales = msPickDistinct([0.55, 0.72, 0.92, 1.2], count, 0.15);
-            const family = ['mug', 'glass', 'jug', 'bucket', 'bottle', 'bowl'][msRand(6)];
-            const colors = msShuffle(MS_COLORS);
-            const target = most ? Math.max(...scales) : Math.min(...scales);
-            return { game: 'capacity', layout: 'vert', prompt: most ? 'Which holds the most?' : 'Which holds the least?',
-                     items: scales.map((sc, i) => ({ html: msContainerSvg(family, sc, colors[i]), label: 'Container' })),
-                     values: scales, correctIndex: scales.indexOf(target), pickMax: most,
-                     caption: `The highlighted one ${count === 2 ? (most ? 'holds more' : 'holds less') : (most ? 'holds the most' : 'holds the least')}.` };
-        }
-
-        function msGenerate() {
-            const shapesContainer = document.getElementById('shapesContainer');
-            const answersContainer = document.getElementById('answers');
-            const comparisonQuestion = document.getElementById('comparisonQuestion');
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            const mathEquationDisplay = document.getElementById('mathEquationDisplay');
-            const comparisonContainer = document.getElementById('comparisonContainer');
-
-            shapesContainer.innerHTML = '';
-            shapesContainer.style.display = 'none';
-            comparisonContainer.innerHTML = '';
-            comparisonContainer.style.display = 'none';
-            mathEquationDisplay.innerHTML = '';
-            mathEquationDisplay.style.display = 'none';
-            answersContainer.innerHTML = '';
-            answersContainer.style.display = 'none';
-            feedback.textContent = '';
-            feedback.className = 'feedback';
-            nextBtn.style.display = 'none';
-            setSoundReplay(null);
-            resetLearningSupport();
-            updatePracticeStatus();
-
-            const q = currentGameMode === 'length' ? msBuildLength() : currentGameMode === 'weight' ? msBuildWeight() : msBuildCapacity();
-            msQuestion = q;
-            msLocked = false;
-            msPicked = -1;
-            currentCorrectAnswer = q.correctIndex;
-
-            comparisonQuestion.className = 'comparison-question ms-board';
-            comparisonQuestion.innerHTML = `
-                <div class="oml-prompt">${q.prompt}</div>
-                <div class="ms-stage ${q.layout}" id="msStage">
-                    ${q.items.map((it, i) => `<button type="button" class="ms-choice" data-i="${i}" aria-label="${it.label} ${i + 1}">${it.html}</button>`).join('')}
-                </div>
-                <div class="ms-caption" id="msCaption"></div>
-            `;
-            document.querySelectorAll('.ms-choice').forEach(btn => {
-                addTouchSupport(btn, () => msChoose(parseInt(btn.dataset.i, 10)));
-            });
-            startQuestionTimer();
-        }
-
-        function msLock() {
-            msLocked = true;
-            document.querySelectorAll('.ms-choice').forEach(b => { b.disabled = true; });
-        }
-
-        function msReveal() {
-            if (!msQuestion) return;
-            const buttons = document.querySelectorAll('.ms-choice');
-            buttons.forEach((b, i) => {
-                if (i === msQuestion.correctIndex) b.classList.add('correct');
-                else if (i === msPicked) b.classList.add('incorrect');
-            });
-            const caption = document.getElementById('msCaption');
-            if (caption) caption.textContent = msQuestion.caption;
-        }
-
-        function msChoose(i) {
-            if (msLocked || !msQuestion) return;
-            stopQuestionTimer();
-            msPicked = i;
-            const answerWasCorrect = i === msQuestion.correctIndex;
-            msLock();
-            msReveal();
-
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('nextBtn');
-            recordAnswer(answerWasCorrect);
-            updatePracticeStatus();
-            if (answerWasCorrect) {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_CORRECT; syncHud(); }
-                feedback.innerHTML = '✓';
-                feedback.className = 'feedback show correct';
-                correctSound.currentTime = 0; correctSound.play().catch(() => {});
-                createConfetti();
-            } else {
-                if (isTimedMode()) { timedScore += TIMED_SCORE_WRONG; syncHud(); }
-                feedback.innerHTML = '✕';
-                feedback.className = 'feedback show incorrect';
-                wrongSound.currentTime = 0; wrongSound.play().catch(() => {});
-            }
-            setTimeout(() => feedback && feedback.classList.remove('show'), 700);
-            if (isTimedMode()) {
-                nextBtn.style.display = 'none';
-                setTimeout(() => { if (isTimedMode() && isMeasureMode(currentGameMode)) challengeModeEnabled ? startGame('challenge') : generateNewQuestion(); }, 1200);
             } else {
                 nextBtn.style.display = 'block';
                 nextBtn.style.animation = 'tada 0.5s';
@@ -8830,37 +7272,5 @@ html[data-theme="dark"] .ms-choice.incorrect{background:rgba(251,113,133,.16)}
             });
         }
     </script>
-<script>
-/* Full screen toggle (smart-board friendly) */
-(function () {
-    const btn = document.getElementById('fullscreenBtn');
-    if (!btn) return;
-    const root = document.documentElement;
-    const canFull = !!(root.requestFullscreen || root.webkitRequestFullscreen);
-    if (!canFull) return; // hide the button where the browser can't do it
-    btn.style.display = 'flex';
-    const isFull = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
-    function sync() {
-        const on = isFull();
-        btn.classList.toggle('is-full', on);
-        btn.setAttribute('aria-label', on ? 'Exit full screen' : 'Enter full screen');
-        btn.title = on ? 'Exit full screen' : 'Full screen';
-    }
-    function toggle() {
-        try {
-            if (isFull()) {
-                (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-            } else {
-                const p = (root.requestFullscreen || root.webkitRequestFullscreen).call(root);
-                if (p && p.catch) p.catch(() => {});
-            }
-        } catch (e) {}
-    }
-    btn.addEventListener('click', toggle);
-    document.addEventListener('fullscreenchange', sync);
-    document.addEventListener('webkitfullscreenchange', sync);
-    sync();
-})();
-</script>
 </body>
 </html>
