@@ -2923,17 +2923,6 @@ html.calm-mode .pattern-choice:active {
 .ordinal-item img{width:clamp(48px,12vw,88px);height:clamp(48px,12vw,88px);object-fit:contain;border-radius:18px;background:#fff;box-shadow:0 7px 0 rgba(51,82,134,.14);padding:.3rem}
 .ordinal-item .ordinal-position{font-size:.85rem;font-weight:900;color:var(--text-muted);white-space:nowrap}
 .ordinal-question-focus{display:inline-block;padding:.08em .3em;border-radius:12px;background:linear-gradient(120deg,#fff0b8,#ffd889);color:#18243b;font-size:1.14em;font-weight:1000;box-shadow:0 4px 0 rgba(217,150,31,.18)}
-.suffix-card{display:flex;justify-content:center;align-items:center;gap:6px;margin:10px 0 6px;font-family:'Baloo 2',Georgia,serif;color:var(--ink)}
-.suffix-num{font-size:clamp(64px,13vw,120px);line-height:1;font-weight:700;letter-spacing:-.04em}
-.suffix-blank{min-width:1.35em;padding:0 .18em;text-align:center;font-size:clamp(40px,8vw,72px);line-height:1.25;font-weight:700;color:var(--coral);border:3px dashed var(--coral);border-radius:18px;align-self:flex-start;margin-top:.2em}
-.suffix-blank.ok{border:0;background:linear-gradient(155deg,var(--ok-a),var(--ok-b));color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:0 6px 0 rgba(31,106,94,.25),inset 0 -4px 0 rgba(0,0,0,.13)}
-.suffix-blank.bad{border:0;background:linear-gradient(155deg,var(--bad-a),var(--bad-b));color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:0 6px 0 rgba(145,57,50,.25),inset 0 -4px 0 rgba(0,0,0,.13)}
-.answer-btn.suffix-opt{font-size:clamp(24px,4vw,38px)!important}
-.ordinal-pick{cursor:pointer;border-radius:22px;padding:.3rem;transition:transform .15s,box-shadow .15s,background .15s;-webkit-tap-highlight-color:transparent;outline:none}
-.ordinal-pick:hover,.ordinal-pick:focus-visible{transform:translateY(-4px);background:rgba(255,216,137,.35)}
-.ordinal-pick:active{transform:scale(.96)}
-.ordinal-pick.correct{background:rgba(46,204,113,.28);box-shadow:0 0 0 3px #2ecc71}
-.ordinal-pick.incorrect{background:rgba(231,76,60,.25);box-shadow:0 0 0 3px #e74c3c}
 html[data-theme="dark"] .ordinal-lineup{background:linear-gradient(180deg,#1e2536,#1a2133);border-color:#33415d}
 html[data-theme="dark"] .ordinal-item img{background:#eef1f8}
 html[data-theme="dark"] .ordinal-question-focus{background:linear-gradient(120deg,#6b4f1c,#9b6e25);color:#fff7dc}
@@ -3415,6 +3404,7 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
     </div>
 
     <div class="game-container" id="gameContainer">
+        <div class="mood-face" aria-hidden="true"><span class="mood-inner"><img class="mood-img" alt="" draggable="false" src="img/mascot/normal.png"><span class="mood-fallback">😐</span></span></div>
         <button class="new-question-btn" id="newQuestionBtn" type="button" aria-label="New question">↻ New</button>
         <button class="repeat-sound-btn" id="repeatSoundBtn" type="button" aria-label="Repeat sound" title="Repeat sound">🔊</button>
 
@@ -3441,6 +3431,7 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
 
     <!-- Number Explorer Game Container - Updated to match other games -->
     <div class="number-explorer-container" id="numberExplorerContainer">
+        <div class="mood-face" aria-hidden="true"><span class="mood-inner"><img class="mood-img" alt="" draggable="false" src="img/mascot/normal.png"><span class="mood-fallback">😐</span></span></div>
         <button class="new-question-btn" id="numberExplorerNewQuestionBtn" type="button" aria-label="New question">↻ New</button>
         <button class="repeat-sound-btn" id="repeatSoundBtnExplorer" type="button" aria-label="Repeat sound" title="Repeat sound">🔊</button>
 
@@ -3901,12 +3892,14 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
         let sessionMistakes = [];
 
         function resetSessionStats() {
+            try { if (window.moodFaceReset) window.moodFaceReset(); } catch (e) {}
             sessionCorrect = 0;
             sessionAnswered = 0;
             sessionMistakes = [];
         }
 
         function recordAnswer(isCorrect) {
+            try { if (window.moodFaceReact) window.moodFaceReact(isCorrect); } catch (e) {}
             sessionAnswered += 1;
             if (isCorrect) sessionCorrect += 1;
             else if (currentGameMode) sessionMistakes.push(currentGameMode);
@@ -5625,8 +5618,12 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
                 });
             } else if (currentGameMode === 'addition') {
                 // Generate numbers according to requirements
-                const firstNumber = Math.floor(Math.random() * difficultyPick(11, 21)); // easy: 0-10, hard: 0-20
-                const secondNumber = Math.floor(Math.random() * difficultyPick(70, 130)); // easy: 0-69, hard: 0-129
+                // One number is always 0-10; the other keeps the old range. Their order is random.
+                const smallNumber = Math.floor(Math.random() * 11);
+                const largeNumber = Math.floor(Math.random() * difficultyPick(70, 130)); // easy: 0-69, hard: 0-129
+                const smallFirst = Math.random() < 0.5;
+                const firstNumber = smallFirst ? smallNumber : largeNumber;
+                const secondNumber = smallFirst ? largeNumber : smallNumber;
                 currentCorrectAnswer = firstNumber + secondNumber;
                 
                 // Hide shapes container and show math equation display
@@ -6154,9 +6151,6 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
                 document.querySelectorAll('.answer-btn').forEach(btn => {
                     btn.disabled = true;
                 });
-                document.querySelectorAll('.ordinal-pick').forEach(el => {
-                    el.style.pointerEvents = 'none';
-                });
             }
 
             // Determine the selected answer based on game mode
@@ -6244,18 +6238,6 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
                         btn.classList.add('correct');
                     } else if (btnValue === selectedAnswer) {
                         btn.classList.add('incorrect');
-                    }
-                });
-                const suffixBlank = document.querySelector('.suffix-blank');
-                if (suffixBlank && currentGameMode === 'ordinal-numbers') {
-                    suffixBlank.textContent = currentCorrectAnswer;
-                    suffixBlank.classList.add(selectedAnswer === currentCorrectAnswer ? 'ok' : 'bad');
-                }
-                document.querySelectorAll('.ordinal-pick').forEach(el => {
-                    if (el.dataset.value === currentCorrectAnswer) {
-                        el.classList.add('correct');
-                    } else if (el.dataset.value === selectedAnswer) {
-                        el.classList.add('incorrect');
                     }
                 });
             }
@@ -6687,7 +6669,6 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
         // Ordinal Numbers Game Functions
         const ordinalSuffixes = { 1: 'st', 2: 'nd', 3: 'rd' };
         const ordinalLineupSize = 5;
-        const ordinalSuffixPool = [1,2,3,4,5,11,12,13,14,20,21,22,23,24,31,32,33,42,43,51,52,53,61,72,83,91,101,111,112,113];
 
         function ordinalLabel(position) {
             const lastTwo = position % 100;
@@ -6699,7 +6680,7 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
             return filename.replace(/\.png$/i, '').replace(/[-_]/g, ' ');
         }
 
-        function renderOrdinalLineup(items, clickable, showLabels = true) {
+        function renderOrdinalLineup(items) {
             const shapesContainer = document.getElementById('shapesContainer');
             shapesContainer.innerHTML = '';
             shapesContainer.style.display = 'flex';
@@ -6709,17 +6690,6 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
                 item.className = 'ordinal-item';
                 const img = document.createElement('img');
                 const name = ordinalObjectName(filename);
-                if (clickable) {
-                    item.classList.add('ordinal-pick');
-                    item.dataset.value = name;
-                    item.setAttribute('role', 'button');
-                    item.tabIndex = 0;
-                    item.setAttribute('aria-label', name);
-                    addTouchSupport(item, handleAnswer);
-                    item.addEventListener('keydown', ev => {
-                        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); handleAnswer({ currentTarget: item, target: item }); }
-                    });
-                }
                 img.src = `img/objects/${filename}`;
                 img.alt = name;
                 img.loading = 'lazy';
@@ -6727,8 +6697,7 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
                 const position = document.createElement('span');
                 position.className = 'ordinal-position';
                 position.textContent = ordinalLabel(index + 1);
-                if (showLabels) item.append(img, position);
-                else item.append(img);
+                item.append(img, position);
                 shapesContainer.appendChild(item);
             });
         }
@@ -6747,7 +6716,6 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
             const questionType = Math.floor(Math.random() * 4);
             const answerOptions = [];
             let questionText = '';
-            let suffixNumber = null;
 
             // 0: identify an object's position; 1: identify the object at a position;
             // 2: choose the correct suffix; 3: write an ordinal label.
@@ -6760,11 +6728,10 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
                 const targetName = ordinalObjectName(lineup[position - 1]);
                 currentCorrectAnswer = targetName;
                 questionText = `Who is in the <span class="ordinal-question-focus">${ordinalLabel(position)}</span> position?`;
-                // Answer by clicking the picture itself (no name buttons)
+                lineup.forEach(filename => answerOptions.push(ordinalObjectName(filename)));
             } else if (questionType === 2) {
-                suffixNumber = ordinalSuffixPool[Math.floor(Math.random() * ordinalSuffixPool.length)];
-                currentCorrectAnswer = ordinalLabel(suffixNumber).slice(String(suffixNumber).length);
-                questionText = `Which <span class="ordinal-question-focus">ending</span> completes the ordinal number?`;
+                currentCorrectAnswer = ordinalSuffixes[position] || 'th';
+                questionText = `Which suffix completes <span class="ordinal-question-focus">${position}__</span>?`;
                 answerOptions.push('st', 'nd', 'rd', 'th');
             } else {
                 currentCorrectAnswer = ordinalLabel(position);
@@ -6772,18 +6739,18 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
                 for (let i = 1; i <= ordinalLineupSize; i++) answerOptions.push(ordinalLabel(i));
             }
 
-            if (questionType !== 2) renderOrdinalLineup(lineup, questionType === 1, false);
+            if (questionType !== 2) renderOrdinalLineup(lineup);
             else {
+                shapesContainer.innerHTML = '';
                 shapesContainer.className = 'shapes-container';
-                shapesContainer.style.display = 'flex';
-                shapesContainer.innerHTML = `<div class="suffix-card"><span class="suffix-num">${suffixNumber}</span><span class="suffix-blank">?</span></div>`;
+                shapesContainer.style.display = 'none';
             }
             comparisonContainer.innerHTML = '';
             comparisonContainer.style.display = 'none';
             mathEquationDisplay.innerHTML = '';
             mathEquationDisplay.style.display = 'none';
             answersContainer.innerHTML = '';
-            answersContainer.style.display = questionType === 1 ? 'none' : 'flex';
+            answersContainer.style.display = 'flex';
             feedback.textContent = '';
             feedback.className = 'feedback';
             nextBtn.style.display = 'none';
@@ -6793,12 +6760,11 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
             resetLearningSupport();
             updatePracticeStatus();
 
-            if (questionType !== 2) answerOptions.sort(() => Math.random() - 0.5);
+            answerOptions.sort(() => Math.random() - 0.5);
             answerOptions.forEach(answer => {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'answer-btn';
-                if (questionType === 2) button.classList.add('suffix-opt');
                 button.dataset.value = answer;
                 button.textContent = answer;
                 button.tabIndex = 0;
@@ -7272,5 +7238,279 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
             });
         }
     </script>
+
+
+    <!-- Floating mood face: bobs at the top of the game card, reacts to answers -->
+    <style id="mood-face-css">
+        .mood-face {
+            position: absolute;
+            top: 0.6rem;
+            left: 50%;
+            width: clamp(60px, 9vh, 96px);
+            height: clamp(60px, 9vh, 96px);
+            margin-left: calc(clamp(60px, 9vh, 96px) / -2);
+            z-index: 3;
+            pointer-events: none;
+            filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.18));
+            --fly-x: clamp(24px, 12vw, 150px);
+            animation: moodFly 11s ease-in-out infinite;
+        }
+        .mood-inner { display: block; width: 100%; height: 100%; }
+        .mood-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .mood-fallback { display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: clamp(44px, 7vh, 76px); line-height: 1; }
+        html:root #gameContainer, html:root #numberExplorerContainer { padding-top: calc(var(--card-padding) + 5.25rem); }
+        @keyframes moodFly {
+            0%   { transform: translate(0, 0) rotate(-6deg); }
+            12%  { transform: translate(calc(var(--fly-x) * .55), -14px) rotate(8deg); }
+            25%  { transform: translate(var(--fly-x), 4px) rotate(-4deg); }
+            38%  { transform: translate(calc(var(--fly-x) * .5), -18px) rotate(7deg); }
+            50%  { transform: translate(0, -4px) rotate(-7deg); }
+            62%  { transform: translate(calc(var(--fly-x) * -.55), -16px) rotate(6deg); }
+            75%  { transform: translate(calc(var(--fly-x) * -1), 4px) rotate(-5deg); }
+            88%  { transform: translate(calc(var(--fly-x) * -.5), -14px) rotate(7deg); }
+            100% { transform: translate(0, 0) rotate(-6deg); }
+        }
+        .mood-inner.pop-normal  { animation: none; }
+        .mood-inner.pop-happy   { animation: moodPop .45s ease; }
+        .mood-inner.pop-excited { animation: moodBounce .8s ease; }
+        .mood-inner.pop-sad     { animation: moodDroop .5s ease; }
+        .mood-inner.pop-cry     { animation: moodSob .7s ease; }
+        @keyframes moodPop    { 0%{transform:scale(.7)} 60%{transform:scale(1.18)} 100%{transform:scale(1)} }
+        @keyframes moodBounce { 0%{transform:translateY(0) scale(1)} 20%{transform:translateY(-22px) scale(1.2)} 40%{transform:translateY(0) scale(1)} 60%{transform:translateY(-14px) scale(1.15)} 80%,100%{transform:translateY(0)} }
+        @keyframes moodDroop  { 0%{transform:translateY(-8px)} 50%{transform:translateY(6px) scale(.94)} 100%{transform:translateY(0) scale(1)} }
+        @keyframes moodSob    { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-6px)} 30%{transform:translateX(6px)} 45%{transform:translateX(-5px)} 60%{transform:translateX(5px)} 75%{transform:translateX(-3px)} }
+        @media (prefers-reduced-motion: reduce) { .mood-face, .mood-inner { animation: none !important; } }
+    </style>
+    <script id="mood-face-js">
+    (function () {
+        // ---- Settings (change here) ----
+        const FACE_FOLDERS = ['img/mascot/', 'img/'];   // folders to look in, in order
+        const SUPER_HAPPY_EVERY = 5;                    // excited face on every 5th correct answer in a row
+        const CRY_AFTER_WRONG = 3;                      // crying face after this many wrong answers in a row
+        const FACES = {
+            normal:  { file: 'normal.png',  emoji: '😐' },
+            happy:   { file: 'happy.png',   emoji: '😊' },
+            excited: { file: 'excited.png', emoji: '🤩' },
+            sad:     { file: 'sad.png',     emoji: '😟' },
+            cry:     { file: 'cry.png',     emoji: '😭' }
+        };
+
+        const faces = Array.prototype.slice.call(document.querySelectorAll('.mood-face'));
+        if (!faces.length) return;
+        let rightRow = 0, wrongRow = 0;
+
+        function loadInto(face, name) {
+            const f = FACES[name] || FACES.happy;
+            const img = face.querySelector('.mood-img');
+            const fb = face.querySelector('.mood-fallback');
+            const inner = face.querySelector('.mood-inner');
+            let tryIdx = 0;
+            img.style.display = '';
+            fb.style.display = 'none';
+            img.onerror = function () {
+                tryIdx += 1;
+                if (tryIdx < FACE_FOLDERS.length) { img.src = FACE_FOLDERS[tryIdx] + f.file; return; }
+                img.style.display = 'none';
+                fb.textContent = f.emoji;
+                fb.style.display = 'flex';
+            };
+            img.src = FACE_FOLDERS[0] + f.file;
+            inner.className = 'mood-inner';
+            void inner.offsetWidth;                // restart the reaction animation
+            inner.classList.add('pop-' + name);
+        }
+        function setFace(name) { faces.forEach(function (face) { loadInto(face, name); }); }
+
+        window.moodFaceReact = function (isCorrect) {
+            if (isCorrect) {
+                rightRow += 1; wrongRow = 0;
+                setFace(rightRow % SUPER_HAPPY_EVERY === 0 ? 'excited' : 'happy');
+            } else {
+                wrongRow += 1; rightRow = 0;
+                setFace(wrongRow >= CRY_AFTER_WRONG ? 'cry' : 'sad');
+            }
+        };
+        window.moodFaceReset = function () { rightRow = 0; wrongRow = 0; setFace('normal'); };
+
+        // Fresh start each time the student goes back to the menu
+        const homeBtn = document.getElementById('homeBtn');
+        if (homeBtn) {
+            new MutationObserver(function () {
+                if (homeBtn.style.display === 'none') window.moodFaceReset();
+            }).observe(homeBtn, { attributes: true, attributeFilter: ['style'] });
+        }
+        setFace('normal');
+    })();
+    </script>
+<style id="xg-style">
+#xg{display:none;position:fixed;inset:0;z-index:50;overflow:auto;background:var(--bg-0);color:var(--primary-color);padding:72px 16px 24px;text-align:center;font-family:inherit}
+#xg h2{margin:0 0 6px}#xg .q{font-size:1.7rem;font-weight:800;margin:10px 0}
+#xg .area{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:12px;margin:12px auto;max-width:760px}
+#xg .opts{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:14px auto;max-width:760px}
+#xg .o,#xg .k{font:inherit;font-size:1.5rem;font-weight:800;min-width:76px;min-height:64px;padding:8px 18px;border-radius:16px;border:3px solid var(--border-color);background:var(--surface-0);color:inherit;cursor:pointer}
+#xg .o.correct,#xg .k.correct,#xg .box.correct{background:var(--success-color)!important;color:#fff;border-color:var(--success-color)}
+#xg .o.incorrect,#xg .box.incorrect{background:var(--warning-color)!important;color:#fff;border-color:var(--warning-color)}
+#xg .keys{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:10px auto}
+#xg .k{min-width:58px;padding:8px 12px}#xg .k.go{background:var(--accent-color);color:#fff}
+#xg .box{display:inline-flex;align-items:center;justify-content:center;min-width:84px;height:84px;border:4px solid var(--accent-color);border-radius:16px;font-size:2.2rem;font-weight:800;background:var(--surface-0);padding:0 8px}
+#xg .box.e{border-style:dashed}
+#xg .fb{font-size:2.4rem;min-height:56px;font-weight:800}#xg .fb.correct{color:var(--success-color)}#xg .fb.incorrect{color:var(--warning-color)}
+#xg .nx{display:none;font:inherit;font-weight:800;font-size:1.3rem;padding:12px 28px;border-radius:16px;border:0;background:var(--accent-color);color:#fff;cursor:pointer}
+#xg .mb{width:34px;height:34px;border-radius:50%;display:inline-block;position:relative;cursor:pointer;background:url(marble.png) center/cover,radial-gradient(circle at 30% 30%,#fff,#4f8be0 60%,#1d4ea3)}
+#xg .mb.x::after{content:"";position:absolute;left:-4px;right:-4px;top:50%;height:4px;background:#000;transform:rotate(-35deg)}
+#xg .ten{display:flex;flex-direction:column-reverse;gap:2px;margin:0 6px}#xg .cu{width:26px;height:16px;background:#4f8be0;border:2px solid #18243b;border-radius:3px}
+#xg .one{width:26px;height:26px;background:#ef765f;border:2px solid #18243b;border-radius:4px;margin:3px}
+#xg table{border-collapse:collapse}#xg td,#xg th{border:2px solid var(--border-color);width:44px;height:40px;font-weight:700}
+#xg .cu{display:block}#xg .one{display:inline-block}#xg .box.act{box-shadow:0 0 0 5px var(--accent-shadow-strong)}
+#xg img.pi{width:auto;margin:0 4px;-webkit-user-drag:none}#xg img.pi.tens{height:130px}#xg img.pi.ones{height:30px;margin:3px}
+#xg .o img.pi.tens{height:80px}#xg .o img.pi.ones{height:32px}
+#xg .zone{width:100%;max-width:760px;min-height:150px;margin:0 auto;border:3px dashed var(--border-color);border-radius:16px;padding:10px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:6px}#xg .pl{cursor:pointer;display:inline-flex}
+#xg .lbl{font-size:1rem;font-weight:700;opacity:.7}
+/* ---- number images (jelly digits) ---- */
+#xg .nd{height:72px;width:auto;margin:0 2px;display:inline-block;vertical-align:middle;pointer-events:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18))}
+#xg .nd.pop{animation:ndPop .42s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes ndPop{0%{transform:scale(.3) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+#xg .box.img{box-sizing:border-box;height:104px;min-width:104px;padding:0 12px}
+#xg .box.img.correct .nd,#xg .box.img.incorrect .nd{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 1px #fff)}
+#xg .k.ki{min-width:62px;min-height:72px;padding:6px 10px}
+#xg .k.ki .nd{height:50px;margin:0;transition:transform .12s}
+#xg .k.ki:active .nd{transform:scale(.85)}
+#xg .k.ki:not(:disabled):hover .nd{transform:scale(1.1)}
+@media (max-width:480px){#xg .box.img{height:84px;min-width:84px;padding:0 8px}#xg .box.img .nd{height:54px}#xg .k.ki{min-width:54px;min-height:64px;padding:6px 6px}#xg .k.ki .nd{height:42px}}
+@media (prefers-reduced-motion:reduce){#xg .nd.pop{animation:none}#xg .k.ki .nd{transition:none}}
+</style>
+<div id="xg" aria-live="polite"><h2 id="xgT"></h2><div class="lbl" id="xgH"></div><div class="q" id="xgQ"></div><div class="area" id="xgA"></div><div class="opts" id="xgO"></div><div class="fb" id="xgF"></div><button class="nx" id="xgN" type="button">Next Question ➔</button></div>
+<script id="xg-script">
+(function(){
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),P=a=>a[R(0,a.length-1)],S=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const $=id=>document.getElementById(id),xg=$('xg');
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const ML=[31,28,31,30,31,30,31,31,30,31,30,31];
+const ord=n=>['1st','2nd','3rd'][n-1]||n+'th';
+const choice=(q,answer,opts,area)=>({q,area:area||'',kind:'opt',answer:String(answer),opts:S(opts).map(o=>typeof o==='object'?o:{v:String(o),h:String(o)})});
+const strOpts=(ans,pool,n)=>S([ans,...S(pool.filter(x=>x!==ans)).slice(0,n-1)]);
+const tf=(q,t)=>choice(q,t?'True':'False',['True','False']);
+const DN=['zero','one','two','three','four','five','six','seven','eight','nine'];
+/* number -> digit images. mode: 'all' = pop every digit, 'last' = pop only the newest digit, none = no animation */
+const nimg=(v,mode)=>{const t=String(v);return t.split('').map((d,i)=>/\d/.test(d)?`<img class="nd${mode=='all'||(mode=='last'&&i==t.length-1)?' pop':''}" style="animation-delay:${mode=='all'?i*70:0}ms" src="img/numbers/${DN[d]}.webp" alt="${d}" draggable="false" onerror="this.replaceWith(document.createTextNode('${d}'))">`:d).join('')};
+const step=(n,s,img)=>{const up=Math.random()<.5,mx=s==1?20:100,a=s==1?R(1,mx-1):R(1,9)*10;const lo=up?`<span class="box e">?</span>`:`<span class="box e">?</span>`;
+ return {q:`What is ${s} ${up?'more':'less'} than ${a}?`,area:`<div><div class="lbl">${s} less</div><span class="box${img?' img':''} ${up?'':'e'}">${up?'':'?'}</span></div><div><div class="lbl"> </div><span class="box${img?' img':''}">${img?nimg(a,'all'):a}</span></div><div><div class="lbl">${s} more</div><span class="box${img?' img':''} ${up?'e':''}">${up?'?':''}</span></div>`,kind:'num',img:!!img,answer:String(up?a+s:a-s)}};
+let W=10;
+const clock=h=>{let t='';for(let i=1;i<=12;i++){const a=i*Math.PI/6;t+=`<text x="${50+38*Math.sin(a)}" y="${54-38*Math.cos(a)}" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">${i}</text>`}
+ const a=h*Math.PI/6;return `<svg viewBox="0 0 100 100" width="190" height="190"><circle cx="50" cy="50" r="47" fill="#fff" stroke="#18243b" stroke-width="3"/>${t.replace(/currentColor/g,'#18243b')}<line x1="50" y1="50" x2="50" y2="14" stroke="#18243b" stroke-width="3" stroke-linecap="round"/><line x1="50" y1="50" x2="${50+22*Math.sin(a)}" y2="${50-22*Math.cos(a)}" stroke="#ef765f" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="50" r="3" fill="#18243b"/></svg>`};
+const SYM=[['<circle cx="50" cy="50" r="38"/>',1],['<rect x="14" y="14" width="72" height="72"/>',1],['<path d="M50 88C10 55 12 20 36 20 44 20 50 28 50 32 50 28 56 20 64 20 88 20 90 55 50 88Z"/>',1],['<polygon points="50,10 90,90 10,90"/>',1],['<polygon points="50,8 92,50 50,92 8,50"/>',1],['<rect x="38" y="10" width="24" height="80"/><rect x="10" y="38" width="80" height="24"/>',1],
+ ['<polygon points="15,15 15,85 85,85"/>',0],['<polygon points="30,25 90,25 70,75 10,75"/>',0],['<polygon points="20,10 45,10 45,60 85,60 85,85 20,85"/>',0],['<polygon points="50,10 90,40 70,90 25,80 10,35"/>',0],['<path d="M15 80C15 30 50 10 85 20 80 60 55 85 15 80Z"/>',0]];
+const bars=(vert,big)=>{const n=3,v=S([40,80,120,160,190]).slice(0,n),i=big?v.indexOf(Math.max(...v)):v.indexOf(Math.min(...v));const c=['#ef765f','#efb84f','#4f8be0'];
+ return choice(`Which is ${vert?(big?'taller':'shorter'):(big?'longer':'shorter')}?`,i,v.map((x,j)=>({v:String(j),h:`<div style="${vert?`width:34px;height:${x}px`:`height:26px;width:${x}px`};background:${c[j]};border-radius:6px"></div>`})))};
+const CC={blue:'#4f8be0',orange:'#f08a2c',red:'#ef765f',green:'#3fa896',purple:'#8571c4'},CN=Object.keys(CC);
+window._xgFB=(k,c)=>k=='tens'?`<span class="ten">${`<span class="cu" style="background:${CC[c]}"></span>`.repeat(10)}</span>`:`<span class="one" style="background:${CC[c]}"></span>`;
+const pic=(k,c)=>`<img class="pi ${k}" src="img/tensandones/${k}-${c}.png" alt="" draggable="false" onerror="this.outerHTML=window._xgFB('${k}','${c}')">`;
+const KEYS='<div class="keys">'+[1,2,3,4,5,6,7,8,9,0].map(n=>`<button class="k" type="button">${n}</button>`).join('')+'<button class="k" type="button" data-x="b">⌫</button><button class="k go" type="button" data-x="g">✓</button></div>';
+const G={
+'one-more-less':{t:'1 More and 1 Less',g:()=>step(0,1,true)},
+'ten-more-less':{t:'10 More and 10 Less',g:()=>step(0,10,true)},
+'tens-ones':{t:'Tens and Ones',g:()=>{const t=R(1,9),o=R(0,9),n=t*10+o,tc=P(CN),oc=P(CN),k=R(0,2),B={t:String(t),o:String(o),n,tc,oc,show:`${t} tens, ${o} ones`};
+ if(k==0)return {...B,q:'What number is this?',area:pic('tens',tc).repeat(t)+(o?`<span style="display:flex;flex-wrap:wrap;max-width:200px;align-items:flex-end">${pic('ones',oc).repeat(o)}</span>`:''),kind:'num',answer:String(n),show:String(n)};
+ if(k==1)return {...B,q:`How many tens and ones are in ${n}?`,area:`<span class="box">${n}</span>`,kind:'num2'};
+ return {...B,q:`Make the number ${n}`,area:'',kind:'build'}}},
+'number-pairs':{t:'Number Pairs',pre:1,g:()=>{const a=R(0,W),left=Math.random()<.5,k=`<span class="box">${a}</span>`,m='<span class="box e" id="xgD">?</span>';
+ const area=`<div style="display:inline-flex;flex-direction:column;align-items:center"><span class="box">${W}</span><svg width="208" height="44" viewBox="0 0 208 44" style="display:block"><line x1="104" y1="0" x2="42" y2="44" stroke="#18243b" stroke-width="4" stroke-linecap="round"/><line x1="104" y1="0" x2="166" y2="44" stroke="#18243b" stroke-width="4" stroke-linecap="round"/></svg><div style="display:flex;gap:40px">${left?k+m:m+k}</div></div>`;
+ return {q:'Fill in the missing number.',area,kind:'num',tree:1,answer:String(W-a)}}},
+'length':{t:'Length',g:()=>{const v=Math.random()<.5;return bars(v,Math.random()<.5)}},
+'weight':{t:'Weight',g:()=>{const H=['🐘','🚗','🐄','🏠','🪨'],L=['🪶','🍃','🐭','🧸','🍎'],h=P(H),l=P(L),big=Math.random()<.5;return choice(`Which is ${big?'heavier':'lighter'}?`,big?h:l,[h,l].map(e=>({v:e,h:`<span style="font-size:3rem">${e}</span>`})))}},
+'capacity':{t:'Capacity',g:()=>{const sz=S([[50,60],[80,110],[110,150],[60,170],[140,90]]).slice(0,3),ar=sz.map(s=>s[0]*s[1]),big=Math.random()<.5,t=big?Math.max(...ar):Math.min(...ar),c=['#4f8be0','#3fa896','#efb84f'];
+ return choice(`Which holds the ${big?'most':'least'}?`,ar.indexOf(t),sz.map((s,j)=>({v:String(j),h:`<div style="width:${s[0]}px;height:${s[1]}px;border:4px solid #18243b;border-top:0;border-radius:0 0 18px 18px;background:${c[j]}"></div>`})))}},
+'time':{t:'Time',g:()=>{const h=R(1,12),f=n=>n+" o'clock";return choice('What time is it?',f(h),strOpts(f(h),[1,2,3,4,5,6,7,8,9,10,11,12].map(f),4),clock(h))}},
+'days':{t:'Days of the Week',g:()=>{const k=R(0,4),i=R(0,6),d=x=>DAYS[(x+7)%7];let q,a;
+ if(k==0){q=`Which day comes after ${d(i)}?`;a=d(i+1)}else if(k==1){q=`Which day comes before ${d(i)}?`;a=d(i-1)}else if(k==2){q=`Which day is between ${d(i)} and ${d(i+2)}?`;a=d(i+1)}
+ else if(k==3){const n=P([5,7,30,12]);return choice(`There are ${n} days in the week.`,n==7?'True':'False',['True','False'])}
+ else{const j=(i+R(1,6))%7;return tf(`${DAYS[i]} comes after ${DAYS[j]}.`,i>j)}
+ return choice(q,a,strOpts(a,DAYS,4))}},
+'months':{t:'Months of the Year',g:()=>{const k=R(0,3);
+ if(k==0){const m=R(0,11),s=R(0,6),n=ML[m],wd=R(0,6);let c=`<table><tr>${DAYS.map(x=>`<th>${x.slice(0,3)}</th>`).join('')}</tr><tr>`;for(let i=0;i<s;i++)c+='<td></td>';
+  for(let d=1;d<=n;d++){c+=`<td>${d}</td>`;if((s+d)%7==0&&d<n)c+='</tr><tr>'}c+='</tr></table>';const cnt=Math.floor((n-((wd-s+7)%7)-1)/7)+1;
+  return Math.random()<.5?{q:`${MONTHS[m]}: how many ${DAYS[wd]}s?`,area:c,kind:'num',answer:String(cnt)}:{q:`How many days in ${MONTHS[m]}?`,area:c,kind:'num',answer:String(n)}}
+ if(k==1){const t=P([[11,0],[12,1],[10,0]]);return tf(`There are ${t[0]} months in a year.`,t[1])}
+ if(k==2){const a=R(0,11),b=R(0,11);return a==b?tf('June comes after July.',0):tf(`${MONTHS[a]} comes after ${MONTHS[b]}.`,a>b)}
+ const i=R(1,9),q=P([[`Which month is between ${MONTHS[i-1]} and ${MONTHS[i+1]}?`,MONTHS[i]],[`Which is the ${ord(i+1)} month?`,MONTHS[i]],[`Which month comes after ${MONTHS[i]}?`,MONTHS[i+1]],[`Which month comes before ${MONTHS[i]}?`,MONTHS[i-1]]]);
+ return choice(q[0],q[1],strOpts(q[1],MONTHS,4))}},
+'symmetry':{t:'Symmetry',g:()=>{const s=P(SYM);return choice('Is this symmetrical?',s[1]?'Yes':'No',['Yes','No'],`<svg viewBox="0 0 100 100" width="190" height="190" fill="#ef765f" stroke="#18243b" stroke-width="3" stroke-linejoin="round">${s[0]}</svg>`)}}
+};
+let cur,Q,typed='',live=false,answered=false;
+const tm=()=>{try{return isTimedMode()}catch(e){return false}};
+const PAIRS=[6,7,8,9,10];
+const adv=()=>{if(!live||xg.style.display!=='block')return;if(challengeModeEnabled)startGame('challenge');else next()};
+const lock=()=>xg.querySelectorAll('.o,.k').forEach(b=>b.disabled=true);
+function done(good,ans){answered=true;try{stopQuestionTimer()}catch(e){}
+ $('xgF').className='fb '+(good?'correct':'incorrect');$('xgF').textContent=good?'✓':'✗  '+ans;lock();
+ try{if(tm()){if(good)timedScore+=TIMED_SCORE_CORRECT;recordAnswer(good);syncHud();setTimeout(adv,650)}else{recordAnswer(good);$('xgN').style.display='inline-block'}}catch(e){$('xgN').style.display='inline-block'}
+ if(good){try{correctSound.currentTime=0;correctSound.play().catch(()=>{})}catch(e){}try{createConfetti()}catch(e){}}}
+function NUM2(){const O=$('xgO');let v=['',''],a=0;O.innerHTML='<div style="width:100%"><span class="lbl">Tens</span> <span class="box e" id="xgD0">?</span> <span class="lbl" style="margin-left:18px">Ones</span> <span class="box e" id="xgD1">?</span></div>'+KEYS;
+ const up=()=>[0,1].forEach(i=>{const b=$('xgD'+i);b.textContent=v[i]||'?';b.classList.toggle('e',!v[i]);b.classList.toggle('act',i==a)});up();
+ [0,1].forEach(i=>$('xgD'+i).onclick=()=>{if(!answered){a=i;up()}});
+ O.querySelectorAll('.k').forEach(k=>k.onclick=()=>{if(answered)return;const x=k.dataset.x;
+  if(!x){v[a]=k.textContent;if(a==0)a=1}else if(x=='b'){if(v[a])v[a]='';else{a=0;v[0]=''}}
+  else if(v[0]&&v[1]){const g=v[0]==Q.t&&v[1]==Q.o;[0,1].forEach(i=>$('xgD'+i).classList.add(g?'correct':'incorrect'));done(g,Q.show);return}
+  up()})}
+function BUILD(){const O=$('xgO');$('xgA').innerHTML='<div class="zone" id="xgZ"></div>';const Z=$('xgZ');
+ O.innerHTML=`<button class="o" type="button" data-b="tens">+ ${pic('tens',Q.tc)}</button><button class="o" type="button" data-b="ones">+ ${pic('ones',Q.oc)}</button><div class="keys" style="width:100%"><button class="k go" type="button">✓</button></div>`;
+ O.querySelectorAll('.o').forEach(b=>b.onclick=()=>{if(answered)return;const k=b.dataset.b,s=document.createElement('span');s.className='pl';s.dataset.k=k;s.innerHTML=pic(k,k=='tens'?Q.tc:Q.oc);s.onclick=()=>{if(!answered)s.remove()};Z.appendChild(s)});
+ O.querySelector('.k.go').onclick=()=>{if(answered)return;const t=Z.querySelectorAll('[data-k=tens]').length,o=Z.querySelectorAll('[data-k=ones]').length;done(t*10+o==Q.n,Q.show)}}
+function next(){try{if(!onTimedQuestionStart()){close();return}}catch(e){}
+ Q=G[cur].g();typed='';answered=false;$('xgN').style.display='none';$('xgF').textContent='';$('xgF').className='fb';
+ $('xgQ').textContent=Q.q;$('xgA').innerHTML=Q.area||'';const O=$('xgO');O.innerHTML='';
+ xg.querySelectorAll('#xgA .mb').forEach(m=>m.onclick=()=>m.classList.toggle('x'));
+ if(Q.kind=='opt')Q.opts.forEach(o=>{const b=document.createElement('button');b.className='o';b.type='button';b.innerHTML=o.h;b.dataset.v=o.v;b.onclick=()=>{if(answered)return;b.classList.add(o.v==Q.answer?'correct':'incorrect');if(o.v!=Q.answer)O.querySelectorAll('.o').forEach(x=>{if(x.dataset.v==Q.answer)x.classList.add('correct')});done(o.v==Q.answer,'')};O.appendChild(b)});
+ else if(Q.kind=='num2')NUM2();
+ else if(Q.kind=='build')BUILD();
+ else{O.innerHTML=(Q.tree?'':'<div style="width:100%"><span class="box e'+(Q.img?' img':'')+'" id="xgD">?</span></div>')+'<div class="keys">'+[1,2,3,4,5,6,7,8,9,0].map(n=>`<button class="k${Q.img?' ki':''}" type="button" data-d="${n}">${Q.img?nimg(n):n}</button>`).join('')+'<button class="k" type="button" data-x="b">⌫</button><button class="k go" type="button" data-x="g">✓</button></div>';
+  O.querySelectorAll('.k').forEach(k=>k.onclick=()=>{if(answered)return;const x=k.dataset.x,D=$('xgD');if(!x){if(typed.length<3)typed+=(k.dataset.d||k.textContent)}else if(x=='b')typed=typed.slice(0,-1);else if(typed){const g=typed==Q.answer;D.classList.add(g?'correct':'incorrect');done(g,Q.show||Q.answer);return}
+   if(typed&&Q.img)D.innerHTML=nimg(typed,'last');else D.textContent=typed||'?';D.classList.toggle('e',!typed)})}
+ try{startQuestionTimer()}catch(e){}}
+function open(k){cur=k;live=true;currentGameMode=k;
+ try{localStorage.setItem('lastSkill',k);updateContinueButton()}catch(e){}
+ try{stopQuestionTimer();if(tm()&&!timedSessionGameMode)beginTimedSession(challengeModeEnabled?'Challenge':k);syncHud()}catch(e){}
+ ['mainContainer','gameContainer','numberExplorerContainer'].forEach(i=>{const e=$(i);if(e)e.style.display='none'});
+ $('homeBtn').style.display='flex';const sb=$('splashBtn');if(sb)sb.style.display='none';
+ xg.style.display='block';$('xgT').textContent=G[k].t;
+ if(G[k].pre&&!tm()&&!challengeModeEnabled){$('xgQ').textContent='Which number do you want to make?';$('xgA').innerHTML='';$('xgF').textContent='';$('xgN').style.display='none';const O=$('xgO');O.innerHTML='';
+  PAIRS.forEach(n=>{const b=document.createElement('button');b.className='o';b.type='button';b.textContent=n;b.onclick=()=>{W=n;next()};O.appendChild(b)})}
+ else{if(G[k].pre)W=P(PAIRS);next()}}
+$('xgN').onclick=next;
+const close=()=>{live=false;xg.style.display='none'};['click','touchend'].forEach(e=>$('homeBtn').addEventListener(e,close,true));
+// ---- Units menu ----
+const U=[['Unit 1',['counting','number-name','compare','make-number','pattern-missing','pattern-build','counting-2s']],['Unit 2',['number-explorer','ordinal-numbers','counting-5s','counting-10s']],['Unit 3',['one-more-less','tens-ones','number-pairs']],['Unit 4',['addition']],['Unit 5',['subtraction']],['Unit 6',['doubles','halves','even-odd']],['Unit 7',['ten-more-less','money']],['Unit 8',['shapes-2d','shapes-3d','symmetry']],['Unit 9',['length','weight','capacity']],['Unit 10',['time','days','months']],['Unit 11',['multiplication','shapes-sound','colors-sound','colours']]];
+const ICO={'one-more-less':'±1','ten-more-less':'±10','tens-ones':'🧊','number-pairs':'🔵','length':'📏','weight':'⚖️','capacity':'🥛','time':'🕒','days':'📅','months':'🗓️','symmetry':'🦋'};
+const main=$('mainContainer'),old=[...main.querySelectorAll('.skill-section')],cards={};
+main.querySelectorAll('.card').forEach(c=>cards[c.dataset.section]=c);
+const anchor=old[0];
+U.forEach(([name,keys])=>{const s=document.createElement('section');s.className='skill-section';s.innerHTML=`<h2 class="skill-section-title">${name}</h2><div class="grid skill-grid"></div>`;const g=s.lastChild;
+ keys.forEach(k=>{let c=cards[k];if(!c&&G[k]){c=document.createElement('button');c.className='card';c.type='button';c.dataset.section=k;c.innerHTML=`<span class="s2-ico" style="font-size:2.2rem;font-weight:800;display:flex;align-items:center;justify-content:center">${ICO[k]}</span><h2>${G[k].t}</h2>`;
+  const go=e=>{e.preventDefault();open(k)};c.addEventListener('click',go)}if(c)g.appendChild(c)});anchor.parentNode.insertBefore(s,anchor)});
+old.forEach(s=>s.remove());
+
+// ---- Timer Challenge / Mixed Challenge hooks ----
+window._xgQ=()=>Q;
+const og=window.startGame;
+window.startGame=function(m){if(m==='Challenge')m='challenge';
+ if(m==='challenge'){challengeModeEnabled=true;const ks=Object.keys(G);if(Math.random()<ks.length/(CHALLENGE_GAME_MODES.length+ks.length))return open(P(ks));live=false;xg.style.display='none';return og(m)}
+ if(G[m]){challengeModeEnabled=false;return open(m)}
+ live=false;xg.style.display='none';return og(m)};
+const ot=window.timedModeTimeUp;
+window.timedModeTimeUp=function(){if(live&&xg.style.display==='block'){if(!tm()||answered)return;answered=true;stopQuestionTimer();recordAnswer(false);syncHud();lock();
+  xg.querySelectorAll('.o').forEach(x=>{if(x.dataset.v==Q.answer)x.classList.add('correct')});
+  $('xgF').className='fb incorrect';$('xgF').textContent='⏱'+(Q.kind!='opt'?'  '+(Q.show||Q.answer):'');
+  try{wrongSound.currentTime=0;wrongSound.play().catch(()=>{})}catch(e){}setTimeout(adv,650);return}
+ return ot.apply(this,arguments)};
+const oe=window.endTimedSession;window.endTimedSession=function(){live=false;xg.style.display='none';return oe.apply(this,arguments)};
+const op=window.prettySkillName;window.prettySkillName=function(k){return G[k]?G[k].t:op(k)};
+setInterval(()=>{const h=$('xgH');if(xg.style.display!=='block'){return}
+ if(!tm()){h.textContent='';return}
+ const r=questionDeadlineMs?Math.max(0,Math.ceil((questionDeadlineMs-Date.now())/1000)):getQuestionTimeLimitSec();
+ h.textContent=`Question ${Math.min(timedQuestionIndex,TIMED_MAX_QUESTIONS)} of ${TIMED_MAX_QUESTIONS}  •  Score ${timedScore}  •  ⏱ ${r}s`},250);
+})();
+</script>
+
 </body>
 </html>
