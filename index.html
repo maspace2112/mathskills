@@ -3281,6 +3281,17 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
 
             <div class="settings-row">
                 <div class="settings-label">
+                    <div class="name">Appearance</div>
+                    <div class="hint">Light or dark theme</div>
+                </div>
+                <div class="segmented" role="group" aria-label="Theme selection">
+                    <button id="themeLightBtn" type="button">&#9728;&#65039; Light</button>
+                    <button id="themeDarkBtn" type="button">&#127769; Dark</button>
+                </div>
+            </div>
+
+            <div class="settings-row">
+                <div class="settings-label">
                     <div class="name">Sound</div>
                     <div class="hint">Correct / wrong effects</div>
                 </div>
@@ -3489,7 +3500,7 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
             try {
                 const stored = localStorage.getItem('theme');
                 const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const theme = 'light';
+                const theme = stored === 'dark' ? 'dark' : 'light';
                 document.documentElement.dataset.theme = theme;
             } catch (e) {
                 document.documentElement.dataset.theme = 'light';
@@ -3524,7 +3535,7 @@ html:root .splash-btn .icon{margin:0;display:inline-flex;align-items:center;font
         };
 
         function setTheme(theme) {
-            theme = 'light';
+            theme = theme === 'dark' ? 'dark' : 'light';
             document.documentElement.dataset.theme = theme;
             try { localStorage.setItem('theme', theme); } catch (e) {}
 
@@ -7511,6 +7522,247 @@ setInterval(()=>{const h=$('xgH');if(xg.style.display!=='block'){return}
  h.textContent=`Question ${Math.min(timedQuestionIndex,TIMED_MAX_QUESTIONS)} of ${TIMED_MAX_QUESTIONS}  •  Score ${timedScore}  •  ⏱ ${r}s`},250);
 })();
 </script>
+
+<style id="elegant-skin">
+/* ===== Elegant skin: soft light UI (Pre-Maths reference) + glossy squircle buttons (button.png) =====
+   Pure override layer: no game logic changed. Delete this whole <style> block to go back to the old look. */
+html:root{
+  --paper:#f0f0f1;--bg-0:#f0f0f1;--bg-1:#eaeaec;--line:#e6e6e9;
+  --ink:#171a21;--text-dark:#171a21;--primary-color:#171a21;--text-muted:#7a7f8c;
+  --surface-0:#ffffff;--surface-1:#f4f4f5;--surface-2:#e6e6e8;--border-color:#e3e3e6;
+  --btn-y:#f5d949;--btn-y-lip:#dcbd35;
+  --btn-b:#5b91cc;--btn-b-lip:#3f7fb8;
+  --btn-g:#84bb66;--btn-g-lip:#69a84d;
+  --btn-p:#dd6690;--btn-p-lip:#c24f7a;
+  --card-1:#df6a47;--card-2:#d8b45e;--card-3:#628f79;--card-4:#c3899a;--card-5:#9667ac;--card-6:#2559cd;
+  --tile-a:#5b91cc;--tile-b:#5b91cc;--tile-sh:#3f7fb8;
+  --ok-a:#84bb66;--ok-b:#84bb66;--bad-a:#dd6690;--bad-b:#dd6690;
+  --success-color:#69a84d;--warning-color:#dd6690;
+  --accent-color:#5b91cc;--accent-color-hover:#4a82bd;--coral:#dd6690;
+  --soft-shadow:0 14px 34px rgba(30,40,60,.09);
+}
+html[data-theme="dark"]{
+  --paper:#12151d;--bg-0:#12151d;--bg-1:#171b25;--line:#2d3446;
+  --ink:#eef1f8;--text-dark:#eef1f8;--primary-color:#eef1f8;--text-muted:#9aa3b8;
+  --surface-0:#1c2130;--surface-1:#222838;--surface-2:#2c3347;--border-color:#2d3446;
+  --soft-shadow:0 14px 34px rgba(0,0,0,.35);
+}
+
+/* ---------- page ---------- */
+html:root body{background:var(--paper);color:var(--ink)}
+html:root body:before,html:root body:after{display:none}
+html:root .splash-screen{background:var(--paper);background-image:none}
+html:root .splash-logo{background:#fff;border-radius:38px 38px 46px 46px;box-shadow:var(--soft-shadow)}
+html[data-theme="dark"] .splash-logo{background:var(--surface-0)}
+html:root h1,html:root .splash-text{color:var(--ink);font-weight:800}
+html:root .skill-section-title{font-size:clamp(1.35rem,4.5vw,1.8rem);font-weight:800;color:var(--ink);letter-spacing:-.01em}
+html:root .skill-section-title:after{display:none}
+html:root .menu-intro p{color:var(--text-muted);font-weight:700}
+html:root .continue-card{background:var(--surface-0);border:0;border-radius:999px;box-shadow:0 8px 20px rgba(30,40,60,.08);color:var(--ink);font-weight:800}
+html:root .hud-pill{background:var(--surface-0);border:0;border-radius:999px;box-shadow:0 8px 20px rgba(30,40,60,.07)}
+
+/* ---------- top icon buttons: white rounded squares ---------- */
+html:root .settings-btn,html:root .home-btn,html:root .splash-btn{
+  width:52px;height:52px;border:0;border-radius:18px;background:var(--surface-0);color:var(--ink);
+  box-shadow:0 8px 20px rgba(30,40,60,.10);font-size:1.2rem}
+html:root .settings-btn:hover,html:root .home-btn:hover,html:root .splash-btn:hover,
+html:root .settings-btn:active,html:root .home-btn:active,html:root .splash-btn:active{
+  background:var(--surface-0);color:var(--ink);box-shadow:0 12px 26px rgba(30,40,60,.16);filter:none}
+
+/* ---------- menu grid + coloured cards ---------- */
+html:root .skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:18px}
+@media (max-width:540px){html:root .skill-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
+html:root .skill-grid>.card:nth-child(6n+1){--cc:var(--card-1)}
+html:root .skill-grid>.card:nth-child(6n+2){--cc:var(--card-2)}
+html:root .skill-grid>.card:nth-child(6n+3){--cc:var(--card-3)}
+html:root .skill-grid>.card:nth-child(6n+4){--cc:var(--card-4)}
+html:root .skill-grid>.card:nth-child(6n+5){--cc:var(--card-5)}
+html:root .skill-grid>.card:nth-child(6n+6){--cc:var(--card-6)}
+html:root .card{
+  --cc:var(--card-1);
+  background:var(--cc)!important;color:#fff;border:0;
+  border-radius:36px 36px 44px 44px;
+  min-height:214px;padding:20px 12px 22px;gap:14px;
+  justify-content:flex-start;
+  box-shadow:0 16px 26px -14px rgba(20,28,45,.42);
+}
+html:root .card:after{
+  content:'';position:absolute;inset:0;width:auto;height:auto;right:auto;top:auto;border:0;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(255,255,255,.20),rgba(255,255,255,0) 42%);
+  box-shadow:none;opacity:1;pointer-events:none}
+html:root .card:hover{transform:translateY(-5px);box-shadow:0 22px 30px -14px rgba(20,28,45,.5)}
+html:root .card h2,html:root .card h3{
+  order:-1;color:#fff!important;font-family:'Baloo 2',Georgia,serif;font-weight:800;
+  font-size:clamp(1.15rem,4.2vw,1.55rem);line-height:1.1;letter-spacing:-.01em;
+  text-shadow:0 2px 0 rgba(0,0,0,.14);position:relative;z-index:1}
+html:root .card p,html:root .card .name{color:#fff}
+html:root .s2-ico{width:104px;height:104px;border-radius:32px 32px 38px 38px;background:rgba(255,255,255,.95);
+  box-shadow:inset 0 -6px 0 rgba(24,36,59,.07),0 10px 18px -8px rgba(0,0,0,.30)}
+html:root .s2-ico svg{width:72px;height:72px}
+html:root .menu-counting-glyph{width:72px;height:72px}
+@media (max-width:540px){
+  html:root .card{min-height:186px;padding:16px 8px 18px}
+  html:root .s2-ico{width:88px;height:88px}
+  html:root .s2-ico svg{width:60px;height:60px}
+}
+
+/* ---------- play surfaces ---------- */
+html:root :is(.game-container,.number-explorer-container,.results-panel){
+  background:var(--surface-0);border:0;border-radius:40px;box-shadow:var(--soft-shadow)}
+html:root .settings-panel{background:var(--surface-0);border:0;border-radius:36px;box-shadow:0 30px 70px rgba(15,24,40,.28)}
+html:root .settings-row{border-color:var(--line)}
+html:root .segmented{background:#e4e4e6;border-radius:16px;padding:4px;gap:4px}
+html[data-theme="dark"] .segmented{background:var(--surface-2)}
+html:root .segmented button{border-radius:12px;color:var(--text-muted);font-weight:700}
+html:root .segmented button.active,html:root .segmented button.on,html:root .segmented button.selected,html:root .segmented button[aria-pressed="true"]{
+  background:var(--surface-0);color:var(--ink);box-shadow:0 4px 10px rgba(30,40,60,.14)}
+html[data-theme="dark"] .segmented button:not(.active):not(.on):not(.selected){color:var(--text-muted)}
+
+/* ---------- THE BUTTON (button.png): flat colour, white outline, darker bottom lip, soft grey shadow ---------- */
+html:root .answer-btn,html:root .number-explorer-answer-btn,html:root .next-btn,html:root .number-explorer-next-btn,
+html:root .new-question-btn,html:root .repeat-sound-btn,html:root .hint-btn,html:root .start-btn,
+html:root .make-number-submit,html:root .make-number-tile,html:root .counting2s-key,html:root .pattern-action,
+html:root #xg .o,html:root #xg .k,html:root #xg .nx{
+  --c:var(--btn-b);--l:var(--btn-b-lip);--t:#fff;
+  background:var(--c)!important;color:var(--t)!important;-webkit-text-fill-color:var(--t);
+  border:3px solid #fff!important;
+  border-radius:22px 22px 30px 30px!important;
+  box-shadow:inset 0 -7px 0 var(--l),0 9px 12px -4px rgba(30,40,60,.30)!important;
+  text-shadow:0 2px 0 rgba(0,0,0,.13);
+  font-weight:800;
+  transition:transform .14s ease,box-shadow .14s ease,filter .14s ease;
+}
+html:root :is(.answer-btn,.number-explorer-answer-btn,.next-btn,.number-explorer-next-btn,.new-question-btn,.repeat-sound-btn,.hint-btn,.start-btn,.make-number-submit,.pattern-action){
+  padding-bottom:calc(.7em + 5px)}
+html:root :is(.make-number-tile,.counting2s-key){padding-bottom:6px}
+html:root #xg :is(.o,.k,.nx){padding-bottom:calc(8px + 5px)}
+/* hover / press */
+html:root .answer-btn:hover:not(:disabled),html:root .number-explorer-answer-btn:hover:not(:disabled),html:root .next-btn:hover,
+html:root .number-explorer-next-btn:hover,html:root .new-question-btn:hover,html:root .repeat-sound-btn:hover,html:root .hint-btn:hover,
+html:root .start-btn:hover,html:root .make-number-submit:hover:not(:disabled),html:root .make-number-tile:hover:not(:disabled),
+html:root .counting2s-key:hover:not(:disabled),html:root .pattern-action:hover,html:root #xg .o:hover:not(:disabled),
+html:root #xg .k:hover:not(:disabled),html:root #xg .nx:hover{
+  background:var(--c)!important;transform:translateY(-3px);filter:brightness(1.05);
+  box-shadow:inset 0 -7px 0 var(--l),0 14px 16px -4px rgba(30,40,60,.32)!important}
+html:root .answer-btn:active:not(:disabled),html:root .number-explorer-answer-btn:active:not(:disabled),html:root .next-btn:active,
+html:root .number-explorer-next-btn:active,html:root .new-question-btn:active,html:root .repeat-sound-btn:active,html:root .hint-btn:active,
+html:root .start-btn:active,html:root .make-number-submit:active:not(:disabled),html:root .make-number-tile:active:not(:disabled),
+html:root .counting2s-key:active:not(:disabled),html:root .pattern-action:active,html:root #xg .o:active:not(:disabled),
+html:root #xg .k:active:not(:disabled),html:root #xg .nx:active{
+  transform:translateY(4px);filter:none;
+  box-shadow:inset 0 -3px 0 var(--l),0 3px 5px -2px rgba(30,40,60,.30)!important}
+html:root .make-number-submit:disabled{opacity:.5;box-shadow:inset 0 -7px 0 var(--l),0 6px 8px -4px rgba(30,40,60,.25)!important}
+/* colour roles */
+html:root :is(.next-btn,.number-explorer-next-btn,.make-number-submit,#startRegularBtn,.pattern-action),
+html:root #xg .k.go,html:root #xg .nx,html:root .counting2s-key:last-child{--c:var(--btn-g);--l:var(--btn-g-lip)}
+html:root :is(.new-question-btn,#startTimedBtn),html:root .counting2s-key:nth-last-child(2),html:root .make-number-tile.selected{
+  --c:var(--btn-y);--l:var(--btn-y-lip);--t:#2b2713;-webkit-text-fill-color:#2b2713;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+html:root :is(#startChallengeBtn){--c:var(--btn-p);--l:var(--btn-p-lip)}
+html:root #xg .k.ki{--c:#fbfcfe;--l:#cdd4e0;--t:#171a21;-webkit-text-fill-color:#171a21;text-shadow:none}
+html:root #xg .k.go.ki{--c:var(--btn-g);--l:var(--btn-g-lip)}
+html[data-theme="dark"] .start-btn:not(#startRegularBtn):not(#startTimedBtn):not(#startChallengeBtn){--c:var(--btn-b);--l:var(--btn-b-lip);--t:#fff}
+/* answer feedback (same in every game) */
+html:root :is(.answer-btn,.number-explorer-answer-btn,#xg .o,#xg .k,.make-number-tile).correct,
+html:root #xg .o.correct,html:root #xg .k.correct{--c:var(--btn-g);--l:var(--btn-g-lip);--t:#fff;-webkit-text-fill-color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.13);transform:translateY(3px)}
+html:root :is(.answer-btn,.number-explorer-answer-btn,#xg .o,.make-number-tile).incorrect,
+html:root #xg .o.incorrect{--c:var(--btn-p);--l:var(--btn-p-lip);--t:#fff;-webkit-text-fill-color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.13);transform:translateY(3px)}
+html:root .make-number-tile.solution{outline:4px solid rgba(132,187,102,.8);--c:var(--btn-g);--l:var(--btn-g-lip)}
+
+
+/* answer buttons: near-square squircles like button.png */
+html:root :is(.answer-btn,.number-explorer-answer-btn){
+  min-width:clamp(74px,20vw,104px);min-height:clamp(68px,18vw,92px);
+  font-size:clamp(1.5rem,5.4vw,2.1rem);border-radius:30px 30px 36px 36px!important;
+  padding:.35em .6em calc(.35em + 6px)}
+html:root :is(.answer-btn,.number-explorer-answer-btn):disabled:not(.correct):not(.incorrect){opacity:.6}
+
+/* ---------- question number tiles ---------- */
+html:root:root :is(.number-display,.number-explorer-number-display,.math-number){
+  background:var(--btn-b)!important;border:4px solid #fff;border-radius:34px 34px 44px 44px;
+  box-shadow:inset 0 -10px 0 var(--btn-b-lip),0 14px 18px -6px rgba(30,40,60,.30)!important;
+  text-shadow:0 3px 0 rgba(0,0,0,.14)}
+html:root:root .math-number:last-child{background:var(--btn-p)!important;box-shadow:inset 0 -10px 0 var(--btn-p-lip),0 14px 18px -6px rgba(30,40,60,.30)!important}
+html:root :is(.number-box,.number-explorer-between-box){
+  background:var(--btn-b);border:4px solid #fff;border-radius:32px 32px 40px 40px;
+  box-shadow:inset 0 -9px 0 var(--btn-b-lip),0 12px 16px -6px rgba(30,40,60,.28)}
+html:root .number-box.correct{background:var(--btn-g);box-shadow:inset 0 -9px 0 var(--btn-g-lip),0 12px 16px -6px rgba(30,40,60,.28)}
+html:root .number-box.incorrect{background:var(--btn-p);box-shadow:inset 0 -9px 0 var(--btn-p-lip),0 12px 16px -6px rgba(30,40,60,.28)}
+html:root .make-number-target{background:var(--btn-p);box-shadow:inset 0 -5px 0 var(--btn-p-lip);border:3px solid #fff}
+
+/* ---------- shape choices, counting slots, answer boxes ---------- */
+html:root .shape-choice{background:var(--surface-0);border:3px solid #fff;border-radius:28px 28px 34px 34px;
+  box-shadow:inset 0 -7px 0 #e1e4ea,0 10px 14px -6px rgba(30,40,60,.25)}
+html[data-theme="dark"] .shape-choice{border-color:var(--surface-2);box-shadow:inset 0 -7px 0 #0e121b,0 10px 14px -6px rgba(0,0,0,.4)}
+html:root .shape-choice.correct{background:#e5f3dc;box-shadow:inset 0 -7px 0 var(--btn-g-lip),0 10px 14px -6px rgba(30,40,60,.25)}
+html:root .shape-choice.incorrect{background:#fbe3ec;box-shadow:inset 0 -7px 0 var(--btn-p-lip),0 10px 14px -6px rgba(30,40,60,.25)}
+html:root .counting2s-board{background:var(--surface-1);border:0;border-radius:36px}
+html:root .counting2s-slot{border:3px solid #fff;border-radius:22px 22px 30px 30px;background:var(--surface-0);
+  box-shadow:inset 0 -6px 0 #e1e4ea,0 9px 12px -5px rgba(30,40,60,.25);padding-bottom:5px}
+html[data-theme="dark"] .counting2s-slot{border-color:var(--surface-2);background:var(--surface-0)}
+html:root .counting2s-slot.given{background:var(--btn-b);color:#fff;box-shadow:inset 0 -6px 0 var(--btn-b-lip),0 9px 12px -5px rgba(30,40,60,.3)}
+html:root .counting2s-slot.active{background:#e7f0fa;box-shadow:inset 0 -6px 0 #b8d1ea,0 9px 12px -5px rgba(30,40,60,.25)}
+html[data-theme="dark"] .counting2s-slot.active{background:#27344c}
+html:root .counting2s-slot.correct{background:var(--btn-g);color:#fff;box-shadow:inset 0 -6px 0 var(--btn-g-lip),0 9px 12px -5px rgba(30,40,60,.3)}
+html:root .counting2s-slot.wrong{border-color:var(--btn-p);box-shadow:inset 0 -6px 0 var(--btn-p-lip),0 9px 12px -5px rgba(30,40,60,.25)}
+html:root #xg .box{background:var(--surface-0);border:4px solid var(--btn-b);border-radius:28px 28px 34px 34px;box-shadow:inset 0 -6px 0 #e1e4ea}
+html:root #xg .box.correct{background:var(--btn-g)!important;border-color:#fff}
+html:root #xg .box.incorrect{background:var(--btn-p)!important;border-color:#fff}
+html:root #xg .box.act{box-shadow:0 0 0 5px rgba(91,145,204,.35),inset 0 -6px 0 #e1e4ea}
+
+/* ---------- timer bar ---------- */
+html:root .timer-bar{background:#e3e3e6;border:3px solid #fff;box-shadow:0 8px 14px -6px rgba(30,40,60,.25)}
+html:root .timer-bar .fill{background:var(--btn-g)!important;box-shadow:inset 0 -5px 0 var(--btn-g-lip)}
+html:root .timer-bar[data-urgent="true"] .fill{background:var(--btn-p)!important;box-shadow:inset 0 -5px 0 var(--btn-p-lip)}
+html:root .timer-bar .label{color:#171a21!important}
+html:root .results-score{color:var(--btn-p)}
+</style>
+
+<style id="elegant-settings">
+/* ===== Settings sheet: soft grey sheet, white rounded rows, button.png-style toggles ===== */
+html:root .settings-overlay{background:rgba(20,26,40,.45)}
+html[data-theme="dark"] .settings-overlay{background:rgba(0,0,0,.6)}
+html:root .settings-panel{
+  width:min(392px,94vw);max-height:calc(100vh - 96px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:var(--paper);border:0;border-radius:38px;padding:18px 16px 20px;
+  box-shadow:0 34px 80px rgba(10,16,30,.35)}
+html[data-theme="dark"] .settings-panel{background:#171b25}
+html:root .settings-header{border:0;padding:0 2px 4px;margin:0 0 6px}
+html:root .settings-title{font-family:'Baloo 2',Georgia,serif;font-size:1.65rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+html:root .settings-close{
+  width:46px;height:46px;border:0;border-radius:16px;background:var(--surface-0);color:var(--ink);
+  box-shadow:0 6px 14px rgba(30,40,60,.12);font-size:1rem;font-weight:800}
+html[data-theme="dark"] .settings-close{background:var(--surface-2);box-shadow:0 6px 14px rgba(0,0,0,.35)}
+html:root .settings-close:hover,html:root .settings-close:active{transform:translateY(-2px);color:var(--ink)}
+html:root .settings-row{
+  background:var(--surface-0);border:0;border-radius:26px;padding:14px 16px;margin-top:10px;
+  box-shadow:0 8px 20px rgba(30,40,60,.06)}
+html[data-theme="dark"] .settings-row{background:#1f2535;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+html:root .settings-label .name{font-size:1.05rem;font-weight:800;color:var(--ink)}
+html:root .settings-label .hint{font-size:.86rem;font-weight:700;color:var(--text-muted)}
+/* rows with a segmented control: label on top, control full width */
+html:root .settings-row:has(.segmented){grid-template-columns:1fr;gap:.7rem}
+html:root .settings-row .segmented{display:flex;width:100%;border:0;border-radius:18px;background:#ececee;padding:4px;gap:4px;overflow:visible}
+html[data-theme="dark"] .settings-row .segmented{background:#12151d}
+html:root .settings-row .segmented button{flex:1;padding:.6rem .4rem;border-radius:14px;font-weight:800;font-size:.95rem;color:var(--text-muted);background:transparent;box-shadow:none}
+html:root .settings-row .segmented button:is(.active,.on,.selected,[aria-pressed="true"]){
+  background:var(--surface-0);color:var(--ink);box-shadow:0 4px 10px rgba(30,40,60,.16)}
+html[data-theme="dark"] .settings-row .segmented button:is(.active,.on,.selected,[aria-pressed="true"]){background:#3a4363;color:#fff;box-shadow:0 4px 10px rgba(0,0,0,.4)}
+html[data-theme="dark"] .settings-row .segmented button:not(.active):not(.on):not(.selected):not([aria-pressed="true"]){color:var(--text-muted)}
+/* toggles: green pill with white knob, like the buttons */
+html:root .toggle{
+  width:60px;height:36px;border:3px solid #fff;border-radius:999px;background:#d9dbe1;
+  box-shadow:inset 0 -4px 0 #bfc3cc,0 6px 10px -4px rgba(30,40,60,.3)}
+html[data-theme="dark"] .toggle{border-color:#2d3446;background:#3a4156;box-shadow:inset 0 -4px 0 #2a3042,0 6px 10px -4px rgba(0,0,0,.5)}
+html:root .toggle{font-size:0;color:transparent;text-indent:-999px;overflow:hidden}
+html:root .toggle:after{top:2px;left:2px;width:26px;height:26px;border:0;background:#fff;box-shadow:0 3px 6px rgba(30,40,60,.3)}
+html:root .toggle.on{background:var(--btn-g);border-color:#fff;box-shadow:inset 0 -4px 0 var(--btn-g-lip),0 6px 10px -4px rgba(30,40,60,.3)}
+html[data-theme="dark"] .toggle.on{border-color:#2d3446}
+html:root .toggle.on:after{left:26px}
+/* teacher tip */
+html:root .settings-help{margin-top:12px;padding:12px 14px;border-radius:20px;background:#fff6d6;color:#8a6420;font-weight:700;font-size:.88rem;line-height:1.4;text-align:left}
+html[data-theme="dark"] .settings-help{background:#2a2f40;color:#e8d9a8}
+@media (max-width:480px){html:root .settings-panel{margin-top:calc(var(--container-padding) + 56px)}}
+</style>
 
 </body>
 </html>
