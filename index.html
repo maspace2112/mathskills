@@ -3326,7 +3326,15 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
                     <div class="name" title="Sound"><span class="si">🔊</span></div>
                     <div class="hint">Correct / wrong effects</div>
                 </div>
-                <button class="toggle" id="soundToggle" aria-label="Toggle sound"></button>
+                <button class="toggle" id="soundToggle" aria-label="Toggle sound" aria-pressed="true"></button>
+            </div>
+
+            <div class="settings-row">
+                <div class="settings-label">
+                    <div class="name" title="Music"><span class="si">🎵</span></div>
+                    <div class="hint">Jungle Playtime background music</div>
+                </div>
+                <button class="toggle" id="musicToggle" aria-label="Toggle background music" aria-pressed="true"></button>
             </div>
 
             <div class="settings-row">
@@ -3552,6 +3560,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
 
         const APP_SETTINGS_DEFAULTS = {
             sound: true,
+            music: true,
             level: 'easy', // easy | hard
             scheme: 'default', // default | fire | lime
             calmMode: true,
@@ -3560,6 +3569,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
 
         const appSettings = {
             sound: APP_SETTINGS_DEFAULTS.sound,
+            music: APP_SETTINGS_DEFAULTS.music,
             level: APP_SETTINGS_DEFAULTS.level,
             scheme: APP_SETTINGS_DEFAULTS.scheme,
             calmMode: APP_SETTINGS_DEFAULTS.calmMode,
@@ -3601,9 +3611,29 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             try { localStorage.setItem('soundEnabled', appSettings.sound ? '1' : '0'); } catch (e) {}
             if (typeof correctSound !== 'undefined') correctSound.muted = !appSettings.sound;
             if (typeof wrongSound !== 'undefined') wrongSound.muted = !appSettings.sound;
+            if (typeof shapeSounds !== 'undefined') Object.values(shapeSounds).forEach(a => { a.muted = !appSettings.sound; });
+            if (typeof colorSounds !== 'undefined') Object.values(colorSounds).forEach(a => { a.muted = !appSettings.sound; });
 
             const t = document.getElementById('soundToggle');
-            if (t) t.classList.toggle('on', appSettings.sound);
+            if (t) {
+                t.classList.toggle('on', appSettings.sound);
+                t.setAttribute('aria-pressed', String(appSettings.sound));
+            }
+        }
+
+        function setMusicEnabled(enabled) {
+            appSettings.music = !!enabled;
+            try { localStorage.setItem('musicEnabled', appSettings.music ? '1' : '0'); } catch (e) {}
+            if (typeof backgroundMusic !== 'undefined') {
+                backgroundMusic.muted = !appSettings.music;
+                if (appSettings.music) startBackgroundMusic();
+                else backgroundMusic.pause();
+            }
+            const t = document.getElementById('musicToggle');
+            if (t) {
+                t.classList.toggle('on', appSettings.music);
+                t.setAttribute('aria-pressed', String(appSettings.music));
+            }
         }
 
         function setCalmMode(enabled) {
@@ -3694,6 +3724,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             const levelEasyBtn = document.getElementById('levelEasyBtn');
             const levelHardBtn = document.getElementById('levelHardBtn');
             const soundToggle = document.getElementById('soundToggle');
+            const musicToggle = document.getElementById('musicToggle');
             const calmModeToggle = document.getElementById('calmModeToggle');
             const presentationModeToggle = document.getElementById('presentationModeToggle');
 
@@ -3701,6 +3732,8 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             try {
                 const storedSound = localStorage.getItem('soundEnabled');
                 if (storedSound !== null) appSettings.sound = storedSound === '1';
+                const storedMusic = localStorage.getItem('musicEnabled');
+                if (storedMusic !== null) appSettings.music = storedMusic === '1';
                 const storedLevel = localStorage.getItem('level');
                 if (storedLevel) appSettings.level = storedLevel;
                 const storedScheme = localStorage.getItem('scheme');
@@ -3715,6 +3748,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             setTheme(document.documentElement.dataset.theme || 'light');
             setScheme(document.documentElement.dataset.scheme || appSettings.scheme || 'default');
             setSoundEnabled(appSettings.sound);
+            setMusicEnabled(appSettings.music);
             setLevel(appSettings.level);
             setCalmMode(appSettings.calmMode);
             setPresentationMode(appSettings.presentationMode);
@@ -3735,6 +3769,10 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             if (soundToggle) {
                 addTouchSupport(soundToggle, () => setSoundEnabled(!appSettings.sound));
                 enableRipple(soundToggle);
+            }
+            if (musicToggle) {
+                addTouchSupport(musicToggle, () => setMusicEnabled(!appSettings.music));
+                enableRipple(musicToggle);
             }
 
             if (calmModeToggle) {
@@ -4142,6 +4180,23 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             'sunflower.png', 'watermelon.png', 'octopus.png', 'tennis.png', 'bluefish.png', 'jellyfish.png',
              'starfish.png', 'clownfish.png', 'tucan.png', 'frog.png', 'cat.png'
         ];
+
+        // Background music: place Jungle-Playtime.mp3 beside this HTML file.
+        // Browsers require a user gesture before starting audio, so it begins on
+        // the first tap/click/key press and then loops throughout the app.
+        const backgroundMusic = new Audio('sounds/Jungle-Playtime.mp3');
+        backgroundMusic.loop = true;
+        backgroundMusic.preload = 'auto';
+        backgroundMusic.volume = 0.28;
+        let backgroundMusicStarted = false;
+        function startBackgroundMusic() {
+            if (!appSettings.music || (backgroundMusicStarted && !backgroundMusic.paused)) return;
+            backgroundMusic.muted = false;
+            backgroundMusic.play().then(() => { backgroundMusicStarted = true; }).catch(() => {});
+        }
+        ['pointerdown', 'keydown', 'touchstart'].forEach(type => {
+            document.addEventListener(type, startBackgroundMusic, { passive: true });
+        });
 
         // Audio elements for sound effects - updated to use local files
         const correctSound = new Audio('sounds/correct.mp3');
@@ -8101,7 +8156,7 @@ html:root .si{display:grid;place-items:center;flex:none;width:44px;height:44px;f
   box-shadow:inset 0 -5px 0 var(--btn-y-lip),0 6px 10px -4px rgba(30,40,60,.3)}
 html[data-theme="dark"] .si{border-color:#2d3446}
 html:root .settings-row:has(#themeLightBtn) .si{background:var(--btn-p);box-shadow:inset 0 -5px 0 var(--btn-p-lip),0 6px 10px -4px rgba(30,40,60,.3)}
-html:root .settings-row:has(#soundToggle) .si{background:var(--btn-g);box-shadow:inset 0 -5px 0 var(--btn-g-lip),0 6px 10px -4px rgba(30,40,60,.3)}
+html:root .settings-row:has(#soundToggle) .si,html:root .settings-row:has(#musicToggle) .si{background:var(--btn-g);box-shadow:inset 0 -5px 0 var(--btn-g-lip),0 6px 10px -4px rgba(30,40,60,.3)}
 html:root .settings-row:has(#levelEasyBtn) .si{background:var(--btn-b);box-shadow:inset 0 -5px 0 var(--btn-b-lip),0 6px 10px -4px rgba(30,40,60,.3)}
 html:root .settings-row:has(#calmModeToggle) .si{background:var(--btn-g);box-shadow:inset 0 -5px 0 var(--btn-g-lip),0 6px 10px -4px rgba(30,40,60,.3)}
 /* rows with a switch of choices: icon on the left, choices fill the rest */
