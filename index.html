@@ -3225,6 +3225,9 @@ html:root .answer-btn.pattern-answer.correct{background:#e3f5ef!important;border
 html:root .answer-btn.pattern-answer.incorrect{background:#fdebe6!important;border-color:#ef765f;box-shadow:0 5px 0 #f3b3a6;transform:translateY(2px)}
 html:root .answer-btn.pattern-answer:disabled:not(.correct):not(.incorrect){opacity:.5}
 html:root .pattern-token.missing{background:#f1ede6;border:3px dashed #b9b0a1;color:#8a8175;box-shadow:none;-webkit-text-fill-color:currentColor}
+/* FIX: global button style sets a white -webkit-text-fill-color that shape glyphs inherit (white on white = empty answer). */
+html:root .answer-btn.pattern-answer,html:root .answer-btn.pattern-answer.correct,html:root .answer-btn.pattern-answer.incorrect{--t:#18243b;color:#18243b!important;-webkit-text-fill-color:#18243b;text-shadow:none}
+html:root .pattern-token,html:root .pattern-choice-token{-webkit-text-fill-color:currentColor}
 </style>
 <style id="pattern-build-layout">
 /* Build the Pattern: 3 separate lines (pattern / choices / buttons), smaller pictures, calm white choice tiles */
@@ -6450,6 +6453,8 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
                 const shapeColors = ['#4f8be0', '#f08a2c', '#efc531', '#8571c4', '#e58ab5', '#a8744a'];
                 const idx = patternShapes.findIndex(s => s.key === item.value);
                 span.style.color = shapeColors[idx % shapeColors.length];
+                span.style.webkitTextFillColor = span.style.color;
+                span.style.filter = 'drop-shadow(0 1px 0 rgba(24,36,59,.35))';
                 span.style.background = 'transparent';
                 span.style.boxShadow = 'none';
                 span.style.fontSize = 'clamp(2.2rem, 8vw, 3.4rem)';
@@ -6457,7 +6462,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
                 const img = document.createElement('img');
                 img.src = `img/objects/${item.value}`;
                 img.alt = item.label;
-                img.loading = 'lazy';
+                img.loading = 'eager';
                 img.addEventListener('error', () => markImageMissing(img), { once: true });
                 span.appendChild(img);
             }
@@ -7522,7 +7527,7 @@ const KEYS='<div class="keys">'+[1,2,3,4,5,6,7,8,9,0].map(n=>`<button class="k" 
 const G={
 'one-more-less':{t:'1 More and 1 Less',g:()=>step(0,1,true)},
 'ten-more-less':{t:'10 More and 10 Less',g:()=>step(0,10,true)},
-'tens-ones':{t:'Tens and Ones',g:()=>{const t=R(1,9),o=R(0,9),n=t*10+o,tc=P(CN),oc=P(CN),k=R(0,2),B={t:String(t),o:String(o),n,tc,oc,show:`${t} tens, ${o} ones`};
+'tens-ones':{t:'Tens and Ones',g:()=>{const t=R(1,9),o=R(1,9),n=t*10+o,tc=P(CN),oc=P(CN),k=R(0,2),B={t:String(t),o:String(o),n,tc,oc,show:`${t} tens, ${o} ones`};
  if(k==0)return {...B,q:'What number is this?',area:pic('tens',tc).repeat(t)+(o?`<span style="display:flex;flex-wrap:wrap;max-width:200px;align-items:flex-end">${pic('ones',oc).repeat(o)}</span>`:''),kind:'num',answer:String(n),show:String(n)};
  if(k==1)return {...B,q:`How many tens and ones are in ${n}?`,area:`<span class="box">${n}</span>`,kind:'num2'};
  return {...B,q:`Make the number ${n}`,area:'',kind:'build'}}},
@@ -7589,7 +7594,7 @@ function open(k){const was=live;cur=k;live=true;currentGameMode=k;if(!was){xface
  try{stopQuestionTimer();if(tm()&&!timedSessionGameMode)beginTimedSession(challengeModeEnabled?'Challenge':k);syncHud()}catch(e){}
  ['mainContainer','gameContainer','numberExplorerContainer'].forEach(i=>{const e=$(i);if(e)e.style.display='none'});
  $('homeBtn').style.display='flex';const sb=$('splashBtn');if(sb)sb.style.display='none';
- xg.style.display='block';$('xgT').textContent=G[k].t;
+ xg.style.display='block';$('xgT').textContent=G[k].t;setTimeout(()=>{try{const K=xg.querySelector('.keys');if(K)K.scrollIntoView({block:'nearest'})}catch(e){}},60);
  if(G[k].pre&&!tm()&&!challengeModeEnabled){choosing=true;$('xgF').className='feedback';$('xgQ').textContent='Which number do you want to make?';$('xgA').innerHTML='';$('xgF').textContent='';$('xgN').style.display='none';const O=$('xgO');O.innerHTML='';
   PAIRS.forEach(n=>{const b=document.createElement('button');b.className='o';b.type='button';b.textContent=n;b.onclick=()=>{W=n;next()};O.appendChild(b)});xface('normal');rRow=wRow=0}
  else{if(G[k].pre)W=P(PAIRS);next()}}
@@ -8181,6 +8186,32 @@ html:root .repeat-sound-btn:hover{transform:none!important;filter:none;backgroun
 html:root .repeat-sound-btn:active{transform:translateY(3px)!important;box-shadow:inset 0 -3px 0 var(--l),0 3px 5px -2px rgba(30,40,60,.30)!important}
 @media (max-width:640px){html:root .repeat-sound-btn{right:76px}}
 @media (max-width:480px){html:root .new-question-btn,html:root .repeat-sound-btn{top:10px}}
+</style>
+<style id="msp-keypad-mobile-fix">
+/* Mobile: keep the whole numeric keypad reachable above the bottom nav and browser bars */
+html:root #xg{height:100vh;height:100dvh;bottom:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-padding-bottom:160px}
+html:root body.in-game #xg{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+html:root #xg .game-container{min-height:0;justify-content:flex-start}
+html:root #xg .keys{width:100%;max-width:420px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px auto}
+html:root #xg .keys .k{min-width:0;width:100%}
+html:root #xg .keys[style*="width:100%"]{display:flex;justify-content:center}
+html:root #xg .keys[style*="width:100%"] .k{width:auto;min-width:96px}
+@media (max-width:480px){
+  html:root #xg{padding-left:10px;padding-right:10px}
+  html:root #xg .keys{gap:6px;max-width:100%}
+  html:root #xg .k{min-height:52px;padding:4px 4px calc(4px + 5px);font-size:1.35rem}
+  html:root #xg .k.ki{min-height:58px;padding:4px 4px calc(4px + 5px)}
+  html:root #xg .k.ki .nd{height:36px}
+  html:root #xg .box{min-width:70px;height:70px;font-size:2rem}
+  html:root #xg .box.img{height:72px;min-width:72px}
+  html:root #xg .box.img .nd{height:46px}
+}
+@media (max-height:700px){
+  html:root #xg .k{min-height:46px}
+  html:root #xg .k.ki{min-height:50px}
+  html:root #xg .k.ki .nd{height:32px}
+  html:root #xg .area,html:root #xg .opts{margin:6px auto}
+}
 </style>
 </body>
 </html>
