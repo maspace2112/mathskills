@@ -5277,7 +5277,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             const mathEquationDisplay = document.getElementById('mathEquationDisplay');
 
             shapesContainer.innerHTML = '';
-            shapesContainer.classList.remove('no-bg');
+            shapesContainer.classList.remove('no-bg', 'colour-row');
             answersContainer.innerHTML = '';
             comparisonContainer.innerHTML = '';
             feedback.textContent = '';
@@ -5576,6 +5576,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
             } else if (currentGameMode === 'colors-sound') {
                 // Play the color name sound, then ask the user to tap the matching color.
                 shapesContainer.classList.add('no-bg');
+                shapesContainer.classList.add('colour-row');
                 comparisonQuestion.innerHTML = 'Listen and choose the <span class="highlight">color</span>';
 
                 const correct = colourChoices[Math.floor(Math.random() * colourChoices.length)];
@@ -7516,8 +7517,12 @@ const step=(n,s,img)=>{const up=Math.random()<.5,mx=s==1?20:100,a=s==1?R(1,mx-1)
 let W=10;
 const clock=h=>{let t='';for(let i=1;i<=12;i++){const a=i*Math.PI/6;t+=`<text x="${50+38*Math.sin(a)}" y="${54-38*Math.cos(a)}" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">${i}</text>`}
  const a=h*Math.PI/6;return `<svg viewBox="0 0 100 100" width="190" height="190"><circle cx="50" cy="50" r="47" fill="#fff" stroke="#18243b" stroke-width="3"/>${t.replace(/currentColor/g,'#18243b')}<line x1="50" y1="50" x2="50" y2="14" stroke="#18243b" stroke-width="3" stroke-linecap="round"/><line x1="50" y1="50" x2="${50+22*Math.sin(a)}" y2="${50-22*Math.cos(a)}" stroke="#ef765f" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="50" r="3" fill="#18243b"/></svg>`};
-const SYM=[['<circle cx="50" cy="50" r="38"/>',1],['<rect x="14" y="14" width="72" height="72"/>',1],['<path d="M50 88C10 55 12 20 36 20 44 20 50 28 50 32 50 28 56 20 64 20 88 20 90 55 50 88Z"/>',1],['<polygon points="50,10 90,90 10,90"/>',1],['<polygon points="50,8 92,50 50,92 8,50"/>',1],['<rect x="38" y="10" width="24" height="80"/><rect x="10" y="38" width="80" height="24"/>',1],
- ['<polygon points="15,15 15,85 85,85"/>',0],['<polygon points="30,25 90,25 70,75 10,75"/>',0],['<polygon points="20,10 45,10 45,60 85,60 85,85 20,85"/>',0],['<polygon points="50,10 90,40 70,90 25,80 10,35"/>',0],['<path d="M15 80C15 30 50 10 85 20 80 60 55 85 15 80Z"/>',0]];
+const SYM=[...Array(10)].map((_,i)=>['sym-'+(i+1),1]).concat([...Array(10)].map((_,i)=>['sym-0'+(i+1),0])); // sym-1..sym-10 = symmetrical, sym-01..sym-010 = not symmetrical (img/symmetry/*.webp)
+const SYMLN={v:['50','0','50','100','#e8553d'],h:['0','50','100','50','#14a89b'],d1:['0','0','100','100','#8e4fe0'],d2:['100','0','0','100','#f08a24']};
+const symArea=f=>{const L=Object.entries(SYMLN).map(([k,a])=>`<line class="l-${k}" x1="${a[0]}" y1="${a[1]}" x2="${a[2]}" y2="${a[3]}" stroke="${a[4]}" stroke-width="4" stroke-linecap="round" stroke-dasharray="7 5" vector-effect="non-scaling-stroke" style="display:none"/>`).join('');
+ const B=Object.entries(SYMLN).map(([k,a])=>`<button type="button" class="symb" data-k="${k}" aria-pressed="false" aria-label="Line of symmetry" style="--lc:${a[4]}" onclick="var w=this.closest('.symwrap'),on=this.classList.toggle('on');this.setAttribute('aria-pressed',on);w.querySelector('.l-'+this.dataset.k).style.display=on?'':'none'"><svg viewBox="0 0 40 40" width="40" height="40"><rect x="5" y="5" width="30" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="2.5" opacity=".45"/><line x1="${a[0]*.3+5}" y1="${a[1]*.3+5}" x2="${a[2]*.3+5}" y2="${a[3]*.3+5}" stroke="${'var(--lc)'}" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="5 3.5"/></svg></button>`).join('');
+ return `<div class="symwrap"><div class="symbox"><img src="img/symmetry/${f}.webp" alt="Is this symmetrical?"><svg class="symlines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${L}</svg></div><div class="symbtns">${B}</div></div>`};
+
 const bars=(vert,big)=>{const n=3,v=S([40,80,120,160,190]).slice(0,n),i=big?v.indexOf(Math.max(...v)):v.indexOf(Math.min(...v));const c=['#ef765f','#efb84f','#4f8be0'];
  return choice(`Which is ${vert?(big?'taller':'shorter'):(big?'longer':'shorter')}?`,i,v.map((x,j)=>({v:String(j),h:`<div style="${vert?`width:34px;height:${x}px`:`height:26px;width:${x}px`};background:${c[j]};border-radius:6px"></div>`})))};
 const CC={blue:'#4f8be0',orange:'#f08a2c',red:'#ef765f',green:'#3fa896',purple:'#8571c4'},CN=Object.keys(CC);
@@ -7556,7 +7561,7 @@ const G={
  else if(t==2){const i=R(0,10);q=[`Which month comes after ${MONTHS[i]}?`,MONTHS[i+1]]}
  else{const i=R(1,11);q=[`Which month comes before ${MONTHS[i]}?`,MONTHS[i-1]]}
  return choice(q[0],q[1],strOpts(q[1],MONTHS,4))}},
-'symmetry':{t:'Symmetry',g:()=>{const s=P(SYM);return choice('Is this symmetrical?',s[1]?'Yes':'No',['Yes','No'],`<svg viewBox="0 0 100 100" width="190" height="190" fill="#ef765f" stroke="#18243b" stroke-width="3" stroke-linejoin="round">${s[0]}</svg>`)}}
+'symmetry':{t:'Symmetry',g:()=>{const s=P(SYM);return choice('Is this symmetrical?',s[1]?'Yes':'No',['Yes','No'],symArea(s[0]))}},
 };
 let cur,Q,typed='',live=false,answered=false;
 const tm=()=>{try{return isTimedMode()}catch(e){return false}};
@@ -7596,7 +7601,7 @@ function open(k){const was=live;cur=k;live=true;currentGameMode=k;if(!was){xface
  $('homeBtn').style.display='flex';const sb=$('splashBtn');if(sb)sb.style.display='none';
  xg.style.display='block';$('xgT').textContent=G[k].t;setTimeout(()=>{try{const K=xg.querySelector('.keys');if(K)K.scrollIntoView({block:'nearest'})}catch(e){}},60);
  if(G[k].pre&&!tm()&&!challengeModeEnabled){choosing=true;$('xgF').className='feedback';$('xgQ').textContent='Which number do you want to make?';$('xgA').innerHTML='';$('xgF').textContent='';$('xgN').style.display='none';const O=$('xgO');O.innerHTML='';
-  PAIRS.forEach(n=>{const b=document.createElement('button');b.className='o';b.type='button';b.textContent=n;b.onclick=()=>{W=n;next()};O.appendChild(b)});xface('normal');rRow=wRow=0}
+  PAIRS.forEach(n=>{const b=document.createElement('button');b.className='o pick';b.type='button';b.textContent=n;b.onclick=()=>{W=n;next()};O.appendChild(b)});xface('normal');rRow=wRow=0}
  else{if(G[k].pre)W=P(PAIRS);next()}}
 $('xgN').onclick=next;$('xgNew').onclick=()=>{if(live&&!choosing&&!tm())next()};
 const close=()=>{live=false;xg.style.display='none'};['click','touchend'].forEach(e=>$('homeBtn').addEventListener(e,close,true));
@@ -7771,6 +7776,18 @@ html:root :is(#startChallengeBtn){--c:var(--btn-p);--l:var(--btn-p-lip)}
 html:root #xg .k.ki{--c:#fbfcfe;--l:#cdd4e0;--t:#171a21;-webkit-text-fill-color:#171a21;text-shadow:none}
 html:root #xg .k.go.ki{--c:var(--btn-g);--l:var(--btn-g-lip)}
 html[data-theme="dark"] .start-btn:not(#startRegularBtn):not(#startTimedBtn):not(#startChallengeBtn){--c:var(--btn-b);--l:var(--btn-b-lip);--t:#fff}
+
+/* ---------- Number picker ("Which number do you want to make?") : unique two-tone buttons ---------- */
+html:root #xg .o.pick{--l:#5a2fa8;
+  background:linear-gradient(135deg,var(--p1,#ff8a3d) 0%,var(--p2,#9b5de5) 100%)!important;
+  min-width:84px;min-height:72px;font-size:1.8rem}
+html:root #xg .o.pick:hover:not(:disabled){
+  background:linear-gradient(135deg,var(--p1,#ff8a3d) 0%,var(--p2,#9b5de5) 100%)!important}
+html:root #xg .o.pick:nth-child(1){--p1:#ff9a3c;--p2:#e8553d;--l:#c4421f}
+html:root #xg .o.pick:nth-child(2){--p1:#b46cf0;--p2:#6a3fc8;--l:#53309f}
+html:root #xg .o.pick:nth-child(3){--p1:#2ec4b6;--p2:#0e8f8a;--l:#0a716d}
+html:root #xg .o.pick:nth-child(4){--p1:#ff9a3c;--p2:#9b5de5;--l:#7b45c2}
+html:root #xg .o.pick:nth-child(5){--p1:#2ec4b6;--p2:#9b5de5;--l:#6f45b8}
 /* answer feedback (same in every game) */
 html:root :is(.answer-btn,.number-explorer-answer-btn,#xg .o,#xg .k,.make-number-tile).correct,
 html:root #xg .o.correct,html:root #xg .k.correct{--c:var(--btn-g);--l:var(--btn-g-lip);--t:#fff;-webkit-text-fill-color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.13);transform:translateY(3px)}
@@ -7799,6 +7816,27 @@ html:root .number-box.correct{background:var(--btn-g);box-shadow:inset 0 -9px 0 
 html:root .number-box.incorrect{background:var(--btn-p);box-shadow:inset 0 -9px 0 var(--btn-p-lip),0 12px 16px -6px rgba(30,40,60,.28)}
 html:root .make-number-target{background:var(--btn-p);box-shadow:inset 0 -5px 0 var(--btn-p-lip);border:3px solid #fff}
 
+
+/* ---------- Colours by Sound: all colour tiles stay in ONE row (they shrink to fit) ---------- */
+html:root .shapes-container.colour-row{flex-wrap:nowrap;justify-content:center;align-items:stretch;
+  gap:clamp(6px,2.5vw,16px);max-width:640px;margin-left:auto;margin-right:auto}
+html:root .shapes-container.colour-row .shape-choice{flex:1 1 0;min-width:0;padding:clamp(6px,2vw,14px)}
+html:root .shapes-container.colour-row .shape-choice .color-swatch{width:100%;height:clamp(64px,20vw,130px)}
+
+/* ---------- Symmetry: picture + line-of-symmetry overlay + 4 toggle buttons ---------- */
+#xg .symwrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+#xg .symbox{position:relative;display:inline-block;line-height:0}
+#xg .symbox img{display:block;max-width:min(300px,80vw);max-height:260px;width:auto;height:auto;object-fit:contain}
+#xg .symlines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 1px #fff)}
+#xg .symbtns{display:flex;gap:10px;justify-content:center;flex-wrap:nowrap}
+#xg .symb{width:62px;height:62px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:18px;
+  border:3px solid #fff;background:var(--surface-0);color:var(--ink,#18243b);cursor:pointer;
+  box-shadow:inset 0 -5px 0 #e1e4ea,0 8px 12px -6px rgba(30,40,60,.3);transition:transform .14s ease,box-shadow .14s ease}
+#xg .symb:hover{transform:translateY(-2px)}
+#xg .symb.on{background:var(--lc);color:#fff;box-shadow:inset 0 -5px 0 rgba(0,0,0,.22),0 8px 12px -6px rgba(30,40,60,.3);transform:translateY(2px)}
+#xg .symb.on svg line{stroke:#fff}
+html[data-theme="dark"] #xg .symb{border-color:var(--surface-2);box-shadow:inset 0 -5px 0 #0e121b,0 8px 12px -6px rgba(0,0,0,.4)}
+html[data-theme="dark"] #xg .symlines{filter:drop-shadow(0 0 2px #000)}
 /* ---------- shape choices, counting slots, answer boxes ---------- */
 html:root .shape-choice{background:var(--surface-0);border:3px solid #fff;border-radius:28px 28px 34px 34px;
   box-shadow:inset 0 -7px 0 #e1e4ea,0 10px 14px -6px rgba(30,40,60,.25)}
@@ -7983,12 +8021,14 @@ html[data-theme="dark"] .msp-sc,html[data-theme="dark"] .msp-row{box-shadow:0 10
 (function(){'use strict';
 const $=id=>document.getElementById(id),KEY='msp_v1',PAGES=['progress','awards','me'];
 const AV=['🦊','🐯','🦁','🐼','🐸','🦄','🐙','🐵','🐰','🐧','🐶','🐱'];
+const avi=()=>`<img src="img/bareen-pp.webp" alt="" draggable="false" onerror="this.style.display='none'">`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let S,range='week',sel=null;
 const newP=(n,a)=>({name:n,av:a,days:{},skills:{}});
 function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
  if(!S||!S.profiles||!S.profiles[S.active]){const id='p'+Date.now();S={active:id,profiles:{[id]:newP('Student',AV[0])}}}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let LOCAL=null,HOOK=null;
+function save(){if(S.cloud){try{HOOK&&HOOK.save(S.profiles[S.active])}catch(e){}return}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const P=()=>S.profiles[S.active];
 const dk=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const skillName=m=>{try{return prettySkillName(m)}catch(e){return m}};
@@ -8032,7 +8072,7 @@ function drawChart(){const box=$('mspChart');if(!box)return;const s=series(),n=s
  $('mspPlot').onclick=e=>{const r=e.currentTarget.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W;let b=0,bd=1e9;for(let i=0;i<n;i++){const d=Math.abs(X(i)-x);if(d<bd){bd=d;b=i}}sel=b;drawChart()}}
 /* ---- pages ---- */
 function renderProgress(){const p=P(),t=totals(p),el=$('msp-progress');
- el.innerHTML='<h1 class="msp-title">Progress</h1><div class="msp-me"><button class="msp-av" data-nav="me" aria-label="Open profile">'+p.av+'</button><div><b>'+esc(p.name)+'</b><span>🔥 '+streak(p)+'-day streak · '+t.a+' answered</span></div></div>'+
+ el.innerHTML='<h1 class="msp-title">Progress</h1><div class="msp-me"><button class="msp-av" data-nav="me" aria-label="Open profile">'+avi()+'</button><div><b>'+esc(p.name)+'</b><span>🔥 '+streak(p)+'-day streak · '+t.a+' answered</span></div></div>'+
  '<div class="msp-tabs" id="mspTabs">'+[['day','Daily'],['week','Weekly'],['month','Monthly']].map(x=>'<button data-m="'+x[0]+'" class="'+(x[0]===range?'on':'')+'">'+x[1]+'</button>').join('')+'</div><div class="msp-chart" id="mspChart"></div>'+
  '<h2 class="msp-h2">Units</h2><div class="msp-grid">'+strands().map(g=>{const a=agg(p,g.modes),st=status(a.pct,a.a);
   return '<div class="msp-sc '+st[1]+'"><div><div class="nm">'+esc(g.title)+'</div><div class="pc">'+(a.pct==null?'–':a.pct+'%')+'</div><div class="msp-st '+st[1]+'"><i>'+st[2]+'</i>'+st[0]+'</div></div><div class="msp-gauge">'+(a.pct==null?'':'<b style="height:'+Math.max(6,a.pct*.72)+'%"></b><u style="bottom:calc('+(a.pct*.88)+'% + 3px)"></u>')+'</div></div>'}).join('')+'</div>'+nextStep(p)+
@@ -8056,10 +8096,17 @@ function renderAwards(){const p=P(),t=totals(p),s=streak(p),k=Object.keys(p.skil
  $('msp-awards').innerHTML='<h1 class="msp-title">Awards</h1><div class="msp-sum"><div><b>'+got+'/'+BADGES.length+'</b><span>Badges</span></div><div><b>🔥 '+s+'</b><span>Day streak</span></div><div><b>'+(t.a?Math.round(100*t.c/t.a):0)+'%</b><span>Correct</span></div></div><h2 class="msp-h2">Badges</h2><div class="msp-bds">'+
  BADGES.map(b=>'<div class="msp-bd '+(b[4](t,s,k,all)?'':'lock')+'" data-c="'+b[3]+'"><div class="t">'+b[0]+'</div>'+b[1]+'<small>'+b[2]+'</small></div>').join('')+'</div>'}
 function renderMe(){const p=P(),ids=Object.keys(S.profiles);
- $('msp-me').innerHTML='<h1 class="msp-title">My account</h1><div class="msp-av big">'+p.av+'</div>'+
- '<div class="msp-card"><h3>Name</h3><input class="msp-in" id="mspName" maxlength="16" value="'+esc(p.name)+'" aria-label="Student name"><div class="msp-avs">'+AV.map(a=>'<button class="msp-av '+(a===p.av?'on':'')+'" data-av="'+a+'" aria-label="Choose avatar '+a+'">'+a+'</button>').join('')+'</div><div class="msp-acts"><button class="msp-btn" data-act="save">Save</button></div></div>'+
- '<div class="msp-card"><h3>Students on this device</h3>'+ids.map(i=>{const q=S.profiles[i];return '<div class="msp-pl"><div class="msp-av">'+q.av+'</div><b>'+esc(q.name)+(i===S.active?' ✓':'')+'</b>'+(i===S.active?'':'<button class="msp-btn b" data-sw="'+i+'">Switch</button>')+(ids.length>1?'<button class="msp-x" data-rm="'+i+'" aria-label="Remove '+esc(q.name)+'">✕</button>':'')+'</div>'}).join('')+'<div class="msp-acts"><button class="msp-btn y" data-act="add">+ Add student</button></div></div>'+
- '<div class="msp-card"><div class="msp-acts"><button class="msp-btn b" data-act="settings">Settings</button><button class="msp-btn y" data-act="csv">Export progress (CSV)</button><button class="msp-btn p" data-act="reset">Reset this student\'s progress</button></div></div>'}
+ const nameCard='<div class="msp-card"><h3>Name</h3><input class="msp-in" id="mspName" maxlength="16" value="'+esc(p.name)+'" aria-label="Student name"><div class="msp-acts"><button class="msp-btn" data-act="save">Save</button></div></div>';
+ if(S.cloud){
+  $('msp-me').innerHTML='<h1 class="msp-title">My account</h1><div class="msp-av big">'+avi()+'</div>'+nameCard+
+  '<div class="msp-card"><h3>Signed in</h3><div class="msp-acts"><button class="msp-btn p" data-act="logout">Sign out</button></div></div>'+
+  '<div class="msp-card"><div class="msp-acts"><button class="msp-btn b" data-act="settings">Settings</button><button class="msp-btn y" data-act="csv">Export progress (CSV)</button><button class="msp-btn p" data-act="reset">Reset my progress</button></div></div>';
+  return}
+ const teacherCard=(window.MSPAuth&&window.MSPAuth.teacher)?'<div class="msp-card"><h3>Teacher</h3><div class="msp-acts"><button class="msp-btn y" data-act="dash">Class dashboard</button><button class="msp-btn p" data-act="logout">Sign out</button></div></div>':'';
+ $('msp-me').innerHTML='<h1 class="msp-title">My account</h1><div class="msp-av big">'+avi()+'</div>'+
+ '<div class="msp-card"><h3>Name</h3><input class="msp-in" id="mspName" maxlength="16" value="'+esc(p.name)+'" aria-label="Student name"><div class="msp-acts"><button class="msp-btn" data-act="save">Save</button></div></div>'+
+ '<div class="msp-card"><h3>Students on this device</h3>'+ids.map(i=>{const q=S.profiles[i];return '<div class="msp-pl"><div class="msp-av">'+avi()+'</div><b>'+esc(q.name)+(i===S.active?' ✓':'')+'</b>'+(i===S.active?'':'<button class="msp-btn b" data-sw="'+i+'">Switch</button>')+(ids.length>1?'<button class="msp-x" data-rm="'+i+'" aria-label="Remove '+esc(q.name)+'">✕</button>':'')+'</div>'}).join('')+'<div class="msp-acts"><button class="msp-btn y" data-act="add">+ Add student</button></div></div>'+
+ '<div class="msp-card"><div class="msp-acts"><button class="msp-btn b" data-act="settings">Settings</button><button class="msp-btn y" data-act="csv">Export progress (CSV)</button><button class="msp-btn p" data-act="reset">Reset this student\'s progress</button></div></div>'+teacherCard}
 function render(n){if(n==='progress')renderProgress();else if(n==='awards')renderAwards();else if(n==='me')renderMe()}
 /* ---- navigation ---- */
 const vis=el=>el&&getComputedStyle(el).display!=='none';
@@ -8113,11 +8160,18 @@ document.addEventListener('click',e=>{const t=e.target;let b;
   if(a==='save'){P().name=($('mspName').value.trim()||'Student').slice(0,16);save();renderMe();updateHello()}
   else if(a==='add'){const n=prompt('Student name?');if(n&&n.trim()){const id='p'+Date.now();S.profiles[id]=newP(n.trim().slice(0,16),AV[Object.keys(S.profiles).length%AV.length]);S.active=id;save();renderMe();updateHello()}}
   else if(a==='settings'){try{openSettings()}catch(x){}}
+  else if(a==='logout'){if(window.MSPAuth)window.MSPAuth.signOut()}
+  else if(a==='dash'){if(window.MSPAuth)window.MSPAuth.dashboard()}
   else if(a==='csv')csv();
   else if(a==='reset'&&confirm('Reset all progress for '+P().name+'?')){P().days={};P().skills={};save();renderMe()}}});
 function updateHello(){const mc=$('mainContainer');if(!mc)return;let h=mc.querySelector('.msp-hello');
  if(!h){h=document.createElement('button');h.type='button';h.className='msp-hello';h.setAttribute('aria-label','Open my account');const t=mc.querySelector('h1');if(t)t.insertAdjacentElement('afterend',h);else mc.prepend(h);mc.querySelector('.msp-hello').style.display='flex'}
- const p=P();h.innerHTML='<span class="msp-av">'+p.av+'</span><span>Hi, '+esc(p.name)+'! 🔥 '+streak(p)+'</span>'}
+ const p=P();h.innerHTML='<span class="msp-av">'+avi()+'</span><span>Hi, '+esc(p.name)+'! 🔥 '+streak(p)+'</span>'}
+function afterSwap(){updateHello();const pg=curPage();if(pg)render(pg);sync()}
+window.MSP={skillName,
+ useCloud(uid,d,saveFn){if(!S.cloud)LOCAL=S;HOOK={save:saveFn};
+  S={cloud:true,active:uid,profiles:{[uid]:{name:d.name||'Student',av:d.av||AV[0],days:d.days||{},skills:d.skills||{}}}};afterSwap()},
+ useLocal(){HOOK=null;if(S.cloud){S=LOCAL||null;LOCAL=null;if(!S)load()}afterSwap()}};
 load();updateHello();sync();
 const go=()=>{const sb=$('startRegularBtn'),sp=$('splashScreen');if(sb&&sp&&sp.style.display!=='none')sb.click()};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(go,0));else setTimeout(go,0);
@@ -8213,5 +8267,374 @@ html:root #xg .keys[style*="width:100%"] .k{width:auto;min-width:96px}
   html:root #xg .area,html:root #xg .opts{margin:6px auto}
 }
 </style>
+<style id="msp-auth-style">
+/* ===== Login screen + teacher dashboard (Firebase) ===== */
+.auth-ov{position:fixed;inset:0;z-index:3000;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--paper);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px))}
+.auth-ov.show{display:block}
+.auth-box{max-width:440px;margin:0 auto;display:grid;gap:12px}
+.dash-box{max-width:760px;margin:0 auto}
+.auth-logo{text-align:center;font-size:3.4rem;line-height:1.1;margin-top:8px}
+.auth-h{text-align:center;font:800 2rem 'Baloo 2',Georgia,serif;margin:0;color:var(--ink)}
+.auth-sub{text-align:center;color:var(--text-muted);font-weight:700;margin:0 0 4px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface-1);padding:5px;border-radius:22px;margin-bottom:12px}
+.auth-tabs button{border:0;background:none;border-radius:17px;padding:.65rem;font:800 1rem 'Nunito',sans-serif;color:var(--text-muted);cursor:pointer}
+.auth-tabs button.on{background:var(--btn-y);color:#2b2713;box-shadow:inset 0 -4px 0 var(--btn-y-lip)}
+.auth-form{display:grid;gap:10px}
+.auth-form .msp-btn{width:100%;font-size:1.1rem}
+.auth-err{display:none;background:rgba(226,61,99,.12);color:var(--msp-bad);border-radius:16px;padding:10px 14px;font-weight:800;font-size:.95rem}
+.auth-err.show{display:block}
+.auth-link{background:none;border:0;color:var(--btn-b-lip);font:800 .95rem 'Nunito',sans-serif;cursor:pointer;padding:6px;text-decoration:underline}
+.auth-hint{color:var(--text-muted);font-weight:700;font-size:.85rem;text-align:center;margin:0}
+.auth-toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:3100;background:#20283a;color:#fff;border-radius:18px;padding:10px 16px;font:800 .9rem 'Nunito',sans-serif;box-shadow:0 10px 24px rgba(0,0,0,.3);display:none;max-width:90vw;text-align:center}
+.auth-toast.show{display:block}
+.dash-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:12px 0}
+.dash-top .msp-btn{font-size:.9rem;padding:.5rem .9rem calc(.5rem + 5px)}
+.dash-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.dash-sum div{background:var(--surface-0);border-radius:22px;padding:12px;text-align:center;box-shadow:0 8px 20px rgba(30,40,60,.06)}
+.dash-sum b{display:block;font:800 1.5rem 'Baloo 2',Georgia,serif}.dash-sum span{color:var(--text-muted);font-weight:800;font-size:.8rem}
+.dash-st{background:var(--surface-0);border-radius:26px;padding:12px 14px;margin-bottom:10px;box-shadow:0 8px 20px rgba(30,40,60,.06)}
+.dash-st .hd{display:flex;align-items:center;gap:12px;cursor:pointer}
+.dash-st .hd .msp-av{width:46px;height:46px;font-size:1.4rem;cursor:pointer}
+.dash-st .hd .nm{flex:1;min-width:0}.dash-st .hd b{display:block;font-weight:800}
+.dash-st .hd small{display:block;color:var(--text-muted);font-weight:700}
+.dash-st .pc{font:800 1.3rem 'Baloo 2',Georgia,serif}
+.dash-det{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.dash-det .msp-row{box-shadow:none;background:var(--surface-1);cursor:default}
+.dash-add{display:grid;gap:10px}
+.dash-add .msp-in{font-size:1rem}
+</style>
+
+<style id="bareen-skin">
+/* Bareen mascot: login hero + profile picture. Files: img/bareen.webp and img/bareen-pp.webp */
+.auth-hero{display:block;margin:4px auto 0;height:clamp(170px,30vh,260px);width:auto;max-width:60%;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(30,40,60,.25));user-select:none;-webkit-user-drag:none}
+html:root .msp-av{border-radius:50%;background:#fff;padding:0;overflow:hidden;display:block;box-shadow:0 6px 12px -4px rgba(30,40,60,.35)}
+html:root .msp-av img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;pointer-events:none;user-select:none;-webkit-user-drag:none}
+html:root .msp-av.big{width:120px;height:120px;border-radius:50%}
+</style>
+
+<div class="auth-ov" id="authOv" role="dialog" aria-modal="true" aria-label="Sign in">
+ <div class="auth-box">
+  <div class="auth-logo"><img class="auth-hero" src="img/bareen.webp" alt="Bareen, your Math Skills guide" draggable="false" onerror="this.replaceWith(document.createTextNode('🧮'))"></div>
+  <h1 class="auth-h">Math Skills</h1>
+  <p class="auth-sub" id="authSub">Sign in to save your progress</p>
+  <div class="msp-note" id="authLoading">Loading…</div>
+  <div class="msp-card" id="authCard" style="display:none">
+   <form class="auth-form" id="authForm" novalidate>
+    <input class="msp-in" id="authId" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Username or email" aria-label="Username or email">
+    <input class="msp-in" id="authPw" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password">
+    <div class="auth-err" id="authErr" role="alert"></div>
+    <button class="msp-btn y" id="authGo" type="submit">Sign in</button>
+    <div style="text-align:center"><button type="button" class="auth-link" id="authForgot">Forgot password?</button></div>
+   </form>
+  </div>
+  <div style="text-align:center"><button type="button" class="auth-link" id="authOffline" style="display:none">Play without an account (saved on this device only)</button></div>
+ </div>
+</div>
+
+<div class="auth-ov" id="dashOv" role="dialog" aria-modal="true" aria-label="Class dashboard"></div>
+<div class="auth-toast" id="authToast" role="status"></div>
+
+<script type="module" id="msp-auth-script">
+/* =====================================================================
+   FIREBASE SETUP: paste your web app config here.
+   Firebase console > Project settings > General > Your apps > Web app > SDK setup and configuration
+   (These values are public identifiers, it is normal for them to be in the page.
+    Your data is protected by firestore.rules, not by hiding this config.)
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBPk7VB7VfSoUeNqYEnlhRG2NsAqUCvXQc",
+  authDomain: "math-skills-app.firebaseapp.com",
+  projectId: "math-skills-app",
+  storageBucket: "math-skills-app.firebasestorage.app",
+  messagingSenderId: "641898575008",
+  appId: "1:641898575008:web:cccab3a575f847646785c5"
+};
+const FB_VERSION = '13.1.0';                       // same as "firebase" in package-lock.json
+const USERNAME_DOMAIN = 'students.mathskills.app';  // students log in with a username; it is stored as username@this-domain
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const AVS = ['🦊','🐯','🦁','🐼','🐸','🦄','🐙','🐵','🐰','🐧','🐶','🐱'];
+const AVPIC = `<img src="img/bareen-pp.webp" alt="" draggable="false" onerror="this.style.display='none'">`;
+const configured = ['apiKey','projectId','appId'].every(k => firebaseConfig[k] && !/^PASTE/.test(firebaseConfig[k]));
+
+let APP, A, F, app, auth, db;
+let role = null, meta = {}, pendingName = null, seq = 0, mode = 'in';
+let pending = null, timer = null, students = [], openId = null;
+
+window.MSPAuth = { teacher: false, signOut: doSignOut, dashboard: () => openDash() };
+
+if (!configured) {
+  console.info('[Math Skills] Firebase is not configured yet: running in local mode. Paste your config in #msp-auth-script.');
+} else {
+  init();
+}
+
+/* ---------- helpers ---------- */
+function toast(msg, ms) {
+  const t = $('authToast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), ms || 3500);
+}
+function toEmail(v) {
+  v = String(v || '').trim().toLowerCase();
+  if (!v) return null;
+  if (v.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : null;
+  return /^[a-z0-9._-]{3,24}$/.test(v) ? v + '@' + USERNAME_DOMAIN : null;
+}
+const userOf = email => String(email || '').endsWith('@' + USERNAME_DOMAIN) ? email.split('@')[0] : (email || '');
+function authMsg(e) {
+  const c = (e && e.code) || '';
+  if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found') return 'Wrong username or password.';
+  if (c === 'auth/email-already-in-use') return 'That username is already taken. Try another one.';
+  if (c === 'auth/weak-password') return 'Password must be at least 6 characters.';
+  if (c === 'auth/invalid-email') return 'Please check the username or email.';
+  if (c === 'auth/network-request-failed') return 'No internet connection. Please try again.';
+  if (c === 'auth/too-many-requests') return 'Too many tries. Wait a minute and try again.';
+  if (c === 'auth/operation-not-allowed') return 'Email/Password sign-in is not switched on in the Firebase console yet.';
+  if (c === 'permission-denied' || c === 'firestore/permission-denied') return 'Not allowed by the database rules.';
+  return 'Something went wrong' + (c ? ' (' + c + ')' : '') + '.';
+}
+function show(el, on) { el.classList.toggle('show', !!on); }
+function setLoginState(state, msg) {          // 'loading' | 'form' | 'hidden'
+  const ov = $('authOv');
+  show(ov, state !== 'hidden');
+  $('authLoading').style.display = state === 'loading' ? 'block' : 'none';
+  $('authCard').style.display = state === 'form' ? 'block' : 'none';
+  if (msg) $('authLoading').textContent = msg;
+  document.body.style.overflow = state === 'hidden' ? '' : 'hidden';
+}
+function setMode() {
+  mode = 'in';
+  $('authForgot').style.display = 'inline';
+  $('authPw').autocomplete = 'current-password';
+  $('authGo').textContent = 'Sign in';
+  $('authSub').textContent = 'Sign in to save your progress';
+  showErr('');
+}
+function showErr(t) { const e = $('authErr'); e.textContent = t || ''; show(e, !!t); }
+
+/* ---------- init ---------- */
+async function init() {
+  setLoginState('loading', 'Loading…');
+  try {
+    const base = 'https://www.gstatic.com/firebasejs/' + FB_VERSION + '/';
+    [APP, A, F] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]);
+  } catch (e) {
+    console.error('[Math Skills] Could not load Firebase', e);
+    setLoginState('loading', 'Could not connect. Check your internet and reload.');
+    $('authOffline').style.display = 'inline';
+    return;
+  }
+  app = APP.initializeApp(firebaseConfig);
+  auth = A.getAuth(app);
+  try {
+    db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) });
+  } catch (e) { db = F.getFirestore(app); }
+  A.onAuthStateChanged(auth, onUser);
+}
+
+/* ---------- who is signed in ---------- */
+async function onUser(user) {
+  const my = ++seq;
+  if (!user) {
+    role = null; meta = {}; pending = null;
+    window.MSPAuth.teacher = false;
+    closeDash();
+    if (window.MSP) MSP.useLocal();
+    setLoginState('form'); setMode('in');
+    return;
+  }
+  setLoginState('loading', 'Loading your account…');
+  try {
+    const t = await F.getDoc(F.doc(db, 'teachers', user.uid));
+    if (my !== seq) return;
+    if (t.exists()) {
+      role = 'teacher'; window.MSPAuth.teacher = true;
+      if (window.MSP) MSP.useLocal();
+      setLoginState('hidden'); openDash();
+      return;
+    }
+    const ref = F.doc(db, 'students', user.uid);
+    const snap = await F.getDoc(ref);
+    if (my !== seq) return;
+    let data;
+    if (snap.exists()) data = snap.data();
+    else {
+      const uname = userOf(user.email);
+      data = { role: 'student', name: (pendingName || uname.split('@')[0] || 'Student').slice(0, 16), av: AVS[Math.floor(Math.random() * AVS.length)],
+               username: uname, createdAt: Date.now(), days: {}, skills: {}, totals: { a: 0, c: 0 }, lastActive: 0, updatedAt: F.serverTimestamp() };
+      await F.setDoc(ref, data);
+    }
+    pendingName = null;
+    meta = { username: data.username || userOf(user.email), createdAt: data.createdAt || Date.now() };
+    role = 'student'; window.MSPAuth.teacher = false;
+    MSP.useCloud(user.uid, data, p => queueSave(user.uid, p));
+    setLoginState('hidden');
+  } catch (e) {
+    console.error(e);
+    setLoginState('form'); setMode('in');
+    showErr('Could not open your account. ' + authMsg(e));
+    try { await A.signOut(auth); } catch (x) {}
+  }
+}
+
+/* ---------- login form ---------- */
+$('authForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!auth) return;
+  const email = toEmail($('authId').value), pw = $('authPw').value;
+  if (!email) return showErr('Username: 3 to 24 letters or numbers (. _ - allowed), or a full email address.');
+  if (!pw) return showErr('Please type your password.');
+  showErr(''); $('authGo').disabled = true;
+  try {
+    await A.signInWithEmailAndPassword(auth, email, pw);
+    $('authPw').value = '';
+  } catch (err) { pendingName = null; showErr(authMsg(err)); }
+  $('authGo').disabled = false;
+});
+$('authForgot').addEventListener('click', async () => {
+  const v = $('authId').value.trim();
+  if (!v.includes('@')) return showErr('Students: ask your teacher to reset your password. If you signed up with an email, type it above first.');
+  try { await A.sendPasswordResetEmail(auth, v.toLowerCase()); showErr(''); toast('Password reset email sent. Check your inbox.', 5000); }
+  catch (err) { showErr(authMsg(err)); }
+});
+$('authOffline').addEventListener('click', () => { setLoginState('hidden'); });
+
+/* ---------- saving progress ---------- */
+function queueSave(uid, p) { pending = { uid, p }; clearTimeout(timer); timer = setTimeout(flush, 2500); }
+async function flush() {
+  clearTimeout(timer);
+  if (!pending || !auth || role !== 'student') return;
+  const { uid, p } = pending;
+  if (!auth.currentUser || auth.currentUser.uid !== uid) { pending = null; return; }
+  pending = null;
+  let a = 0, c = 0;
+  for (const k in p.days) { a += p.days[k].a || 0; c += p.days[k].c || 0; }
+  try {
+    await F.setDoc(F.doc(db, 'students', uid), {
+      role: 'student', name: p.name, av: p.av, username: meta.username || '', createdAt: meta.createdAt || Date.now(),
+      days: p.days, skills: p.skills, totals: { a, c }, lastActive: Date.now(), updatedAt: F.serverTimestamp()
+    });
+  } catch (e) {
+    console.error('save failed', e);
+    pending = pending || { uid, p };
+    toast('Progress not saved yet. Will try again.');
+    timer = setTimeout(flush, 15000);
+  }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+addEventListener('pagehide', () => { flush(); });
+
+async function doSignOut() {
+  if (!auth) return;
+  try { await Promise.race([flush(), new Promise(r => setTimeout(r, 3000))]); } catch (e) {}
+  try { await A.signOut(auth); } catch (e) { toast('Could not sign out.'); }
+}
+
+/* ---------- teacher dashboard ---------- */
+const dk = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function tot(p) { let a = 0, c = 0; for (const k in (p.days || {})) { a += p.days[k].a || 0; c += p.days[k].c || 0; } return { a, c }; }
+function streak(p) {
+  const days = p.days || {}; let n = 0, d = new Date();
+  if (!(days[dk(d)] || {}).a) d.setDate(d.getDate() - 1);
+  while ((days[dk(d)] || {}).a) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function ago(ms) {
+  if (!ms) return 'not started';
+  const d = Math.floor((Date.now() - ms) / 86400000);
+  return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago';
+}
+const skillName = m => { try { return MSP.skillName(m); } catch (e) { return m; } };
+function closeDash() { show($('dashOv'), false); if (!$('authOv').classList.contains('show')) document.body.style.overflow = ''; }
+
+async function openDash() {
+  if (role !== 'teacher') return;
+  const ov = $('dashOv');
+  show(ov, true); document.body.style.overflow = 'hidden';
+  ov.innerHTML = '<div class="dash-box"><div class="msp-note">Loading students…</div></div>';
+  try {
+    const snap = await F.getDocs(F.collection(db, 'students'));
+    students = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+    students.sort((x, y) => String(x.name || '').localeCompare(String(y.name || '')));
+    renderDash();
+  } catch (e) {
+    console.error(e);
+    ov.innerHTML = '<div class="dash-box"><div class="msp-note">Could not load students. ' + esc(authMsg(e)) + '</div><div class="dash-top"><button class="msp-btn b" data-d="open">Open app</button><button class="msp-btn p" data-d="out">Sign out</button></div></div>';
+  }
+}
+function renderDash(addOpen, note) {
+  const ov = $('dashOv');
+  let ta = 0, tc = 0; students.forEach(s => { const t = tot(s); ta += t.a; tc += t.c; });
+  ov.innerHTML = '<div class="dash-box"><div class="auth-logo">👩‍🏫</div><h1 class="auth-h">Class dashboard</h1>' +
+    '<div class="dash-top"><button class="msp-btn y" data-d="add">+ Add student</button><button class="msp-btn b" data-d="refresh">Refresh</button><button class="msp-btn g" data-d="csv">Export CSV</button><button class="msp-btn b" data-d="open">Open app</button><button class="msp-btn p" data-d="out">Sign out</button></div>' +
+    (note ? '<div class="msp-card" style="background:rgba(31,167,90,.12)"><b>' + note + '</b></div>' : '') +
+    (addOpen ? '<div class="msp-card dash-add"><h3>New student</h3><input class="msp-in" id="dName" maxlength="16" placeholder="Name (shown in the app)"><input class="msp-in" id="dUser" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Username (3-24 letters or numbers)"><input class="msp-in" id="dPass" placeholder="Password (min 6 characters)"><div class="auth-err" id="dErr"></div><div class="msp-acts" style="display:flex;gap:8px;flex-wrap:wrap"><button class="msp-btn y" data-d="create">Create student</button><button class="msp-btn" style="--c:#9aa3b8;--l:#7c859b" data-d="cancel">Cancel</button></div></div>' : '') +
+    '<div class="dash-sum"><div><b>' + students.length + '</b><span>Students</span></div><div><b>' + ta + '</b><span>Answers</span></div><div><b>' + (ta ? Math.round(100 * tc / ta) : 0) + '%</b><span>Correct</span></div></div>' +
+    (students.length ? students.map(studentRow).join('') : '<div class="msp-note">No students yet. Students can create their own account, or tap “Add student”.</div>') +
+    '</div>';
+}
+function studentRow(s) {
+  const t = tot(s), pc = t.a ? Math.round(100 * t.c / t.a) : null, open = openId === s.id;
+  let det = '';
+  if (open) {
+    const sk = s.skills || {}, ms = Object.keys(sk).filter(m => sk[m].a).sort((a, b) => (sk[b].last || 0) - (sk[a].last || 0));
+    det = '<div class="dash-det">' + (ms.length ? ms.map(m => {
+      const q = Math.round(100 * sk[m].c / sk[m].a), col = q >= 80 ? 'var(--msp-ok)' : q >= 55 ? 'var(--msp-mid)' : 'var(--msp-bad)';
+      return '<div class="msp-row"><b>' + esc(skillName(m)) + '</b><span>' + q + '% · ' + sk[m].a + ' answered</span><div class="msp-bar2"><i style="width:' + q + '%;background:' + col + '"></i></div></div>';
+    }).join('') : '<div class="msp-note">No practice yet.</div>') +
+      '<div style="text-align:right;margin-top:6px"><button class="auth-link" data-del="' + esc(s.id) + '">Delete this student’s profile</button></div></div>';
+  }
+  return '<div class="dash-st"><div class="hd" data-st="' + esc(s.id) + '"><div class="msp-av">' + AVPIC + '</div><div class="nm"><b>' + esc(s.name || 'Student') + '</b><small>' + esc(s.username || '') + ' · ' + t.a + ' answered · 🔥 ' + streak(s) + ' · ' + ago(s.lastActive) + '</small></div><div class="pc">' + (pc == null ? '–' : pc + '%') + '</div></div>' + det + '</div>';
+}
+function dashCsv() {
+  const rows = [['Student', 'Username', 'Skill', 'Answered', 'Correct', 'Accuracy %']];
+  students.forEach(s => { const sk = s.skills || {}; Object.keys(sk).forEach(m => rows.push([s.name, s.username, skillName(m), sk[m].a, sk[m].c, sk[m].a ? Math.round(100 * sk[m].c / sk[m].a) : 0])); });
+  const t = rows.map(r => r.map(v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\n'), a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([t], { type: 'text/csv' })); a.download = 'class-progress.csv'; document.body.appendChild(a); a.click(); a.remove();
+}
+async function createStudent() {
+  const name = $('dName').value.trim().slice(0, 16), user = $('dUser').value.trim().toLowerCase(), pw = $('dPass').value;
+  const err = t => { const e = $('dErr'); e.textContent = t; show(e, true); };
+  if (!name) return err('Type the student’s name.');
+  if (!/^[a-z0-9._-]{3,24}$/.test(user)) return err('Username: 3 to 24 letters or numbers (. _ - allowed).');
+  if (pw.length < 6) return err('Password must be at least 6 characters.');
+  // A second, temporary Firebase app creates the login, so the teacher stays signed in.
+  const sec = APP.initializeApp(firebaseConfig, 'sec' + Date.now());
+  try {
+    const sa = A.getAuth(sec);
+    const cred = await A.createUserWithEmailAndPassword(sa, user + '@' + USERNAME_DOMAIN, pw);
+    await F.setDoc(F.doc(db, 'students', cred.user.uid), { role: 'student', name, av: AVS[students.length % AVS.length], username: user, createdAt: Date.now(),
+      days: {}, skills: {}, totals: { a: 0, c: 0 }, lastActive: 0, updatedAt: F.serverTimestamp() });
+    await A.signOut(sa);
+  } catch (e) { try { await APP.deleteApp(sec); } catch (x) {} return err(authMsg(e)); }
+  try { await APP.deleteApp(sec); } catch (x) {}
+  await openDash();
+  renderDash(false, 'Created ' + esc(name) + '. Username: ' + esc(user) + ' · Password: ' + esc(pw));
+}
+$('dashOv').addEventListener('click', async e => {
+  let b;
+  if (b = e.target.closest('[data-d]')) {
+    const a = b.dataset.d;
+    if (a === 'add') renderDash(true);
+    else if (a === 'cancel') renderDash(false);
+    else if (a === 'create') createStudent();
+    else if (a === 'refresh') openDash();
+    else if (a === 'csv') dashCsv();
+    else if (a === 'open') closeDash();
+    else if (a === 'out') { closeDash(); doSignOut(); }
+    return;
+  }
+  if (b = e.target.closest('[data-del]')) {
+    const s = students.find(x => x.id === b.dataset.del);
+    if (s && confirm('Delete ' + (s.name || 'this student') + '’s progress profile?\n\nTheir login stays in Firebase Authentication until you remove it there.')) {
+      try { await F.deleteDoc(F.doc(db, 'students', s.id)); openId = null; await openDash(); } catch (x) { toast(authMsg(x)); }
+    }
+    return;
+  }
+  if (b = e.target.closest('[data-st]')) { openId = openId === b.dataset.st ? null : b.dataset.st; renderDash(); }
+});
+</script>
+
 </body>
 </html>
