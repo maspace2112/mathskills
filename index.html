@@ -8350,7 +8350,7 @@ const firebaseConfig = {
   appId: "1:641898575008:web:cccab3a575f847646785c5"
 };
 const FB_VERSION = '13.1.0';                       // same as "firebase" in package-lock.json
-const USERNAME_DOMAIN = 'students.mathskills.app';  // students log in with a username; it is stored as username@this-domain
+const USERNAME_DOMAIN = 'students.math-skills-app.firebaseapp.com';  // students log in with a username; it is stored as username@this-domain
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -8381,7 +8381,7 @@ function toEmail(v) {
   if (v.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : null;
   return /^[a-z0-9._-]{3,24}$/.test(v) ? v + '@' + USERNAME_DOMAIN : null;
 }
-const userOf = email => String(email || '').endsWith('@' + USERNAME_DOMAIN) ? email.split('@')[0] : (email || '');
+const userOf = email => /@students\.(math-skills-app\.firebaseapp\.com|mathskills\.app)$/i.test(String(email || '')) ? String(email).split('@')[0] : (email || '');
 function authMsg(e) {
   const c = (e && e.code) || '';
   if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found') return 'Wrong username or password.';
