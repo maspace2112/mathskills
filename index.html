@@ -8604,7 +8604,8 @@ async function createStudent() {
   try {
     const sa = A.getAuth(sec);
     const cred = await A.createUserWithEmailAndPassword(sa, user + '@' + USERNAME_DOMAIN, pw);
-    await F.setDoc(F.doc(db, 'students', cred.user.uid), { role: 'student', name, av: AVS[students.length % AVS.length], username: user, createdAt: Date.now(),
+    // Written as the new student (same as a first login), so it works with rules that only let a student write their own profile.
+    await F.setDoc(F.doc(F.getFirestore(sec), 'students', cred.user.uid), { role: 'student', name, av: AVS[students.length % AVS.length], username: user, createdAt: Date.now(),
       days: {}, skills: {}, totals: { a: 0, c: 0 }, lastActive: 0, updatedAt: F.serverTimestamp() });
     await A.signOut(sa);
   } catch (e) { try { await APP.deleteApp(sec); } catch (x) {} return err(authMsg(e)); }
