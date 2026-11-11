@@ -7471,6 +7471,7 @@ html:root #xg .practice-status{margin-top:.8rem}
 #xg table{border-collapse:collapse}#xg td,#xg th{border:2px solid var(--border-color);width:44px;height:40px;font-weight:700}
 #xg .cu{display:block}#xg .one{display:inline-block}#xg .box.act{box-shadow:0 0 0 5px var(--accent-shadow-strong)}
 #xg img.pi{width:auto;margin:0 4px;-webkit-user-drag:none}#xg img.pi.tens{height:130px}#xg img.pi.ones{height:30px;margin:3px}
+#xg .o img.wimg{display:block;width:clamp(110px,32vw,180px);height:clamp(110px,32vw,180px);object-fit:contain;pointer-events:none}
 #xg .o img.pi.tens{height:80px}#xg .o img.pi.ones{height:32px}
 #xg .zone{width:100%;max-width:760px;min-height:150px;margin:0 auto;border:3px dashed var(--border-color);border-radius:16px;padding:10px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:6px}#xg .pl{cursor:pointer;display:inline-flex}
 #xg .lbl{font-size:1rem;font-weight:700;opacity:.7}
@@ -7540,7 +7541,7 @@ const G={
  const area=`<div style="display:inline-flex;flex-direction:column;align-items:center"><span class="box">${W}</span><svg width="208" height="44" viewBox="0 0 208 44" style="display:block"><line x1="104" y1="0" x2="42" y2="44" stroke="#18243b" stroke-width="4" stroke-linecap="round"/><line x1="104" y1="0" x2="166" y2="44" stroke="#18243b" stroke-width="4" stroke-linecap="round"/></svg><div style="display:flex;gap:40px">${left?k+m:m+k}</div></div>`;
  return {q:'Fill in the missing number.',area,kind:'num',tree:1,answer:String(W-a)}}},
 'length':{t:'Length',g:()=>{const v=Math.random()<.5;return bars(v,Math.random()<.5)}},
-'weight':{t:'Weight',g:()=>{const H=['🐘','🚗','🐄','🏠','🪨'],L=['🪶','🍃','🐭','🧸','🍎'],h=P(H),l=P(L),big=Math.random()<.5;return choice(`Which is ${big?'heavier':'lighter'}?`,big?h:l,[h,l].map(e=>({v:e,h:`<span style="font-size:3rem">${e}</span>`})))}},
+'weight':{t:'Weight',g:()=>{const H=['elephant','car','cow','house','bear','rock'],L=['feather','leaf','mouse','apple'],h=P(H),l=P(L),big=Math.random()<.5;return choice(`Which is ${big?'heavier':'lighter'}?`,big?h:l,S([h,l]).map(n=>({v:n,h:`<img class="wimg" src="img/weight/${n}.webp" alt="${n}" draggable="false">`})))}},
 'capacity':{t:'Capacity',g:()=>{const sz=S([[50,60],[80,110],[110,150],[60,170],[140,90]]).slice(0,3),ar=sz.map(s=>s[0]*s[1]),big=Math.random()<.5,t=big?Math.max(...ar):Math.min(...ar),c=['#4f8be0','#3fa896','#efb84f'];
  return choice(`Which holds the ${big?'most':'least'}?`,ar.indexOf(t),sz.map((s,j)=>({v:String(j),h:`<div style="width:${s[0]}px;height:${s[1]}px;border:4px solid #18243b;border-top:0;border-radius:0 0 18px 18px;background:${c[j]}"></div>`})))}},
 'time':{t:'Time',g:()=>{const h=R(1,12),f=n=>n+" o'clock";return choice('What time is it?',f(h),strOpts(f(h),[1,2,3,4,5,6,7,8,9,10,11,12].map(f),4),clock(h))}},
@@ -8302,6 +8303,11 @@ html:root #xg .keys[style*="width:100%"] .k{width:auto;min-width:96px}
 .dash-det .msp-row{box-shadow:none;background:var(--surface-1);cursor:default}
 .dash-add{display:grid;gap:10px}
 .dash-add .msp-in{font-size:1rem}
+/* Persistent teacher shortcut back to the class dashboard */
+.teacher-dash-btn{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:2500;display:none;align-items:center;gap:6px;border:0;border-radius:999px;padding:.55rem 1rem calc(.55rem + 4px);background:var(--btn-y);color:#2b2713;font:800 .9rem 'Nunito',system-ui,sans-serif;box-shadow:inset 0 -4px 0 var(--btn-y-lip),0 8px 18px rgba(30,40,60,.25);cursor:pointer}
+.teacher-dash-btn.show{display:inline-flex}
+.teacher-dash-btn:active{transform:translateY(2px)}
+body.in-game .teacher-dash-btn{display:none}
 </style>
 
 <style id="bareen-skin">
@@ -8332,6 +8338,7 @@ html:root .msp-av.big{width:120px;height:120px;border-radius:50%}
 </div>
 
 <div class="auth-ov" id="dashOv" role="dialog" aria-modal="true" aria-label="Class dashboard"></div>
+<button type="button" class="teacher-dash-btn" id="teacherDashBtn" aria-label="Open class dashboard">👩‍🏫 <span>Dashboard</span></button>
 <div class="auth-toast" id="authToast" role="status"></div>
 
 <script type="module" id="msp-auth-script">
@@ -8395,7 +8402,8 @@ function authMsg(e) {
   return 'Something went wrong' + (c ? ' (' + c + ')' : '') + '.';
 }
 function show(el, on) { el.classList.toggle('show', !!on); }
-function setLoginState(state, msg) {          // 'loading' | 'form' | 'hidden'
+function setLoginState(state, msg) {
+  setTimeout(updateTeacherBtn, 0);          // 'loading' | 'form' | 'hidden'
   const ov = $('authOv');
   show(ov, state !== 'hidden');
   $('authLoading').style.display = state === 'loading' ? 'block' : 'none';
@@ -8546,12 +8554,17 @@ function ago(ms) {
   return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago';
 }
 const skillName = m => { try { return MSP.skillName(m); } catch (e) { return m; } };
-function closeDash() { show($('dashOv'), false); if (!$('authOv').classList.contains('show')) document.body.style.overflow = ''; }
+function updateTeacherBtn() {
+  const b = $('teacherDashBtn'); if (!b) return;
+  show(b, role === 'teacher' && !$('dashOv').classList.contains('show') && !$('authOv').classList.contains('show'));
+}
+function closeDash() { show($('dashOv'), false); if (!$('authOv').classList.contains('show')) document.body.style.overflow = ''; updateTeacherBtn(); }
+$('teacherDashBtn').addEventListener('click', () => openDash());
 
 async function openDash() {
   if (role !== 'teacher') return;
   const ov = $('dashOv');
-  show(ov, true); document.body.style.overflow = 'hidden';
+  show(ov, true); document.body.style.overflow = 'hidden'; updateTeacherBtn();
   ov.innerHTML = '<div class="dash-box"><div class="msp-note">Loading students…</div></div>';
   try {
     const snap = await F.getDocs(F.collection(db, 'students'));
