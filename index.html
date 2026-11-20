@@ -7515,7 +7515,7 @@ const DN=['zero','one','two','three','four','five','six','seven','eight','nine']
 const nimg=(v,mode)=>{const t=String(v);return t.split('').map((d,i)=>/\d/.test(d)?`<img class="nd${mode=='all'||(mode=='last'&&i==t.length-1)?' pop':''}" style="animation-delay:${mode=='all'?i*70:0}ms" src="img/numbers/${DN[d]}.webp" alt="${d}" draggable="false" onerror="this.replaceWith(document.createTextNode('${d}'))">`:d).join('')};
 const step=(n,s,img)=>{const up=Math.random()<.5,mx=s==1?20:100,a=s==1?R(1,mx-1):R(1,9)*10;const lo=up?`<span class="box e">?</span>`:`<span class="box e">?</span>`;
  return {q:`What is ${s} ${up?'more':'less'} than ${a}?`,area:`<div><div class="lbl">${s} less</div><span class="box${img?' img':''} ${up?'':'e'}">${up?'':'?'}</span></div><div><div class="lbl"> </div><span class="box${img?' img':''}">${img?nimg(a,'all'):a}</span></div><div><div class="lbl">${s} more</div><span class="box${img?' img':''} ${up?'e':''}">${up?'?':''}</span></div>`,kind:'num',img:!!img,answer:String(up?a+s:a-s)}};
-let W=10;
+let W=10,MIX=false;
 const clock=h=>{let t='';for(let i=1;i<=12;i++){const a=i*Math.PI/6;t+=`<text x="${50+38*Math.sin(a)}" y="${54-38*Math.cos(a)}" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">${i}</text>`}
  const a=h*Math.PI/6;return `<svg viewBox="0 0 100 100" width="190" height="190"><circle cx="50" cy="50" r="47" fill="#fff" stroke="#18243b" stroke-width="3"/>${t.replace(/currentColor/g,'#18243b')}<line x1="50" y1="50" x2="50" y2="14" stroke="#18243b" stroke-width="3" stroke-linecap="round"/><line x1="50" y1="50" x2="${50+22*Math.sin(a)}" y2="${50-22*Math.cos(a)}" stroke="#ef765f" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="50" r="3" fill="#18243b"/></svg>`};
 const SYM=[...Array(10)].map((_,i)=>['sym-'+(i+1),1]).concat([...Array(10)].map((_,i)=>['sym-0'+(i+1),0])); // sym-1..sym-10 = symmetrical, sym-01..sym-010 = not symmetrical (img/symmetry/*.webp)
@@ -7537,7 +7537,7 @@ const G={
  if(k==0)return {...B,q:'What number is this?',area:pic('tens',tc).repeat(t)+(o?`<span style="display:flex;flex-wrap:wrap;max-width:200px;align-items:flex-end">${pic('ones',oc).repeat(o)}</span>`:''),kind:'num',answer:String(n),show:String(n)};
  if(k==1)return {...B,q:`How many tens and ones are in ${n}?`,area:`<span class="box">${n}</span>`,kind:'num2'};
  return {...B,q:`Make the number ${n}`,area:'',kind:'build'}}},
-'number-pairs':{t:'Number Pairs',pre:1,g:()=>{const a=R(0,W),left=Math.random()<.5,k=`<span class="box">${a}</span>`,m='<span class="box e" id="xgD">?</span>';
+'number-pairs':{t:'Number Pairs',pre:1,g:()=>{if(MIX)W=P(PAIRS);const a=R(0,W),left=Math.random()<.5,k=`<span class="box">${a}</span>`,m='<span class="box e" id="xgD">?</span>';
  const area=`<div style="display:inline-flex;flex-direction:column;align-items:center"><span class="box">${W}</span><svg width="208" height="44" viewBox="0 0 208 44" style="display:block"><line x1="104" y1="0" x2="42" y2="44" stroke="#18243b" stroke-width="4" stroke-linecap="round"/><line x1="104" y1="0" x2="166" y2="44" stroke="#18243b" stroke-width="4" stroke-linecap="round"/></svg><div style="display:flex;gap:40px">${left?k+m:m+k}</div></div>`;
  return {q:'Fill in the missing number.',area,kind:'num',tree:1,answer:String(W-a)}}},
 'length':{t:'Length',g:()=>{const v=Math.random()<.5;return bars(v,Math.random()<.5)}},
@@ -7602,8 +7602,10 @@ function open(k){const was=live;cur=k;live=true;currentGameMode=k;if(!was){xface
  $('homeBtn').style.display='flex';const sb=$('splashBtn');if(sb)sb.style.display='none';
  xg.style.display='block';$('xgT').textContent=G[k].t;setTimeout(()=>{try{const K=xg.querySelector('.keys');if(K)K.scrollIntoView({block:'nearest'})}catch(e){}},60);
  if(G[k].pre&&!tm()&&!challengeModeEnabled){choosing=true;$('xgF').className='feedback';$('xgQ').textContent='Which number do you want to make?';$('xgA').innerHTML='';$('xgF').textContent='';$('xgN').style.display='none';const O=$('xgO');O.innerHTML='';
-  PAIRS.forEach(n=>{const b=document.createElement('button');b.className='o pick';b.type='button';b.textContent=n;b.onclick=()=>{W=n;next()};O.appendChild(b)});xface('normal');rRow=wRow=0}
- else{if(G[k].pre)W=P(PAIRS);next()}}
+  PAIRS.forEach(n=>{const b=document.createElement('button');b.className='o pick';b.type='button';b.textContent=n;b.onclick=()=>{MIX=false;W=n;next()};O.appendChild(b)});
+  {const b=document.createElement('button');b.className='o pick';b.type='button';b.textContent='Mix';b.onclick=()=>{MIX=true;next()};O.appendChild(b)}
+  xface('normal');rRow=wRow=0}
+ else{if(G[k].pre){MIX=false;W=P(PAIRS)}next()}}
 $('xgN').onclick=next;$('xgNew').onclick=()=>{if(live&&!choosing&&!tm())next()};
 const close=()=>{live=false;xg.style.display='none'};['click','touchend'].forEach(e=>$('homeBtn').addEventListener(e,close,true));
 // ---- Units menu ----
@@ -7789,6 +7791,7 @@ html:root #xg .o.pick:nth-child(2){--p1:#b46cf0;--p2:#6a3fc8;--l:#53309f}
 html:root #xg .o.pick:nth-child(3){--p1:#2ec4b6;--p2:#0e8f8a;--l:#0a716d}
 html:root #xg .o.pick:nth-child(4){--p1:#ff9a3c;--p2:#9b5de5;--l:#7b45c2}
 html:root #xg .o.pick:nth-child(5){--p1:#2ec4b6;--p2:#9b5de5;--l:#6f45b8}
+html:root #xg .o.pick:nth-child(6){--p1:#ff6fa8;--p2:#6a3fc8;--l:#53309f}
 /* answer feedback (same in every game) */
 html:root :is(.answer-btn,.number-explorer-answer-btn,#xg .o,#xg .k,.make-number-tile).correct,
 html:root #xg .o.correct,html:root #xg .k.correct{--c:var(--btn-g);--l:var(--btn-g-lip);--t:#fff;-webkit-text-fill-color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.13);transform:translateY(3px)}
