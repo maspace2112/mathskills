@@ -3290,7 +3290,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+4) .skill-section-title::
 html:root #mainContainer .skill-section:nth-of-type(8n+5) .skill-section-title::before{background-image:url("img/rhino.webp")}
 html:root #mainContainer .skill-section:nth-of-type(8n+6) .skill-section-title::before{background-image:url("img/frog.webp")}
 html:root #mainContainer .skill-section:nth-of-type(8n+7) .skill-section-title::before{background-image:url("img/parrot.webp")}
-html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::before{background-image:url("img/toucan.webp")}
+html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::before{background-image:url("img/Tucan.webp")}
 /* Unit icons are set per section from script (--unit-ico); emoji shows if the picture file is missing */
 html:root #mainContainer .skill-section[data-ico] .skill-section-title::before{background-image:var(--unit-ico)!important}
 html:root #mainContainer .skill-section.ico-miss .skill-section-title::before{background-image:none!important;content:attr(data-fb);font-size:2rem;line-height:46px;text-align:center;filter:none}
@@ -4653,7 +4653,7 @@ html:root #mainContainer .skill-section.ico-miss .skill-section-title::before{ba
             if (!overlay) return;
             const mascotImg = document.getElementById('resultsMascot');
             if (mascotImg) {
-                const animals = ['monkey', 'elephant', 'giraffe', 'tiger', 'rhino', 'frog', 'parrot', 'toucan'];
+                const animals = ['monkey', 'elephant', 'giraffe', 'tiger', 'rhino', 'frog', 'parrot', 'Tucan'];
                 mascotImg.src = 'img/' + animals[Math.floor(Math.random() * animals.length)] + '.webp';
                 mascotImg.style.display = '';
             }
@@ -7617,7 +7617,7 @@ const ICO={'one-more-less':'±1','ten-more-less':'±10','tens-ones':'🧊','numb
 const main=$('mainContainer'),old=[...main.querySelectorAll('.skill-section')],cards={};
 main.querySelectorAll('.card').forEach(c=>cards[c.dataset.section]=c);
 const anchor=old[0];
-const UANI=['tiger','monkey','elephant','giraffe','rhino','frog','parrot','toucan'],UEMO=['🐯','🐵','🐘','🦒','🦏','🐸','🦜','🐦'];
+const UANI=['tiger','monkey','elephant','giraffe','rhino','frog','parrot','Tucan'],UEMO=['🐯','🐵','🐘','🦒','🦏','🐸','🦜','🐦'];
 U.forEach(([name,keys],ui)=>{const s=document.createElement('section');s.className='skill-section';s.innerHTML=`<h2 class="skill-section-title">${name}</h2><div class="grid skill-grid"></div>`;const g=s.lastChild;
  {const an=UANI[ui%8],h=s.firstChild;s.dataset.ico=an;s.style.setProperty('--unit-ico','url("img/'+an+'.webp")');h.dataset.fb=UEMO[ui%8];const pr=new Image();pr.onerror=()=>s.classList.add('ico-miss');pr.src='img/'+an+'.webp'}
  keys.forEach(k=>{let c=cards[k];if(!c&&G[k]){c=document.createElement('button');c.className='card';c.type='button';c.dataset.section=k;c.innerHTML=`<span class="s2-ico" style="font-size:2.2rem;font-weight:800;display:flex;align-items:center;justify-content:center">${ICO[k]}</span><h2>${G[k].t}</h2>`;
