@@ -8103,7 +8103,7 @@ function renderMe(){const p=P(),ids=Object.keys(S.profiles);
   '<div class="msp-card"><h3>Signed in</h3><div class="msp-acts"><button class="msp-btn p" data-act="logout">Sign out</button></div></div>'+
   '<div class="msp-card"><div class="msp-acts"><button class="msp-btn b" data-act="settings">Settings</button><button class="msp-btn y" data-act="csv">Export progress (CSV)</button><button class="msp-btn p" data-act="reset">Reset my progress</button></div></div>';
   return}
- const teacherCard=(window.MSPAuth&&window.MSPAuth.teacher)?'<div class="msp-card"><h3>Teacher</h3><div class="msp-acts"><button class="msp-btn y" data-act="dash">Class dashboard</button><button class="msp-btn p" data-act="logout">Sign out</button></div></div>':'';
+ const teacherCard=(window.MSPAuth&&window.MSPAuth.teacher)?'<div class="msp-card"><h3>Teacher</h3><div class="msp-acts"><button class="msp-btn y" data-act="dash">Class dashboard</button><button class="msp-btn p" data-act="logout">Sign out</button></div></div>':(window.MSPAuth&&window.MSPAuth.login?'<div class="msp-card"><h3>Guest</h3><p class="auth-hint" style="text-align:left;margin:0 0 8px">Sign in to save your progress online.</p><div class="msp-acts"><button class="msp-btn y" data-act="login">Sign in</button></div></div>':'');
  $('msp-me').innerHTML='<h1 class="msp-title">My account</h1><div class="msp-av big">'+avi()+'</div>'+
  '<div class="msp-card"><h3>Name</h3><input class="msp-in" id="mspName" maxlength="16" value="'+esc(p.name)+'" aria-label="Student name"><div class="msp-acts"><button class="msp-btn" data-act="save">Save</button></div></div>'+
  '<div class="msp-card"><h3>Students on this device</h3>'+ids.map(i=>{const q=S.profiles[i];return '<div class="msp-pl"><div class="msp-av">'+avi()+'</div><b>'+esc(q.name)+(i===S.active?' ✓':'')+'</b>'+(i===S.active?'':'<button class="msp-btn b" data-sw="'+i+'">Switch</button>')+(ids.length>1?'<button class="msp-x" data-rm="'+i+'" aria-label="Remove '+esc(q.name)+'">✕</button>':'')+'</div>'}).join('')+'<div class="msp-acts"><button class="msp-btn y" data-act="add">+ Add student</button></div></div>'+
@@ -8163,6 +8163,7 @@ document.addEventListener('click',e=>{const t=e.target;let b;
   else if(a==='settings'){try{openSettings()}catch(x){}}
   else if(a==='logout'){if(window.MSPAuth)window.MSPAuth.signOut()}
   else if(a==='dash'){if(window.MSPAuth)window.MSPAuth.dashboard()}
+  else if(a==='login'){if(window.MSPAuth&&window.MSPAuth.login)window.MSPAuth.login()}
   else if(a==='csv')csv();
   else if(a==='reset'&&confirm('Reset all progress for '+P().name+'?')){P().days={};P().skills={};save();renderMe()}}});
 function updateHello(){const mc=$('mainContainer');if(!mc)return;let h=mc.querySelector('.msp-hello');
@@ -8333,7 +8334,7 @@ html:root .msp-av.big{width:120px;height:120px;border-radius:50%}
     <div style="text-align:center"><button type="button" class="auth-link" id="authForgot">Forgot password?</button></div>
    </form>
   </div>
-  <div style="text-align:center"><button type="button" class="auth-link" id="authOffline" style="display:none">Play without an account (saved on this device only)</button></div>
+  <div style="text-align:center;display:none" id="authGuestWrap"><p class="auth-hint" style="margin-bottom:2px">No account?</p><button type="button" class="auth-link" id="authOffline" style="display:none">Continue as guest</button><p class="auth-hint">Guest progress is saved on this device only.</p></div>
  </div>
 </div>
 
@@ -8408,6 +8409,8 @@ function setLoginState(state, msg) {
   show(ov, state !== 'hidden');
   $('authLoading').style.display = state === 'loading' ? 'block' : 'none';
   $('authCard').style.display = state === 'form' ? 'block' : 'none';
+  if (state === 'form') $('authOffline').style.display = 'inline';
+  $('authGuestWrap').style.display = $('authOffline').style.display === 'inline' && state !== 'hidden' ? 'block' : 'none';
   if (msg) $('authLoading').textContent = msg;
   document.body.style.overflow = state === 'hidden' ? '' : 'hidden';
 }
@@ -8506,7 +8509,8 @@ $('authForgot').addEventListener('click', async () => {
   try { await A.sendPasswordResetEmail(auth, v.toLowerCase()); showErr(''); toast('Password reset email sent. Check your inbox.', 5000); }
   catch (err) { showErr(authMsg(err)); }
 });
-$('authOffline').addEventListener('click', () => { setLoginState('hidden'); });
+$('authOffline').addEventListener('click', () => { showErr(''); $('authPw').value = ''; setLoginState('hidden'); });
+window.MSPAuth.login = () => { if (!auth) return toast('Sign in is not available right now. Check your connection and reload.'); setLoginState('form'); setMode('in'); };
 
 /* ---------- saving progress ---------- */
 function queueSave(uid, p) { pending = { uid, p }; clearTimeout(timer); timer = setTimeout(flush, 2500); }
