@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Skills App</title>
+    <title>Math Jungle Adventures</title>
     <meta name="color-scheme" content="light dark">
     <style>
         :root {
@@ -3291,6 +3291,9 @@ html:root #mainContainer .skill-section:nth-of-type(8n+5) .skill-section-title::
 html:root #mainContainer .skill-section:nth-of-type(8n+6) .skill-section-title::before{background-image:url("img/frog.webp")}
 html:root #mainContainer .skill-section:nth-of-type(8n+7) .skill-section-title::before{background-image:url("img/parrot.webp")}
 html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::before{background-image:url("img/toucan.webp")}
+/* Unit icons are set per section from script (--unit-ico); emoji shows if the picture file is missing */
+html:root #mainContainer .skill-section[data-ico] .skill-section-title::before{background-image:var(--unit-ico)!important}
+html:root #mainContainer .skill-section.ico-miss .skill-section-title::before{background-image:none!important;content:attr(data-fb);font-size:2rem;line-height:46px;text-align:center;filter:none}
 </style>
 </head>
 <body>
@@ -3389,9 +3392,9 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
     <div class="splash-screen" id="splashScreen">
         <div class="splash-logo">
             <!-- Updated to use local image like indexx5.html -->
-            <img src="img/math_logo.png" alt="Math Skills Logo">
+            <img src="img/math_logo.png" alt="Math Jungle Adventures Logo">
         </div>
-        <h1 class="splash-text">Math Skills Practice</h1>
+        <h1 class="splash-text">Math Jungle Adventures</h1>
         <p class="splash-hint">Choose a skill first, then practise together at the board.</p>
         <button class="start-btn" id="startRegularBtn" type="button">Start Practice</button>
         <button class="start-btn" id="startTimedBtn" type="button">Timer Challenge</button>
@@ -3399,7 +3402,7 @@ html:root #mainContainer .skill-section:nth-of-type(8n+8) .skill-section-title::
     </div>
 
         <div class="container" id="mainContainer">
-        <h1>Math Skills Practice</h1>
+        <h1>Math Jungle Adventures</h1>
         <div class="menu-intro">
             <p>Choose a strand, tap a skill, and explain your thinking together.</p>
             <div class="menu-actions">
@@ -7609,12 +7612,14 @@ function open(k){const was=live;cur=k;live=true;currentGameMode=k;if(!was){xface
 $('xgN').onclick=next;$('xgNew').onclick=()=>{if(live&&!choosing&&!tm())next()};
 const close=()=>{live=false;xg.style.display='none'};['click','touchend'].forEach(e=>$('homeBtn').addEventListener(e,close,true));
 // ---- Units menu ----
-const U=[['Unit 1',['counting','number-name','compare','make-number','pattern-missing','pattern-build','counting-2s']],['Unit 2',['number-explorer','ordinal-numbers','counting-5s','counting-10s']],['Unit 3',['one-more-less','tens-ones','number-pairs']],['Unit 4',['addition']],['Unit 5',['subtraction']],['Unit 6',['doubles','halves','even-odd']],['Unit 7',['ten-more-less','money']],['Unit 8',['shapes-2d','shapes-3d','symmetry']],['Unit 9',['length','weight','capacity']],['Unit 10',['time','days','months']],['Unit 11',['multiplication','shapes-sound','colors-sound','colours']]];
+const U=[['Unit 1',['counting','number-name','compare','make-number','pattern-missing','pattern-build','counting-2s']],['Unit 2',['number-explorer','ordinal-numbers','counting-5s','counting-10s']],['Unit 3',['one-more-less','tens-ones','number-pairs']],['Unit 4',['addition']],['Unit 5',['subtraction']],['Unit 6',['doubles','halves','even-odd']],['Unit 7',['ten-more-less','money']],['Unit 8',['shapes-2d','shapes-3d','symmetry']],['Unit 9',['length','weight','capacity']],['Unit 10',['time','days','months']],['Extra',['multiplication','shapes-sound','colors-sound','colours']]];
 const ICO={'one-more-less':'±1','ten-more-less':'±10','tens-ones':'🧊','number-pairs':'🔵','length':'📏','weight':'⚖️','capacity':'🥛','time':'🕒','days':'📅','months':'🗓️','symmetry':'🦋'};
 const main=$('mainContainer'),old=[...main.querySelectorAll('.skill-section')],cards={};
 main.querySelectorAll('.card').forEach(c=>cards[c.dataset.section]=c);
 const anchor=old[0];
-U.forEach(([name,keys])=>{const s=document.createElement('section');s.className='skill-section';s.innerHTML=`<h2 class="skill-section-title">${name}</h2><div class="grid skill-grid"></div>`;const g=s.lastChild;
+const UANI=['tiger','monkey','elephant','giraffe','rhino','frog','parrot','toucan'],UEMO=['🐯','🐵','🐘','🦒','🦏','🐸','🦜','🐦'];
+U.forEach(([name,keys],ui)=>{const s=document.createElement('section');s.className='skill-section';s.innerHTML=`<h2 class="skill-section-title">${name}</h2><div class="grid skill-grid"></div>`;const g=s.lastChild;
+ {const an=UANI[ui%8],h=s.firstChild;s.dataset.ico=an;s.style.setProperty('--unit-ico','url("img/'+an+'.webp")');h.dataset.fb=UEMO[ui%8];const pr=new Image();pr.onerror=()=>s.classList.add('ico-miss');pr.src='img/'+an+'.webp'}
  keys.forEach(k=>{let c=cards[k];if(!c&&G[k]){c=document.createElement('button');c.className='card';c.type='button';c.dataset.section=k;c.innerHTML=`<span class="s2-ico" style="font-size:2.2rem;font-weight:800;display:flex;align-items:center;justify-content:center">${ICO[k]}</span><h2>${G[k].t}</h2>`;
   const go=e=>{e.preventDefault();open(k)};c.addEventListener('click',go)}if(c)g.appendChild(c)});anchor.parentNode.insertBefore(s,anchor)});
 old.forEach(s=>s.remove());
@@ -8324,8 +8329,8 @@ html:root .msp-av.big{width:120px;height:120px;border-radius:50%}
 
 <div class="auth-ov" id="authOv" role="dialog" aria-modal="true" aria-label="Sign in">
  <div class="auth-box">
-  <div class="auth-logo"><img class="auth-hero" src="img/bareen.webp" alt="Bareen, your Math Skills guide" draggable="false" onerror="this.replaceWith(document.createTextNode('🧮'))"></div>
-  <h1 class="auth-h">Math Skills</h1>
+  <div class="auth-logo"><img class="auth-hero" src="img/bareen.webp" alt="Bareen, your Math Jungle Adventures guide" draggable="false" onerror="this.replaceWith(document.createTextNode('🧮'))"></div>
+  <h1 class="auth-h">Math Jungle Adventures</h1>
   <p class="auth-sub" id="authSub">Sign in to save your progress</p>
   <div class="msp-note" id="authLoading">Loading…</div>
   <div class="msp-card" id="authCard" style="display:none">
@@ -8376,7 +8381,7 @@ let pending = null, timer = null, students = [], openId = null;
 window.MSPAuth = { teacher: false, signOut: doSignOut, dashboard: () => openDash() };
 
 if (!configured) {
-  console.info('[Math Skills] Firebase is not configured yet: running in local mode. Paste your config in #msp-auth-script.');
+  console.info('[Math Jungle Adventures] Firebase is not configured yet: running in local mode. Paste your config in #msp-auth-script.');
 } else {
   init();
 }
@@ -8434,7 +8439,7 @@ async function init() {
     const base = 'https://www.gstatic.com/firebasejs/' + FB_VERSION + '/';
     [APP, A, F] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]);
   } catch (e) {
-    console.error('[Math Skills] Could not load Firebase', e);
+    console.error('[Math Jungle Adventures] Could not load Firebase', e);
     setLoginState('loading', 'Could not connect. Check your internet and reload.');
     $('authOffline').style.display = 'inline';
     return;
