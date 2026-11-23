@@ -7478,6 +7478,14 @@ html:root #xg .practice-status{margin-top:.8rem}
 #xg .o img.pi.tens{height:80px}#xg .o img.pi.ones{height:32px}
 #xg .zone{width:100%;max-width:760px;min-height:150px;margin:0 auto;border:3px dashed var(--border-color);border-radius:16px;padding:10px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:6px}#xg .pl{cursor:pointer;display:inline-flex}
 #xg .lbl{font-size:1rem;font-weight:700;opacity:.7}
+/* ---- Addition game: operators, dice, fingers, sets of shapes ---- */
+#xg .op{font-size:2.4rem;font-weight:800;line-height:1}
+#xg .die{display:block;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18))}
+#xg img.fing{height:140px;width:auto;max-width:44vw;object-fit:contain;-webkit-user-drag:none;pointer-events:none}
+#xg .set{width:min(40vw,170px);min-height:112px;padding:10px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:6px;border:3px solid var(--border-color);border-radius:16px;background:var(--surface-0)}
+#xg .sh{display:inline-block;position:relative;width:32px;height:32px;cursor:pointer}
+#xg .sh svg{display:block;width:100%;height:100%}
+#xg .sh.x::after{content:"";position:absolute;left:-4px;right:-4px;top:50%;height:4px;background:#000;transform:rotate(-35deg)}
 /* ---- number images (jelly digits) ---- */
 #xg .nd{height:72px;width:auto;margin:0 2px;display:inline-block;vertical-align:middle;pointer-events:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18))}
 #xg .nd.pop{animation:ndPop .42s cubic-bezier(.34,1.56,.64,1) both}
@@ -7533,6 +7541,17 @@ const CC={blue:'#4f8be0',orange:'#f08a2c',red:'#ef765f',green:'#3fa896',purple:'
 window._xgFB=(k,c)=>k=='tens'?`<span class="ten">${`<span class="cu" style="background:${CC[c]}"></span>`.repeat(10)}</span>`:`<span class="one" style="background:${CC[c]}"></span>`;
 const pic=(k,c)=>`<img class="pi ${k}" src="img/tensandones/${k}-${c}.png" alt="" draggable="false" onerror="this.outerHTML=window._xgFB('${k}','${c}')">`;
 const KEYS='<div class="keys">'+[1,2,3,4,5,6,7,8,9,0].map(n=>`<button class="k" type="button">${n}</button>`).join('')+'<button class="k" type="button" data-x="b">⌫</button><button class="k go" type="button" data-x="g">✓</button></div>';
+/* ---- Addition helpers ---- */
+const DICE=[[28,28],[72,28],[28,50],[50,50],[72,50],[28,72],[72,72]],DOTS={1:[3],2:[0,6],3:[0,3,6],4:[0,1,5,6],5:[0,1,3,5,6],6:[0,1,2,4,5,6]};
+const die=n=>`<svg class="die" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="dice showing ${n}"><rect x="5" y="5" width="90" height="90" rx="20" fill="#fff" stroke="#18243b" stroke-width="5"/>${DOTS[n].map(i=>`<circle cx="${DICE[i][0]}" cy="${DICE[i][1]}" r="8" fill="#18243b"/>`).join('')}</svg>`;
+/* Finger pictures: img/fingers/finger-1.webp ... finger-10.webp. Until they exist, a drawn hand is shown instead. */
+const FING=n=>`img/fingers/finger-${n}.webp`;
+window._xgFing=n=>{const H=[34,46,50,46,38],h=k=>{let f='';for(let i=0;i<5;i++)if(i<k)f+=`<rect x="${12+i*15}" y="${64-H[i]}" width="13" height="${H[i]+6}" rx="6.5" fill="#f6c9a0" stroke="#18243b" stroke-width="3"/>`;
+ return `<svg viewBox="0 0 100 124" width="86" height="106" style="margin:0 4px">${f}<rect x="8" y="58" width="84" height="60" rx="24" fill="#f6c9a0" stroke="#18243b" stroke-width="3"/></svg>`};
+ return `<span class="fing" style="display:inline-flex;align-items:flex-end">${n>5?h(5)+h(n-5):h(n)}</span>`};
+const fing=n=>`<img class="fing" src="${FING(n)}" alt="${n} fingers" draggable="false" onerror="this.outerHTML=window._xgFing(${n})">`;
+const SHP={circle:'<circle cx="15" cy="15" r="12"/>',square:'<rect x="4" y="4" width="22" height="22" rx="3"/>',triangle:'<polygon points="15,3 28,26 2,26"/>',star:'<polygon points="15,2 18.5,11 28,11.5 20.5,17.5 23,27 15,21.5 7,27 9.5,17.5 2,11.5 11.5,11"/>'};
+const shp=(k,c)=>`<span class="sh" onclick="this.classList.toggle('x')"><svg viewBox="0 0 30 30" fill="${c}" stroke="#18243b" stroke-width="2" stroke-linejoin="round">${SHP[k]}</svg></span>`;
 const G={
 'one-more-less':{t:'1 More and 1 Less',g:()=>step(0,1,true)},
 'ten-more-less':{t:'10 More and 10 Less',g:()=>step(0,10,true)},
@@ -7566,10 +7585,22 @@ const G={
  else{const i=R(1,11);q=[`Which month comes before ${MONTHS[i]}?`,MONTHS[i-1]]}
  return choice(q[0],q[1],strOpts(q[1],MONTHS,4))}},
 'symmetry':{t:'Symmetry',g:()=>{const s=P(SYM);return choice('Is this symmetrical?',s[1]?'Yes':'No',['Yes','No'],symArea(s[0]))}},
+'addition':{t:'Addition',g:()=>{const t=R(0,3),mx=difficultyPick(10,20);
+ const eq=(a,b)=>`<div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;width:100%">${a}<span class="op">+</span>${b}<span class="op">=</span><span class="box e" id="xgD">?</span></div>`;
+ const mix=(a,b)=>Math.random()<.5?eq(a,b):eq(b,a);
+ if(t==1){const n=R(1,mx),d=R(1,6);return {q:'Find the total.',area:mix(`<span class="box">${n}</span>`,die(d)),kind:'num',tree:1,answer:String(n+d),show:`${n} + ${d} = ${n+d}`}}
+ if(t==2){const n=R(1,mx),f=R(1,10);return {q:'Find the total.',area:mix(`<span class="box">${n}</span>`,fing(f)),kind:'num',tree:1,answer:String(n+f),show:`${n} + ${f} = ${n+f}`}}
+ if(t==3){const m=difficultyPick(5,9),n1=R(1,m),n2=R(1,m),sh=S(Object.keys(SHP)),co=S(CN),
+   col=(n,k,c,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div class="set">${shp(k,CC[c]).repeat(n)}</div><span class="box e" id="xgS${i}">?</span></div>`;
+  return {q:'Write how many in each set, then the total.',area:`<div style="width:100%"><div style="display:flex;align-items:flex-start;justify-content:center;gap:10px">${col(n1,sh[0],co[0],0)}<span class="op" style="margin-top:36px">+</span>${col(n2,sh[1],co[1],1)}</div><div style="margin-top:14px"><span class="lbl">Total</span> <span class="box e" id="xgS2">?</span></div></div>`,kind:'sets',n1,n2,answer:String(n1+n2),show:`${n1} + ${n2} = ${n1+n2}`}}
+ const sm=R(0,10),lg=R(0,difficultyPick(69,129)),f=Math.random()<.5,a=f?sm:lg,b=f?lg:sm,r=a+b,o=[r];
+ while(o.length<4){const w=r+R(-5,4);if(w>0&&!o.includes(w))o.push(w)}
+ return choice('',r,o,`<div class="math-equation-display"><div class="math-equation"><span class="math-number">${a}</span><span class="math-operator">+</span><span class="math-number">${b}</span><span class="math-operator">=</span><span class="math-number">?</span></div></div>`)}},
 };
 let cur,Q,typed='',live=false,answered=false;
 const tm=()=>{try{return isTimedMode()}catch(e){return false}};
 const PAIRS=[6,7,8,9,10];
+{const i=CHALLENGE_GAME_MODES.indexOf('addition');if(i>-1)CHALLENGE_GAME_MODES.splice(i,1)} // Addition now lives in this engine (Challenge picks it from G)
 const adv=()=>{if(!live||xg.style.display!=='block')return;if(challengeModeEnabled)startGame('challenge');else next()};
 const lock=()=>xg.querySelectorAll('.o,.k').forEach(b=>b.disabled=true);
 function done(good,ans){answered=true;try{stopQuestionTimer()}catch(e){}
@@ -7583,6 +7614,14 @@ function NUM2(){const O=$('xgO');let v=['',''],a=0;O.innerHTML='<div style="widt
   if(!x){v[a]=k.textContent;if(a==0)a=1}else if(x=='b'){if(v[a])v[a]='';else{a=0;v[0]=''}}
   else if(v[0]&&v[1]){const g=v[0]==Q.t&&v[1]==Q.o;[0,1].forEach(i=>$('xgD'+i).classList.add(g?'correct':'incorrect'));done(g,Q.show);return}
   up()})}
+function SETS(){const O=$('xgO');let v=['','',''],a=0;O.innerHTML=KEYS;
+ const up=()=>[0,1,2].forEach(i=>{const b=$('xgS'+i);b.textContent=v[i]||'?';b.classList.toggle('e',!v[i]);b.classList.toggle('act',i==a)});up();
+ [0,1,2].forEach(i=>$('xgS'+i).onclick=()=>{if(!answered){a=i;up()}});
+ O.querySelectorAll('.k').forEach(k=>k.onclick=()=>{if(answered)return;const x=k.dataset.x;
+  if(!x){const d=k.textContent;if(a<2){v[a]=d;a++}else v[2]=(v[2]==='0'||v[2].length>=2)?d:v[2]+d}
+  else if(x=='b'){if(v[a])v[a]=v[a].slice(0,-1);else if(a>0){a--;v[a]=''}}
+  else if(v.every(Boolean)){const ok=[Number(v[0])===Q.n1,Number(v[1])===Q.n2,Number(v[2])===Q.n1+Q.n2];ok.forEach((g,i)=>$('xgS'+i).classList.add(g?'correct':'incorrect'));done(ok.every(Boolean),Q.show);return}
+  up()})}
 function BUILD(){const O=$('xgO');$('xgA').innerHTML='<div class="zone" id="xgZ"></div>';const Z=$('xgZ');
  O.innerHTML=`<button class="o" type="button" data-b="tens">+ ${pic('tens',Q.tc)}</button><button class="o" type="button" data-b="ones">+ ${pic('ones',Q.oc)}</button><div class="keys" style="width:100%"><button class="k go" type="button">✓</button></div>`;
  O.querySelectorAll('.o').forEach(b=>b.onclick=()=>{if(answered)return;const k=b.dataset.b,s=document.createElement('span');s.className='pl';s.dataset.k=k;s.innerHTML=pic(k,k=='tens'?Q.tc:Q.oc);s.onclick=()=>{if(!answered)s.remove()};Z.appendChild(s)});
@@ -7594,6 +7633,7 @@ function next(){try{if(!onTimedQuestionStart()){close();return}}catch(e){}
  if(Q.kind=='opt')Q.opts.forEach(o=>{const b=document.createElement('button');b.className='o';b.type='button';b.innerHTML=o.h;b.dataset.v=o.v;b.onclick=()=>{if(answered)return;b.classList.add(o.v==Q.answer?'correct':'incorrect');if(o.v!=Q.answer)O.querySelectorAll('.o').forEach(x=>{if(x.dataset.v==Q.answer)x.classList.add('correct')});done(o.v==Q.answer,'')};O.appendChild(b)});
  else if(Q.kind=='num2')NUM2();
  else if(Q.kind=='build')BUILD();
+ else if(Q.kind=='sets')SETS();
  else{O.innerHTML=(Q.tree?'':'<div style="width:100%"><span class="box e'+(Q.img?' img':'')+'" id="xgD">?</span></div>')+'<div class="keys">'+[1,2,3,4,5,6,7,8,9,0].map(n=>`<button class="k${Q.img?' ki':''}" type="button" data-d="${n}">${Q.img?nimg(n):n}</button>`).join('')+'<button class="k" type="button" data-x="b">⌫</button><button class="k go" type="button" data-x="g">✓</button></div>';
   O.querySelectorAll('.k').forEach(k=>k.onclick=()=>{if(answered)return;const x=k.dataset.x,D=$('xgD');if(!x){const dg=k.dataset.d||k.textContent;if(typed==='0')typed=dg;else if(typed.length<3)typed+=dg}else if(x=='b')typed=typed.slice(0,-1);else if(typed){const g=Number(typed)===Number(Q.answer);D.classList.add(g?'correct':'incorrect');done(g,Q.show||Q.answer);return}
    if(typed&&Q.img)D.innerHTML=nimg(typed,'last');else D.textContent=typed||'?';D.classList.toggle('e',!typed)})}
