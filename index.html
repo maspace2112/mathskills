@@ -7593,7 +7593,7 @@ const G={
  if(t==3){const m=difficultyPick(5,9),n1=R(1,m),n2=R(1,m),sh=S(Object.keys(SHP)),co=S(CN),
    col=(n,k,c,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div class="set">${shp(k,CC[c]).repeat(n)}</div><span class="box e" id="xgS${i}">?</span></div>`;
   return {q:'Write how many in each set, then the total.',area:`<div style="width:100%"><div style="display:flex;align-items:flex-start;justify-content:center;gap:10px">${col(n1,sh[0],co[0],0)}<span class="op" style="margin-top:36px">+</span>${col(n2,sh[1],co[1],1)}</div><div style="margin-top:14px"><span class="lbl">Total</span> <span class="box e" id="xgS2">?</span></div></div>`,kind:'sets',n1,n2,answer:String(n1+n2),show:`${n1} + ${n2} = ${n1+n2}`}}
- const sm=R(0,10),lg=R(0,difficultyPick(69,129)),f=Math.random()<.5,a=f?sm:lg,b=f?lg:sm,r=a+b,o=[r];
+ const sm=R(0,10),lg=difficultyPick(R(0,19),R(21,79)),f=Math.random()<.5,a=f?sm:lg,b=f?lg:sm,r=a+b,o=[r];
  while(o.length<4){const w=r+R(-5,4);if(w>0&&!o.includes(w))o.push(w)}
  return choice('',r,o,`<div class="math-equation-display"><div class="math-equation"><span class="math-number">${a}</span><span class="math-operator">+</span><span class="math-number">${b}</span><span class="math-operator">=</span><span class="math-number">?</span></div></div>`)}},
 };
