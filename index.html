@@ -3384,6 +3384,14 @@ html:root #mainContainer .skill-section.ico-miss .skill-section-title::before{ba
                 <button class="toggle" id="presentationModeToggle" aria-label="Toggle smart-board presentation mode" aria-pressed="false"></button>
             </div>
 
+            <div class="settings-row" id="fullscreenRow">
+                <div class="settings-label">
+                    <div class="name"><span class="si">⛶</span>Full screen</div>
+                    <div class="hint" id="fullscreenHint">Hide the browser bars for a bigger view</div>
+                </div>
+                <button class="toggle" id="fullscreenToggle" type="button" aria-label="Toggle full screen" aria-pressed="false"></button>
+            </div>
+
             <p class="settings-help">Teacher tip: use Practice for discussion and explanation. Use Timer only as an optional fluency challenge.</p>
         </div>
     </div>
@@ -3790,6 +3798,52 @@ html:root #mainContainer .skill-section.ico-miss .skill-section-title::before{ba
                 addTouchSupport(presentationModeToggle, () => setPresentationMode(!appSettings.presentationMode));
                 enableRipple(presentationModeToggle);
             }
+
+            // Full screen toggle (Fullscreen API, with Safari/webkit fallback)
+            (function setupFullscreen() {
+                const fsToggle = document.getElementById('fullscreenToggle');
+                const fsHint = document.getElementById('fullscreenHint');
+                if (!fsToggle) return;
+
+                const root = document.documentElement;
+                const canFullscreen = !!(root.requestFullscreen || root.webkitRequestFullscreen);
+                const isFullscreen = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+                function syncFullscreenUi() {
+                    const on = isFullscreen();
+                    fsToggle.classList.toggle('on', on);
+                    fsToggle.setAttribute('aria-pressed', String(on));
+                }
+
+                if (!canFullscreen) {
+                    // e.g. iPhone Safari: no Fullscreen API for pages
+                    fsToggle.disabled = true;
+                    fsToggle.style.opacity = '0.5';
+                    fsToggle.style.cursor = 'not-allowed';
+                    if (fsHint) fsHint.textContent = 'Not available here. Use Share > Add to Home Screen';
+                    return;
+                }
+
+                function toggleFullscreen() {
+                    try {
+                        if (isFullscreen()) {
+                            const exit = document.exitFullscreen || document.webkitExitFullscreen;
+                            const r = exit && exit.call(document);
+                            if (r && r.catch) r.catch(() => {});
+                        } else {
+                            const req = root.requestFullscreen || root.webkitRequestFullscreen;
+                            const r = req.call(root);
+                            if (r && r.catch) r.catch(() => {});
+                        }
+                    } catch (e) {}
+                }
+
+                addTouchSupport(fsToggle, toggleFullscreen);
+                enableRipple(fsToggle);
+                document.addEventListener('fullscreenchange', syncFullscreenUi);
+                document.addEventListener('webkitfullscreenchange', syncFullscreenUi);
+                syncFullscreenUi();
+            })();
 
             if (themeLightBtn) { addTouchSupport(themeLightBtn, () => setTheme('light')); enableRipple(themeLightBtn); }
             if (themeDarkBtn) { addTouchSupport(themeDarkBtn, () => setTheme('dark')); enableRipple(themeDarkBtn); }
@@ -7482,8 +7536,8 @@ html:root #xg .practice-status{margin-top:.8rem}
 #xg .op{font-size:2.4rem;font-weight:800;line-height:1}
 #xg .die{display:block;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18))}
 #xg img.fing{height:140px;width:auto;max-width:44vw;object-fit:contain;-webkit-user-drag:none;pointer-events:none}
-#xg .set{width:min(40vw,170px);min-height:112px;padding:10px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:6px;border:3px solid var(--border-color);border-radius:16px;background:var(--surface-0)}
-#xg .sh{display:inline-block;position:relative;width:32px;height:32px;cursor:pointer}
+#xg .set{width:100%;box-sizing:border-box;min-height:112px;padding:8px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:4px;border:3px solid var(--border-color);border-radius:16px;background:var(--surface-0)}
+#xg .sh{display:inline-block;position:relative;width:clamp(22px,6.5vw,32px);height:clamp(22px,6.5vw,32px);cursor:pointer}
 #xg .sh svg{display:block;width:100%;height:100%}
 #xg .sh.x::after{content:"";position:absolute;left:-4px;right:-4px;top:50%;height:4px;background:#000;transform:rotate(-35deg)}
 /* ---- number images (jelly digits) ---- */
@@ -7587,13 +7641,13 @@ const G={
 'symmetry':{t:'Symmetry',g:()=>{const s=P(SYM);return choice('Is this symmetrical?',s[1]?'Yes':'No',['Yes','No'],symArea(s[0]))}},
 'addition':{t:'Addition',g:()=>{const t=R(0,3),mx=difficultyPick(10,20);
  const eq=(a,b)=>`<div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;width:100%">${a}<span class="op">+</span>${b}<span class="op">=</span><span class="box e" id="xgD">?</span></div>`;
- const mix=(a,b)=>Math.random()<.5?eq(a,b):eq(b,a);
- if(t==1){const n=R(1,mx),d=R(1,6);return {q:'Find the total.',area:mix(`<span class="box">${n}</span>`,die(d)),kind:'num',tree:1,answer:String(n+d),show:`${n} + ${d} = ${n+d}`}}
- if(t==2){const n=R(1,mx),f=R(1,10);return {q:'Find the total.',area:mix(`<span class="box">${n}</span>`,fing(f)),kind:'num',tree:1,answer:String(n+f),show:`${n} + ${f} = ${n+f}`}}
+ const mix=(a,b)=>eq(a,b);
+ if(t==1){const d=R(1,6),n=R(d,mx);return {q:'Find the total.',area:mix(`<span class="box">${n}</span>`,die(d)),kind:'num',tree:1,answer:String(n+d),show:`${n} + ${d} = ${n+d}`}}
+ if(t==2){const f=R(1,10),n=R(f,mx);return {q:'Find the total.',area:mix(`<span class="box">${n}</span>`,fing(f)),kind:'num',tree:1,answer:String(n+f),show:`${n} + ${f} = ${n+f}`}}
  if(t==3){const m=difficultyPick(5,9),n1=R(1,m),n2=R(1,m),sh=S(Object.keys(SHP)),co=S(CN),
-   col=(n,k,c,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div class="set">${shp(k,CC[c]).repeat(n)}</div><span class="box e" id="xgS${i}">?</span></div>`;
-  return {q:'Write how many in each set, then the total.',area:`<div style="width:100%"><div style="display:flex;align-items:flex-start;justify-content:center;gap:10px">${col(n1,sh[0],co[0],0)}<span class="op" style="margin-top:36px">+</span>${col(n2,sh[1],co[1],1)}</div><div style="margin-top:14px"><span class="lbl">Total</span> <span class="box e" id="xgS2">?</span></div></div>`,kind:'sets',n1,n2,answer:String(n1+n2),show:`${n1} + ${n2} = ${n1+n2}`}}
- const sm=R(0,10),lg=difficultyPick(R(0,19),R(21,79)),f=Math.random()<.5,a=f?sm:lg,b=f?lg:sm,r=a+b,o=[r];
+   col=(n,k,c,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:1 1 0;min-width:0;max-width:170px"><div class="set">${shp(k,CC[c]).repeat(n)}</div><span class="box e" id="xgS${i}">?</span></div>`;
+  return {q:'Write how many in each set, then the total.',area:`<div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%">${col(n1,sh[0],co[0],0)}<span class="op" style="font-size:1.8rem;margin-bottom:12px">+</span>${col(n2,sh[1],co[1],1)}<span class="op" style="font-size:1.8rem;margin-bottom:12px">=</span><span class="box e" id="xgS2">?</span></div>`,kind:'sets',n1,n2,answer:String(n1+n2),show:`${n1} + ${n2} = ${n1+n2}`}}
+ const sm=R(0,10),lg=difficultyPick(R(0,19),R(21,79)),a=Math.max(sm,lg),b=Math.min(sm,lg),r=a+b,o=[r];
  while(o.length<4){const w=r+R(-5,4);if(w>0&&!o.includes(w))o.push(w)}
  return choice('',r,o,`<div class="math-equation-display"><div class="math-equation"><span class="math-number">${a}</span><span class="math-operator">+</span><span class="math-number">${b}</span><span class="math-operator">=</span><span class="math-number">?</span></div></div>`)}},
 };
